@@ -17,8 +17,8 @@ To designs til forskellige behov:
 
 En modulær 3D-printet krukke der lever inde i en pyntepotte:
 
-- **Plug-and-play planteprofiler**: Monstera, Pothos, Crassula, Aloe, Orkide (via vægt-detektion)
-- **Multi-sensor fusion**: kapacitiv jord-fugtighed + vægt (HX711 load cell) + vandstand + float-switch
+- **Plug-and-play planteprofiler**: Monstera, Pothos, Peace Lily, Succulent (Crassula/Aloe), Orkide
+- **Modulær sensor-stack**: kapacitiv jord-fugtighed + vandstand + float-switch som basis. **Optional**: HX711 + 5kg load cell tilføjer vægt-detektion (krævet for orkide-bark; ikke nødvendigt for jord-planter)
 - **Stille peristaltisk pumpe**: præcis dosering 5–100 ml, selv-primende, dry-run tolerant
 - **Modulær størrelse**: skiftelig plantebeholder (S/M/L) — én reservoir + elektronik-base passer alle
 - **Apple HomeKit** via Matter over Thread fra dag 1 (HomePod/Apple TV som Thread Border Router)

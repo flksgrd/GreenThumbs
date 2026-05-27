@@ -58,9 +58,12 @@
 │   • Peristaltisk pumpe          │
 │   • O-ring/EPDM gasket på top   │
 ├─────────────────────────────────┤
-│  LOAD CELL platform             │  ← hele krukken hviler her
+│  LOAD CELL platform (OPTIONAL)  │  ← kun for orkide / power-user
 │   • HX711 ADC                   │
-│   • Bar load cell 1kg           │
+│   • Bar load cell 5kg           │
+│   • Skip helt for store planter │
+│     (Monstera/Peace Lily) — sæt │
+│     rubber feet på base i stedet│
 └─────────────────────────────────┘
 ```
 
@@ -126,8 +129,8 @@ Reservoir (vand)
 | Water reservoir % | Humidity Sensor (endpoint 2) | "Vandstand: 78%" |
 | Float low (binær) | Leak Detector | "Vandalarm: OK" / "Tom" |
 | Manuel pump | On/Off Switch | Knap der auto-slukker efter 3 sek |
-| Profile-vælger | Mode Select | Dropdown: Monstera / Pothos / Succulent / Orkide / Custom |
-| Weight (gram) | Custom cluster (v2) | "Plante-vægt: 1248g" |
+| Profile-vælger | Mode Select | Dropdown: Monstera / Pothos / Peace Lily / Succulent / Orkide / Custom |
+| Weight (gram, hvis HX711 tilstede) | Custom cluster (v2) | "Plante-vægt: 1248g" |
 
 ## Sikkerheds-architecture
 

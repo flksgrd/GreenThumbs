@@ -97,7 +97,10 @@ drain_hole_d = 3;
 // ----------------------------------------------------------------------------
 // 4. Load cell mount
 // ----------------------------------------------------------------------------
-loadcell_length = 80;            // standard 1kg bar load cell
+// Bar load cell — TAL220 5kg eller equivalent
+// (Samme fysiske dimensioner som 1kg-varianten; 5kg giver safety margin for
+// succulenter/orkide. Se ADR 004.)
+loadcell_length = 80;
 loadcell_height = 13;
 loadcell_width = 13;
 loadcell_screw_spacing = 15;     // afstand mellem M4-huller
@@ -131,6 +134,11 @@ PI = 3.14159265;                 // OpenSCAD har built-in PI, men eksplicit her 
 // ----------------------------------------------------------------------------
 // Debug: print params til console når denne fil køres direkte
 // ----------------------------------------------------------------------------
+// echo() er sikre at have her — de udskriver til console også når filen
+// inkluderes af andre. Til gengæld må der IKKE være top-level geometri
+// (cylinder, cube, etc.) her — det ville forurene alle includere.
+// Hvis du vil se geometri ved at åbne params.scad direkte, så åbn i stedet
+// en af part-filerne (plant_cup.scad, reservoir.scad, ...) der include'er denne.
 echo("=== GreenThumbs CAD params ===");
 echo("cup_size:", cup_size);
 echo("cup_diameter:", cup_diameter, "mm");
@@ -139,6 +147,3 @@ echo("reservoir_volume:", reservoir_volume_ml, "ml");
 echo("reservoir_height:", reservoir_height, "mm");
 echo("reservoir_outer_d:", reservoir_outer_d, "mm");
 echo("electronics_base_height:", ebase_height, "mm");
-
-// En lille test-cylinder så filen kan åbnes direkte i OpenSCAD uden warnings
-% cylinder(d = reservoir_outer_d, h = 1, center = false);

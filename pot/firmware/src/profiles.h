@@ -16,11 +16,23 @@ extern "C" {
 
 /**
  * Detection mode bestemmer hvilken sensor der primært driver pump-beslutninger.
+ *
+ * HARDWARE-AFHÆNGIGHED:
+ *   - DETECT_MOISTURE:  Kræver kun soil sensor. Fungerer uden HX711/load cell.
+ *                       Dette er default for alle jord-baserede planter
+ *                       (Monstera, Pothos, Peace Lily, Succulenter).
+ *   - DETECT_WEIGHT:    Kræver HX711 + load cell. Kun nødvendigt for orkide
+ *                       (bark-medium gør soil sensor upålidelig).
+ *   - DETECT_HYBRID:    Kræver HX711 + soil sensor begge. Optional safety-feature
+ *                       til succulent power-users.
+ *
+ * Ved boot prober firmware om HX711 svarer. Hvis ikke → weight_available = false,
+ * og profiler der kræver vægt giver fejl-status (se profile_validate()).
  */
 typedef enum {
-    DETECT_MOISTURE = 0,   ///< Soil capacitive sensor (Monstera, Pothos)
-    DETECT_WEIGHT,         ///< HX711 load cell (Orkide — bark medium)
-    DETECT_HYBRID,         ///< Begge — moisture primær, weight sanity check (Succulenter)
+    DETECT_MOISTURE = 0,   ///< Soil capacitive sensor — alle jord-planter
+    DETECT_WEIGHT,         ///< HX711 load cell — orkide (kræver load cell hardware)
+    DETECT_HYBRID,         ///< Begge sensorer — advanced (kræver load cell hardware)
 } detection_mode_t;
 
 /**
@@ -101,7 +113,7 @@ uint8_t profile_moisture_pct(uint16_t adc_reading, const plant_profile_t *profil
  * Beslut om pumpen skal trigges, baseret på sensor-state og aktiv profil.
  *
  * @param moisture_pct Aktuel jord-fugtighed (%).
- * @param weight_g Aktuel plante-vægt (gram).
+ * @param weight_g Aktuel plante-vægt (gram). Ignoreres hvis profil.mode == DETECT_MOISTURE.
  * @param last_pump_minutes_ago Minutter siden sidste vanding.
  * @param daily_ml_so_far Ml vandet i dag (siden midnat).
  * @param profile Aktiv profil.
@@ -112,6 +124,20 @@ bool profile_should_pump(uint8_t moisture_pct,
                           uint32_t last_pump_minutes_ago,
                           uint16_t daily_ml_so_far,
                           const plant_profile_t *profile);
+
+/**
+ * Valider om profilen er kompatibel med aktuel hardware-konfiguration.
+ *
+ * Hvis profil kræver vægt-sensor (DETECT_WEIGHT eller DETECT_HYBRID) men
+ * weight_available er false → returnerer false. Firmware bør så vise fejl
+ * i HomeKit og disable pumpe indtil bruger ændrer profil eller installerer
+ * load cell.
+ *
+ * @param profile Profil der valideres.
+ * @param weight_available Er HX711 + load cell tilstede? (sat ved boot probe)
+ * @return true hvis profil kan bruges med tilgængelig hardware, false ellers.
+ */
+bool profile_validate(const plant_profile_t *profile, bool weight_available);
 
 #ifdef __cplusplus
 }
