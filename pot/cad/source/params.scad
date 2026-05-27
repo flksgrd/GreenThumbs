@@ -103,12 +103,25 @@ drain_hole_d = 3;
 loadcell_length = 80;
 loadcell_height = 13;
 loadcell_width = 13;
-loadcell_screw_spacing = 15;     // afstand mellem M4-huller
+loadcell_screw_spacing = 15;     // afstand mellem M4-huller på cellen
+
+// Hvor langt fra cellens center er bolt-hullerne (ene end vs anden end)
+// Standard TAL220: ~8mm fra hver ende. Negativ = fixed end, positiv = free end.
+loadcell_fixed_x = -loadcell_length / 2 + 8;  // ≈ -32mm for 80mm cell
+loadcell_free_x  =  loadcell_length / 2 - 8;  // ≈ +32mm
+
+// Cantilever boss-dimensioner — KRITISK for at cellen kan bøje korrekt
+// Boss højde skaber air-gap mellem cell midte og plader. Min ~3mm.
+// Boss centreres OMKRING bolt-positionen (loadcell_fixed_x / loadcell_free_x).
+boss_height = 4;                 // air-gap mellem cell og plade-overflade
+boss_l = 22;                     // langs cellens akse (x) — minimum ~15mm + margin
+boss_w = 24;                     // tværs på cellen (y) — skal omslutte 15mm hul-spacing
 
 // Platform pladerne (over og under load cell)
 platform_d = ebase_outer_d;      // matcher base
 platform_thickness = 6;
-platform_separation = loadcell_height + 4;  // load cell + clearance
+// Total separation = under-boss + cell + over-boss
+platform_separation = 2 * boss_height + loadcell_height;
 
 
 // ----------------------------------------------------------------------------

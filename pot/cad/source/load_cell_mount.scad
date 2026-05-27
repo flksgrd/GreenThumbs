@@ -6,100 +6,122 @@
 // store jord-baserede planter kan du SKIPPE denne del og bare sætte stick-on
 // rubber feet under electronics_base_lid. Se ADR 004 for begrundelse.
 //
-// To-plades sandwich der holder en bar load cell (TAL220 5kg eller equivalent).
-// Hele krukken (electronics base + reservoir + plant cup) hviler på upper_plate.
-// HX711 ADC sidder typisk på et lille modul der monteres på lower_plate.
+// =============================================================================
+// CANTILEVER PRINCIP — vigtig forståelse!
+// =============================================================================
+// En bar/beam strain gauge load cell måler ved at BØJE under belastning.
+// Det betyder:
+//   - ÉT end skal være rigidt fastgjort (FIXED END)
+//   - Det ANDET end skal være FRIT til at bøje (FREE END, hvor lasten påføres)
+//   - Cellens MIDTE må IKKE røre noget (skal være i luft)
 //
-// Vigtigt: bar load cell skal være cantilevered — ét end fast til upper plate,
-// andet end fast til lower plate. Hullet i midten af cellen er strain gauge-zonen
-// og må IKKE fastgøres.
+// Hvis BEGGE ender klampes mellem to flade plader → cellen kan ikke bøje →
+// strain gauges læser ~0 uanset belastning. Det er en common mistake.
 //
-//      ┌─────────────────┐ ← upper_plate (krukken hviler her)
-//      │             ●───┼─● ← M4-bolte til ene end af load cell
-//      └────────────────┬┘
+// Vores løsning: STANDOFF-BOSSER der kun kontakter cellen ved bolt-punkterne.
+//
+//                  ┌─────────────────────────────┐  ← Upper plate
+//                  │           ╔══════╗          │
+//                  │           ║ BOSS ║          │  ← Boss kun ved FREE END
+//                  │           ╚══[M4 bolt ↓]    │     (hænger ned)
+//                                  ║
+//                          air gap ║  ← cellen bøjer her
+//                                  ║
+//                  ╔═══════════════╩════════════════════╗  ← Load cell
+//                  ║                                    ║      (horisontal)
+//                  ╚════[M4 bolt ↑]═════════════════════╝
 //                       ║
-//                       ║ Load cell bar (frit-svævende)
-//                       ║
-//      ┌───────────────┬─┘
-//      │           ●───┼─● ← M4-bolte til ANDEN end af load cell
-//      └─────────────────┘ ← lower_plate (står på bordet)
+//                  ╔════╩════╗
+//                  ║  BOSS  ║                              ← Boss kun ved FIXED END
+//                  ┌────────╩─────────────────────────────┐  ← Lower plate
+//                  └──────────────────────────────────────┘
+//                          (krukken hviler på upper plate via electronics_base)
 //
-// PRINT: PLA eller PETG. Ikke vand-kontakt. 100% infill ikke nødvendigt;
-// 30% gyroid er fint.
+// =============================================================================
+// PRINT-STRATEGI
+// =============================================================================
+// Begge plader er ens (boss på ene end). Print TO identiske kopier af
+// plate_with_boss(). Under samling:
+//   - Lower plate: brug som den er printet (boss-side opad)
+//   - Upper plate: FLIP den 180° så boss-side vender NEDAD
+//                  + roter så boss-end er over cellens FREE END
+//
+// PRINT: PLA eller PETG. 30% gyroid infill er fint. Ingen support
+// (boss er flad-top). Print boss-side UP.
 // =============================================================================
 
 include <params.scad>
 
-// ─── Hovedmodul: hele samlingen visualiseret ────────────────────────────────
-module load_cell_mount() {
-    // Lower plate (står på bord)
-    lower_plate();
+// ─── Render-mode selector ───────────────────────────────────────────────────
+// "assembled" = vis hele samlingen (lower + cell + upper)
+// "plate"     = vis kun ÉN plade i print-orientation (boss-side up)
+render_mode = "assembled";
 
-    // Load cell visualization (background — printes ikke; bare for fitting)
-    %translate([0, 0, platform_thickness + 2])
+// ─── Bygge-blok: en plade med boss ved FIXED-end position ───────────────────
+// Bossens CENTER ligger ved loadcell_fixed_x, så når cellens M4-huller er
+// præcis ved loadcell_fixed_x, sidder bolt-hullerne i pladen lige under dem.
+module plate_with_boss() {
+    difference() {
+        union() {
+            // Hoved-plade
+            cylinder(d = platform_d, h = platform_thickness);
+
+            // Standoff boss — CENTRERET på loadcell_fixed_x
+            translate([loadcell_fixed_x - boss_l / 2,
+                       -boss_w / 2,
+                       platform_thickness - 0.01])
+                cube([boss_l, boss_w, boss_height + 0.01]);
+        }
+
+        // M4-bolt huller PRÆCIS ved loadcell_fixed_x (matcher cellens huller)
+        for (dy = [-loadcell_screw_spacing / 2,
+                    loadcell_screw_spacing / 2]) {
+            translate([loadcell_fixed_x, dy, -0.5])
+                cylinder(d = 4.2,
+                         h = platform_thickness + boss_height + 1);
+        }
+    }
+}
+
+// ─── Samlet visualisering ───────────────────────────────────────────────────
+module load_cell_assembly() {
+    // Lower plate — brug som den er
+    plate_with_boss();
+
+    // Load cell visualisering (background — printes ikke)
+    %translate([0, 0, platform_thickness + boss_height])
         load_cell_dummy();
 
-    // Upper plate (krukke står herpå)
-    translate([0, 0, platform_separation + platform_thickness])
-        upper_plate();
+    // Upper plate — flippet 180° om Y-aksen (mirrors X og Z)
+    // Translateret op så bossen netop rører cellens FREE-end top
+    upper_z_offset = 2 * (platform_thickness + boss_height) + loadcell_height;
+    translate([0, 0, upper_z_offset])
+        rotate([0, 180, 0])
+            plate_with_boss();
 }
 
-// ─── Lower plate — hviler på bord ───────────────────────────────────────────
-module lower_plate() {
-    difference() {
-        cylinder(d = platform_d, h = platform_thickness);
-
-        // M4-huller til load cell mounting ved ENE end af cellen
-        // Cellen strækker sig fra venstre side mod højre. Lower plate
-        // fastgør VENSTRE end af cellen.
-        load_cell_screw_holes(x_offset = -loadcell_length / 2 + 8);
-
-        // Rubber feet recesses (optional — eller bare flade)
-        rubber_feet_recesses();
-    }
-}
-
-// ─── Upper plate — krukke står herpå ────────────────────────────────────────
-module upper_plate() {
-    difference() {
-        cylinder(d = platform_d, h = platform_thickness);
-
-        // M4-huller til load cell mounting ved ANDEN end af cellen
-        load_cell_screw_holes(x_offset = loadcell_length / 2 - 8);
-
-        // Eventuelle anti-slip recesses (optional)
-        // (Tom for v1 — kan tilføjes hvis krukken glider)
-    }
-}
-
-// To M4-huller med given x-offset, langs y-aksen ved loadcell_screw_spacing
-module load_cell_screw_holes(x_offset) {
-    for (dy = [-loadcell_screw_spacing / 2, loadcell_screw_spacing / 2]) {
-        translate([x_offset, dy, -0.5])
-            cylinder(d = 4.2, h = platform_thickness + 1);
-    }
-}
-
-// Tre runde recesses i bunden til gummi-fødder (Ø12mm)
-module rubber_feet_recesses() {
-    for (a = [0, 120, 240]) {
-        rotate([0, 0, a])
-            translate([platform_d / 2 - 12, 0, -0.5])
-                cylinder(d = 12, h = 1.5);
-    }
-}
-
-// ─── Visualization af load cell (printes ikke) ──────────────────────────────
+// ─── Load cell visualization (kun til preview, ikke printet) ────────────────
 module load_cell_dummy() {
-    color([0.5, 0.5, 0.5])
+    color([0.5, 0.5, 0.55])
         translate([-loadcell_length / 2, -loadcell_width / 2, 0])
             cube([loadcell_length, loadcell_width, loadcell_height]);
+
+    // Marker fixed end med rødt
+    color([0.8, 0.2, 0.2])
+        translate([loadcell_fixed_x - 2, -loadcell_width / 2 - 0.1, 0])
+            cube([4, loadcell_width + 0.2, loadcell_height]);
+
+    // Marker free end med grønt
+    color([0.2, 0.8, 0.2])
+        translate([loadcell_free_x - 2, -loadcell_width / 2 - 0.1, 0])
+            cube([4, loadcell_width + 0.2, loadcell_height]);
 }
 
-// ─── Render samlet visning når filen åbnes direkte ──────────────────────────
-load_cell_mount();
-
-// Til print: separat de to plader så de printes individuelt
-// Uncomment disse to linjer og kommenter load_cell_mount() ud:
-//   lower_plate();
-//   translate([platform_d + 20, 0, 0]) upper_plate();
+// ─── Output baseret på render_mode ──────────────────────────────────────────
+if (render_mode == "assembled") {
+    load_cell_assembly();
+} else if (render_mode == "plate") {
+    plate_with_boss();
+} else {
+    echo("ERROR: render_mode skal være 'assembled' eller 'plate'");
+}
