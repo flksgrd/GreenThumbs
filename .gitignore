@@ -1,0 +1,44 @@
+# PlatformIO / ESP-IDF
+.pio/
+.pioenvs/
+.piolibdeps/
+.vscode/
+.idea/
+build/
+sdkconfig
+sdkconfig.old
+managed_components/
+dependencies.lock
+
+# OpenSCAD cache
+*.scad.bak
+*.stl.cache
+
+# 3D print slicer artifacts
+*.gcode
+*.bgcode
+.prusaslicer/
+
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Editor swap
+*.swp
+*.swo
+*~
+.bak
+
+# Logs
+*.log
+
+# Local-only config
+.env
+.env.local
+local_*
+
+# Build outputs we want to ignore (CAD STL re-exports)
+# Note: STL'er i pot/cad/stl/ committes ikke automatisk — re-eksporteres fra .scad
+pot/cad/stl/*.stl.tmp

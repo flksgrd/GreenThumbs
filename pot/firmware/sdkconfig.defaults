@@ -1,0 +1,52 @@
+# =============================================================================
+# ESP-IDF default settings for GreenThumbs Plantekrukke
+# =============================================================================
+# Disse defaults appliceres ved første `pio run`. Brug `pio run -t menuconfig` for
+# at justere yderligere. Default-værdier her er optimerede for Matter + Thread.
+# =============================================================================
+
+# Target
+CONFIG_IDF_TARGET="esp32c6"
+
+# Thread (OpenThread)
+CONFIG_OPENTHREAD_ENABLED=y
+CONFIG_OPENTHREAD_FTD=n
+CONFIG_OPENTHREAD_MTD=y
+CONFIG_OPENTHREAD_RADIO_NATIVE=y
+
+# Matter
+CONFIG_ENABLE_CHIPOBLE=y
+CONFIG_USE_MINIMAL_MDNS=n
+CONFIG_CHIP_DEVICE_USE_TEST_SETUP_PIN_CODE=y
+
+# Bluetooth (kun til Matter commissioning)
+CONFIG_BT_ENABLED=y
+CONFIG_BT_BLE_ENABLED=y
+CONFIG_BT_NIMBLE_ENABLED=y
+
+# WiFi (fallback for setup/diagnostik)
+CONFIG_ESP_WIFI_SOFTAP_SUPPORT=y
+
+# NVS storage (for plant profiles + calibration)
+CONFIG_NVS_ENCRYPTION=n
+
+# Logging
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+CONFIG_LOG_MAXIMUM_LEVEL_DEBUG=y
+
+# FreeRTOS
+CONFIG_FREERTOS_HZ=1000
+
+# Watchdog
+CONFIG_ESP_TASK_WDT_PANIC=y
+CONFIG_ESP_TASK_WDT_TIMEOUT_S=15
+
+# Partition layout
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+
+# Compiler
+CONFIG_COMPILER_OPTIMIZATION_PERF=y
+
+# Stack sizes (Matter has heavy main-task usage)
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=8192
