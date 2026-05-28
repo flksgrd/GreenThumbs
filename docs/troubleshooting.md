@@ -27,9 +27,18 @@ Common issues og hvordan du diagnostiserer dem. Opdateres løbende under prototy
 ## Vægt-aflæsning drifter
 
 1. **Temperatur-skift**: HX711 har ~50 ppm/°C drift. Hvis værelse-temperatur ændres betydeligt → re-tare via HomeKit-knap.
-2. **Krukke flyttet**: load cell er sensitiv overfor placering. Hvis krukken er flyttet → re-tare.
-3. **Vibrationer**: hvis nogen rammer bordet → kortvarig spike i målingen. Moving average filtrerer dette; vent 1 min.
+2. **Termisk drift fra egen elektronik**: ESP32 + buck-converter genererer ~1-2W der vandrer ned gennem electronics base i load cell. Drift på ~0.5g/°C ved 5kg cell. **Mitigation**: indsæt 2-3mm rubber-pad mellem `electronics_base_lid` og `load_cell_mount` upper plate.
+3. **Krukke flyttet**: load cell er sensitiv overfor placering. Hvis krukken er flyttet → re-tare.
 4. **Cable issue**: tjek at load cell wires ikke er løse i HX711-modulet.
+
+## Vægt-aflæsning er støjende, især under/efter pumpning
+
+Pumpen sidder i electronics base, direkte over load cell. Mekaniske vibrationer forplanter sig ind i cellen.
+
+1. **Verificer firmware filtrerer korrekt**: 5-sample moving average skal være aktivt. Tjek `weight_filter()` i sensors.cpp.
+2. **Sample timing**: firmware MÅ ikke læse HX711 mens `pump_active = true`. Verificer i log at sample-timestamps ikke ligger inden for pumpe-cyklus.
+3. **Vent-tid efter pump stop**: minimum 30 sek før første nye gyldige sample. Mekaniske oscillationer dør først ud da.
+4. **Vibration fra eksterne kilder**: vaskemaskine, gulv-stomp, etc. Moving average filtrerer 1-2 sek spikes. Hvis vedvarende støj — flyt krukken eller læg blød mat under.
 
 ## Vandlækage til elektronik
 

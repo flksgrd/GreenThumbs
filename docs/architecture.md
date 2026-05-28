@@ -132,6 +132,34 @@ Reservoir (vand)
 | Profile-vælger | Mode Select | Dropdown: Monstera / Pothos / Peace Lily / Succulent / Orkide / Custom |
 | Weight (gram, hvis HX711 tilstede) | Custom cluster (v2) | "Plante-vægt: 1248g" |
 
+## Load cell-placering: bivirkninger
+
+Load cell sidder i bunden af stakken — under electronics base — af tre årsager:
+
+1. **Vandslangen krydser ingen flex-joint.** Pump-output går fra reservoir gennem electronics base op til plant cup. Hvis cellen lå mellem reservoir og cup (eller mellem electronics base og reservoir), ville den stive silikoneslange spænde over flex-jointen og påføre en uforudsigelig kraft (~50g, hvilket drukner vores 10-100g signal for orkide).
+2. **HX711-wiring er kortest.** ADC-modulet sidder i electronics base. Cell-til-ADC kablet behøver kun krydse ét vandtæt grommet — direkte ned i electronics base bund.
+3. **Mekanisk stabilitet.** Rigid stak ovenpå én flex-joint er stabil. Flex-joint midt i stakken giver vippe-risiko, især med tunge planter.
+
+Dette giver to bivirkninger der skal kompenseres i firmware/build:
+
+### Pumpe-vibrationer påvirker måling
+
+Pumpen sidder i electronics base, direkte over load cell platformen. Vibrationer fra pumpe-drift forplanter sig ned i cellen.
+
+**Mitigation:**
+- Firmware bruger 5-sample moving average på HX711-readings.
+- **Sample ALDRIG mens pumpen kører.** Tilføj `if (pump_active) skip_weight_sample;` i sensor_task.
+- Vent minimum 30 sek efter pump stop før første nye weight sample (mekaniske oscillationer dør ud).
+
+### Termisk drift fra elektronik
+
+ESP32-C6 + MP1584 buck-converter genererer ~1-2W varme. Varmen vandrer gennem electronics base bund → ind i load_cell_mount upper plate → påvirker HX711-aflæsning (~50 ppm/°C drift = ~0.5g per grad ved 5kg fuldskala — ikke meget, men akkumuleres over et døgn med vekslende rumtemp).
+
+**Mitigation:**
+- Læg en 2-3mm rubber-pad mellem electronics_base_lid og load_cell_mount upper plate som termisk isolation.
+- Re-tare via HomeKit-knap ved sæson-skifte eller tydelig drift.
+- Sample baseline-vægt om natten (lavest temperatur-gradient) hvis høj præcision er kritisk.
+
 ## Sikkerheds-architecture
 
 Multi-layer defense mod uheld:
