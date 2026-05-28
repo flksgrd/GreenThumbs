@@ -19,7 +19,8 @@ To designs til forskellige behov:
 En modulær 3D-printet krukke der lever inde i en pyntepotte:
 
 - **Plug-and-play planteprofiler**: Monstera, Pothos, Peace Lily, African Violet, Succulent, Orkide
-- **Modulær sensor-stack**: kapacitiv jord-fugtighed + vandstand + float-switch som basis. **Optional**: HX711 + 5kg load cell tilføjer vægt-detektion (krævet for orkide-bark; ikke nødvendigt for jord-planter)
+- **Modulær sensor-stack**: kapacitiv jord-fugtighed + vandstand + float-switch + AHT20 (temp + RH) som basis. **Optional**: HX711 + 5kg load cell tilføjer vægt-detektion (krævet for orkide-bark; ikke nødvendigt for jord-planter)
+- **VPD-aware vanding**: AHT20 measurer rum-klima og firmware skalerer dose dynamisk baseret på Vapor Pressure Deficit — mere vand i tør radiator-vinter, mindre i fugtigt klima
 - **Bottom-watering option (v1 wick)**: bomulds-snor gennem center-drænhul → continuous capillary watering for African Violet, Peace Lily, Calathea og lignende fugt-elskere
 - **Stille peristaltisk pumpe**: præcis dosering 5–100 ml, selv-primende, dry-run tolerant
 - **Modulær størrelse**: skiftelig plantebeholder (S/M/L) — én reservoir + elektronik-base passer alle

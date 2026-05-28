@@ -27,7 +27,8 @@
 |                                          ├── ADC0: soil moisture │
 |                                          ├── ADC1: water level   │
 |                                          ├── GPIO ISR: float     │
-|                                          ├── GPIO: HX711 SCK/DT  │
+|                                          ├── I2C: AHT20          │ (temp + RH)
+|                                          ├── GPIO: HX711 SCK/DT  │ (optional)
 |                                          ├── GPIO: status LED    │
 |                                          ├── GPIO: manual btn    │
 |                                          └── GPIO PWM: pump      │
@@ -129,8 +130,12 @@ Reservoir (vand)
 | Water reservoir % | Humidity Sensor (endpoint 2) | "Vandstand: 78%" |
 | Float low (binær) | Leak Detector | "Vandalarm: OK" / "Tom" |
 | Manuel pump | On/Off Switch | Knap der auto-slukker efter 3 sek |
-| Profile-vælger | Mode Select | Dropdown: Monstera / Pothos / Peace Lily / Succulent / Orkide / Custom |
+| Profile-vælger | Mode Select | Dropdown: Monstera / Pothos / Peace Lily / African Violet / Succulent / Orkide / Custom |
+| Rumtemperatur (AHT20) | Temperature Sensor (endpoint 3) | "Stuetemperatur: 22.4°C" |
+| Luftfugtighed (AHT20) | Humidity Sensor (endpoint 3) | "Luftfugtighed: 47%" |
 | Weight (gram, hvis HX711 tilstede) | Custom cluster (v2) | "Plante-vægt: 1248g" |
+
+**VPD-aware dose-modifikator:** Når AHT20 er tilstede, justerer firmware automatisk `dose_ml` baseret på Vapor Pressure Deficit (rum-tørhed × temperatur). Ved tørt indeklima (vinter med radiator) får planten mere vand per cyklus; ved fugtigt klima reduceres dosen. Se [ADR 007](decisions/007-env-sensor-aht20.md).
 
 ## Load cell-placering: bivirkninger
 

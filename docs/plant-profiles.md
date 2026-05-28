@@ -11,7 +11,22 @@ Krukken kan bygges i to varianter afhængigt af hvilke planter du vil have:
 | **Standard** (uden load cell) | Soil moisture + water level + float | `monstera`, `pothos`, `peace_lily`, `succulent`, `african_violet` | Alle jord-baserede planter |
 | **Med vægt** (HX711 + 5kg load cell + load_cell_mount print) | + HX711 | Alle ovenstående + `orchid_phalaenopsis` | Tilføjer orkide-support |
 
-→ Se [ADR 004](decisions/004-weight-based-orchid.md) for vægt-baseret detektion. → Se [ADR 006](decisions/006-bottom-watering-strategies.md) for wick (bottom-watering) tilføjelse.
+→ Se [ADR 004](decisions/004-weight-based-orchid.md) for vægt-baseret detektion. → Se [ADR 006](decisions/006-bottom-watering-strategies.md) for wick (bottom-watering). → Se [ADR 007](decisions/007-env-sensor-aht20.md) for AHT20 environmental sensor og VPD-aware dose-justering.
+
+## VPD-aware dose-modifikator
+
+Med AHT20 (standard v1-komponent) skalerer firmware automatisk `dose_ml` baseret på Vapor Pressure Deficit:
+
+```
+actual_dose_ml = profile.dose_ml × clamp(VPD / 1.3, 0.5, 2.0)
+```
+
+Eksempler:
+- 22°C / 50% RH → VPD ≈ 1.3 kPa → scale = 1.0 → uændret dose
+- 28°C / 30% RH (vinter radiator-tør) → VPD ≈ 2.5 kPa → scale = 1.9 → næsten dobbelt dose
+- 20°C / 70% RH (kølig fugtig) → VPD ≈ 0.7 kPa → scale = 0.54 → halv dose
+
+Det betyder profil-værdierne nedenfor er **reference-doser ved komfort-klima**. I praksis tilpasser systemet sig automatisk til dit faktiske rum-klima uden manuel justering.
 
 ## Vandings-præferencer per plantetype
 

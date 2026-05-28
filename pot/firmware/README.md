@@ -76,13 +76,14 @@ firmware/
 ├── sdkconfig.defaults      # ESP-IDF default settings
 ├── partitions.csv          # Flash partition layout
 ├── src/
-│   ├── main.cpp            # Entry + task spawning
-│   ├── pump.cpp / .h       # Pump MOSFET drive + dosering (TODO Fase 1)
-│   ├── sensors.cpp / .h    # ADC + float (TODO Fase 1)
-│   ├── weight.cpp / .h     # HX711 driver (TODO Fase 1)
-│   ├── profiles.cpp / .h   # Plant profile + NVS storage
-│   ├── safety.cpp / .h     # Watchdog + leak detect (TODO Fase 1)
-│   └── matter_iface.cpp/.h # Matter cluster bindings (TODO Fase 1)
+│   ├── main.cpp                # Entry + task spawning + pin assignments
+│   ├── pump.cpp / .h           # Pump MOSFET drive + dosering (TODO Fase 1)
+│   ├── sensors.cpp / .h        # Soil ADC + water level + float ISR (TODO Fase 1)
+│   ├── weight.cpp / .h         # HX711 driver, optional hardware (TODO Fase 1)
+│   ├── temp_humidity.cpp / .h  # AHT20 I2C + VPD calc — VPD math virker; I2C TODO
+│   ├── profiles.cpp / .h       # Plant profile + NVS storage
+│   ├── safety.cpp / .h         # Watchdog + leak detect (TODO Fase 1)
+│   └── matter_iface.cpp / .h   # Matter cluster bindings (TODO Fase 1)
 ├── include/                # Public headers (hvis nogen)
 ├── lib/                    # Local libraries (genbrug fra shared/firmware-lib)
 └── test/                   # Unit tests (native + on-target)
@@ -92,6 +93,8 @@ firmware/
 
 - [x] Repo skeleton + platformio.ini config
 - [x] profiles.h struct + factory defaults
+- [x] temp_humidity.h API + VPD math implementation (I2C-driver TODO Fase 1)
+- [x] USB-CDC console configuration (sdkconfig.defaults)
 - [x] main.cpp task skeleton
 - [ ] Implementér sensors.cpp (Fase 1)
 - [ ] Implementér pump.cpp (Fase 1)
