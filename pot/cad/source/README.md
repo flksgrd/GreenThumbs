@@ -55,6 +55,19 @@ $OPENSCAD -o ../stl/load-cell-mount.stl load_cell_mount.scad
 3. **Endelig print i PETG** for vand-kontakt dele (plant_cup, reservoir, electronics_base).
 4. **Load cell mount + lid** kan blive i PLA (ingen vand-kontakt).
 
+## Wick installation (bottom-watering for African Violet, Peace Lily, Calathea)
+
+For planter der foretrækker bottom-watering installeres en cotton/nylon-wick gennem center-drænhullet:
+
+1. Tag ~15cm 4mm flettet bomulds- eller nylon-snor.
+2. Inden plant cup fyldes med jord: træd snoren gennem center-drænhullet (det centrale 4mm hul i hex-mønstret).
+3. Lad 6-8cm gå op i jord-zonen og 6-8cm hænge ned.
+4. Læg lidt jord under wick'en så den holdes på plads.
+5. Fyld resten af jorden om wick'en — kompakt let.
+6. Når cup placeres i reservoir, skal den nedhængende ende dyppe i vandet.
+
+Ingen CAD-ændring nødvendig — eksisterende 4mm center drænhul er rigeligt for 4mm snor. Se [ADR 006](../../../docs/decisions/006-bottom-watering-strategies.md) og [plant-profiles.md](../../../docs/plant-profiles.md) for hvilke profiler der bruger wick.
+
 ## v1 → v1.1 TODO
 
 Ting der mangler men ikke blokerer for første prototype:
@@ -65,3 +78,4 @@ Ting der mangler men ikke blokerer for første prototype:
 - [ ] Drip ring på top af plant cup (jævn fordeling af vand)
 - [ ] Snap-fit cable gland (alternativ til M12/PG7 metal glands)
 - [ ] Hex-pattern dræn i bund (lige nu er det 1 center + 6 ring; hex giver bedre flow)
+- [ ] Optional wick-guide tube under center drænhul (holder wick aligned + minimiserer sideways drag)

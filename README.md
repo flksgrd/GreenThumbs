@@ -6,8 +6,9 @@ DIY auto-vandings-system til hjemmeplanter med Apple HomeKit-integration via Mat
 
 | Komponent | Status | Note |
 |---|---|---|
-| **v1: Smart Plantekrukke** | 🟡 Planlægning færdig, bygges nu | Modulær 3D-printet selvvandende krukke |
-| **v2: Vægmonteret Tower** | ⚪ Designfase only | Hydroponic til krydderurter/leafy greens |
+| **v1: Smart Plantekrukke** | 🟡 Planlægning færdig, bygges nu | Modulær 3D-printet selvvandende krukke (med valgfri wick til bottom-watering) |
+| **v2a: Pot-Orchid** | ⚪ Designfase only | Dedikeret orkide-krukke med soak-tray |
+| **v2b: Vægmonteret Tower** | ⚪ Designfase only | Hydroponic til krydderurter/leafy greens |
 
 ## Oversigt
 
@@ -17,8 +18,9 @@ To designs til forskellige behov:
 
 En modulær 3D-printet krukke der lever inde i en pyntepotte:
 
-- **Plug-and-play planteprofiler**: Monstera, Pothos, Peace Lily, Succulent (Crassula/Aloe), Orkide
+- **Plug-and-play planteprofiler**: Monstera, Pothos, Peace Lily, African Violet, Succulent, Orkide
 - **Modulær sensor-stack**: kapacitiv jord-fugtighed + vandstand + float-switch som basis. **Optional**: HX711 + 5kg load cell tilføjer vægt-detektion (krævet for orkide-bark; ikke nødvendigt for jord-planter)
+- **Bottom-watering option (v1 wick)**: bomulds-snor gennem center-drænhul → continuous capillary watering for African Violet, Peace Lily, Calathea og lignende fugt-elskere
 - **Stille peristaltisk pumpe**: præcis dosering 5–100 ml, selv-primende, dry-run tolerant
 - **Modulær størrelse**: skiftelig plantebeholder (S/M/L) — én reservoir + elektronik-base passer alle
 - **Apple HomeKit** via Matter over Thread fra dag 1 (HomePod/Apple TV som Thread Border Router)
@@ -26,7 +28,13 @@ En modulær 3D-printet krukke der lever inde i en pyntepotte:
 
 → Se [pot/](pot/) for byggeguide, hardware, firmware og CAD.
 
-### 🌿 Vægmonteret Hydroponic Tower (v2 — kun planlægning)
+### 🪻 Pot-Orchid med Soak-Tray (v2a — kun planlægning)
+
+Dedikeret orkide-krukke der mimicker manuel orkide-soaking: tray omkring plant cup oversvømmes via pump i 10-15 min, drænes derefter via solenoid eller passiv overflow tilbage til reservoir. Genbruger v1-elektronik 100%.
+
+→ Se [pot-orchid/design-notes.md](pot-orchid/design-notes.md) for løbende planlægning.
+
+### 🌿 Vægmonteret Hydroponic Tower (v2b — kun planlægning)
 
 Vægophængt tower til krydderurter (basilikum, mynte, persille, koriander) og leafy greens (salat, spinat).
 Deler MCU + firmware-platform med plantekrukken.

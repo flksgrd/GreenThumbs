@@ -67,11 +67,18 @@ typedef struct {
 
 /**
  * Index for fabriks-default profiler. Index matches PROFILE_DEFAULTS array.
+ *
+ * Se docs/plant-profiles.md for værdier og vandings-strategi per profil.
+ * Bemærk: AFRICAN_VIOLET-profilen har dose_ml = 0 fordi den bruger udelukkende
+ * wick (bottom-watering); pumpen er aldrig aktiv. Andre fugt-elskende profiler
+ * (PEACE_LILY) kan også bruge wick som tillæg — så hæves target_min_pct og
+ * cooldown_min via custom-profil eller HomeKit.
  */
 typedef enum {
     PROFILE_MONSTERA = 0,
     PROFILE_POTHOS,
     PROFILE_PEACE_LILY,
+    PROFILE_AFRICAN_VIOLET,  ///< Fuzzy-bladet, kræver wick (dose_ml = 0)
     PROFILE_SUCCULENT,
     PROFILE_ORCHID,
     PROFILE_CUSTOM,
