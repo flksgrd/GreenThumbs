@@ -1,15 +1,24 @@
 // =============================================================================
-// Reservoir — Vand-beholder under plant cup
+// Reservoir — Vand-beholder som plant cup hænger nedsænket i (Variant A)
 // =============================================================================
-// Cylindrisk vand-beholder med:
-//   - Top-ring hvor plant cup's flange hviler
-//   - Indvendig slot til kapacitiv water level strip (vertikal)
-//   - Bund-niche til float switch (vertikal mount)
-//   - Side-port til pumpens output-slange (ind i electronics base nedenunder)
-//   - Refill-notch i top-rim til at hælde vand direkte i reservoir
-//     (uden at flytte plant cup) — simpel v1-løsning.
+// STACK VARIANT A (valgt 2026-06): høj cylinder hvor cuppen hænger fra
+// top-rimmen via sin flange. Vandet lever i zonen UNDER cup-bunden
+// (water_zone_h) og i ringen omkring cuppen. Højde og kapacitet beregnes
+// i params.scad ud fra cup-størrelse:
+//   M-cup: reservoir ~199mm høj, kapacitet ~1018 ml
+//
+// Indhold:
+//   - Lodret slot til kapacitiv water level strip (i ring-zonen)
+//   - Bund-niche til float switch (under cuppen, i vand-zonen)
+//   - Lodret pump-port gennem bunden ved pump_port_x=85 (i ring-gabet,
+//     flugter med electronics_base port + plant_cup flange-hul)
+//
+// Refill: gennem plant_cup'ens flange-åbning ved 270° → vandet falder
+// direkte ned i ring-gabet. (Tidligere rim-notch fjernet — flangen
+// dækker nu hele rimmen.)
 //
 // PRINT: PETG. 3 perimeters minimum. 100% bund. Print upright med brim.
+// Høj print (~200mm) — Prusa XL klarer det fint; brug draft shield ved træk.
 // =============================================================================
 
 include <params.scad>
@@ -20,13 +29,13 @@ module reservoir() {
         cylinder(d = reservoir_outer_d, h = reservoir_height);
 
         // ─── Subtractions ───────────────────────────────────────────────────
-        // Hovedhulrum (vand-volumen)
+        // Hovedhulrum (vand + plads til nedsænket cup)
         translate([0, 0, reservoir_wall])
             cylinder(d = reservoir_inner_d,
                      h = reservoir_height + 1);
 
-        // Water level strip slot (vertikal kanal indvendig)
-        // Stripen presses ind herfra. Slot bunden 5mm over reservoir-bund.
+        // Water level strip slot (vertikal kanal i indervæggen, ring-zonen)
+        // Dækker vand-zonen (0-40mm) + margin; bunder 5mm over reservoir-bund
         translate([reservoir_inner_d / 2 - waterlevel_strip_t,
                    -waterlevel_strip_w / 2 - print_tolerance / 2,
                    reservoir_wall + 5])
@@ -34,40 +43,22 @@ module reservoir() {
                   waterlevel_strip_w + print_tolerance,
                   waterlevel_strip_h]);
 
-        // Float switch niche (bund-monteret, lodret)
+        // Float switch niche (bund-monteret, lodret, UNDER cuppen)
         // Roteret 90° fra water level strip så de ikke overlapper
         rotate([0, 0, 90])
             translate([float_switch_x, 0, reservoir_wall - 0.5])
                 cylinder(d = float_switch_d + print_tolerance,
                          h = float_switch_h);
 
-        // Pump output port (lodret hul gennem reservoir bund)
-        // Pumpe sidder i electronics base nedenunder; slange går op herigennem
-        // og videre til pump_port-hullet i plant cup.
-        // Fælles pump_port_x sikrer alignment med ebase-toppens port (audit-fix)
+        // Pump output port (lodret hul gennem reservoir bund, i ring-gabet)
+        // Pumpe sidder i electronics base nedenunder; slangen går op her,
+        // op gennem ring-gabet, gennem flange-hullet, og ind i cup-toppen.
+        // Fælles pump_port_x sikrer alignment hele vejen (audit-fix).
         rotate([0, 0, 180])
             translate([pump_port_x, 0, -0.5])
                 cylinder(d = pump_port_d + 1,
                          h = reservoir_wall + 1);
-
-        // Refill notch i top-rim
-        // En lille udskæring så bruger kan hælde vand ned langs siden af
-        // plant cup uden at løfte cup'en ud.
-        refill_notch();
     }
-}
-
-// Refill notch: kile-formet udskæring i top-rim
-module refill_notch() {
-    notch_w = 15;        // bredde af notch (passer vandkande-tud)
-    notch_d = 25;        // dybde ned i reservoir-væg
-    notch_h = notch_d;   // højde af udskæringen i top
-
-    rotate([0, 0, 270])
-        translate([reservoir_outer_d / 2 - reservoir_wall / 2,
-                   -notch_w / 2,
-                   reservoir_height - notch_h + 0.1])
-            cube([reservoir_wall + 1, notch_w, notch_h + 1]);
 }
 
 // Render reservoir når filen åbnes direkte

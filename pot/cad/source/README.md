@@ -68,15 +68,27 @@ For planter der foretrækker bottom-watering installeres en cotton/nylon-wick ge
 
 Ingen CAD-ændring nødvendig — eksisterende 4mm center drænhul er rigeligt for 4mm snor. Se [ADR 006](../../../docs/decisions/006-bottom-watering-strategies.md) og [plant-profiles.md](../../../docs/plant-profiles.md) for hvilke profiler der bruger wick.
 
-## ⚠️ Kendt åben design-beslutning: stack-geometri
+## Stack-geometri: Variant A (besluttet 2026-06)
 
-Audit (2026-06) fandt at cup_height (S=120/M=160/L=200) ikke kan forenes med
-det beregnede reservoir_height (~57mm for 700ml) hvis cuppen skal hænge fra
-top-ringen. To redesign-varianter er under evaluering (A: cup nedsænket i
-højere reservoir; B: cup ovenpå lukket reservoir). Reservoir/cup-geometri og
-volumen-formlen i params.scad ændres når varianten er valgt. **Print IKKE
-reservoir + plant_cup før dette er afklaret** — electronics_base, lid og
-load_cell_mount er upåvirkede og kan printes.
+Cuppen hænger **nedsænket** i reservoiret fra sin universal-flange (Ø202,
+ens for alle cup-størrelser). Vandet lever i 40mm-zonen under cup-bunden +
+ringen omkring cuppen. Kapacitet ~1018 ml uanset cup-størrelse.
+
+| cup_size | Cup | Reservoir-højde | Total stak (m. ebase+lid) |
+|---|---|---|---|
+| S | Ø100×120 | 159mm | ~208mm |
+| M | Ø140×160 | 199mm | ~248mm |
+| L | Ø160×200 | 239mm | ~288mm |
+
+Bemærk: L-cup er Ø160 (ikke 180) — der skal altid være ≥10mm ring-gap til
+pumpe-slange, water-strip og refill. Slangen ruter: ebase → reservoir-bund
+port (x=85, i ring-gabet) → op gennem ringen → flange-hul (180°) → cup-top
+side-hul. Refill: gennem flange-åbningen ved 270° direkte ned i ringen.
+
+Verificér samlingen visuelt med [assembly_check.scad](assembly_check.scad)
+(halv-snit af cup+reservoir+vand). Render: [preview](../preview/stack-variant-A-assembly.png).
+[stack_variants_preview.scad](stack_variants_preview.scad) er det historiske
+beslutningsgrundlag (A vs B) og holdes ikke opdateret.
 
 ## v1 → v1.1 TODO
 

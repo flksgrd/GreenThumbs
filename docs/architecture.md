@@ -38,56 +38,59 @@
 ## Fysisk stack (top → bund)
 
 ```
-┌─────────────────────────────────┐
-│  Lid med refill-tragt           │  ← bruger hælder vand her
-├─────────────────────────────────┤
-│  INNER PLANT CUP                │  ← skiftelig S/M/L
-│   • jord                        │
-│   • drip-ring på top            │
-│   • soil sensor (snap-fit)      │
-│   • drænhuller i bund           │
-├─────────────────────────────────┤
-│  RESERVOIR (700ml/1500ml)       │
-│   • water level strip indvendig │
-│   • float switch i bund         │
-│   • pumpe-output port til side  │
-│   • refill-tube til side        │
-├─────────────────────────────────┤
-│  ELECTRONICS BASE (vandtæt)     │
-│   • XIAO ESP32-C6               │
-│   • MOSFET + buck-converter     │
-│   • Peristaltisk pumpe          │
-│   • O-ring/EPDM gasket på top   │
-├─────────────────────────────────┤
-│  LOAD CELL platform (OPTIONAL)  │  ← kun for orkide / power-user
-│   • HX711 ADC                   │
-│   • Bar load cell 5kg           │
-│   • Skip helt for store planter │
-│     (Monstera/Peace Lily) — sæt │
-│     rubber feet på base i stedet│
-└─────────────────────────────────┘
+STACK VARIANT A (besluttet 2026-06): cup hænger NEDSÆNKET i reservoiret.
+
+┌══════════[ FLANGE Ø202 ]══════════┐ ← universal-flange hviler på rim;
+│  ↓ refill-åbning (270°)           │   refill-åbning + slange-hul i flangen
+│ ┌───────────────────────┐         │
+│ │  INNER PLANT CUP      │ ←ring-  │ ← skiftelig S(Ø100)/M(Ø140)/L(Ø160)
+│ │   • jord              │  gap    │   hænger nedsænket i reservoiret
+│ │   • soil sensor       │ (slange │
+│ │   • drænhuller i bund │  + strip│ ← water level strip i ring-zonen
+│ │   • wick gn. center   │  her)   │
+│ └─────────┬─────────────┘         │
+│   VAND-ZONE (40mm, ~1018 ml)      │ ← float switch i bund, under cup
+╞═══════════════════════════════════╡
+│  ELECTRONICS BASE (vandtæt)       │
+│   • XIAO ESP32-C6 + AHT20 + buzzer│
+│   • MOSFET + buck-converter       │
+│   • Pumpe på lid (dual footprint: │
+│     Kamoer KPP eller BP7 piezo)   │
+│   • O-ring/EPDM gasket på top     │
+├───────────────────────────────────┤
+│  LOAD CELL platform (OPTIONAL)    │ ← kun for orkide / power-user
+│   • HX711 ADC + bar load cell 5kg │
+│   • Skip for store planter — brug │
+│     rubber feet på lid i stedet   │
+└───────────────────────────────────┘
+
+Total stak-højde: S ~208mm, M ~248mm, L ~288mm (+ ~33mm med load cell).
+Passer i pyntepotter Ø ≥ 21cm.
 ```
 
 ## Vandstrøm
 
 ```
-Reservoir (vand)
+Reservoir vand-zone (under cup)
      │
-     ↓ Peristaltisk pumpe (drevet via MOSFET, 12V)
+     ↓ Sugeslange ned gennem pump-port (x=85, i ring-gabet) til pumpe
      │
-     ↓ Silikoneslange 4mm ID (gennem vandtæt grommet i electronics base)
+     ↓ Peristaltisk pumpe i electronics base (drevet via MOSFET, 12V)
      │
-     ↓ Op gennem Inner Plant Cup side
+     ↓ Trykslange op gennem samme ring-gab → gennem flange-hullet (180°)
      │
-     ↓ Drip-ring på top (små huller, fordeler jævnt)
+     ↓ Ind i cup-toppens side-hul → dripper på jord-overfladen
      │
-     ↓ Jord → planten rødder
+     ↓ Jord → plantens rødder
      │
-     ↓ (Overflow gennem drænhuller i bund af cup)
-     │
-     ↓ Tilbage til reservoir? Nej — drænvand opsamles i en lille bund-niche i reservoir
-       og fordamper. Ikke recirkulation (vil pulle salte op fra jord).
+     ↓ Overskud drypper gennem cup-drænhuller → tilbage i vand-zonen
+       (lille intern recirkulation; acceptabelt — jordmængden i dryppet
+        er minimal, og wick-planter trækker alligevel direkte fra zonen)
 ```
+
+**Wick-flow (ADR 006):** for bottom-watering planter hænger en bomulds-wick
+fra cup'ens center-drænhul direkte ned i vand-zonen (20-50mm afstand) —
+kontinuert kapillær-vanding uden pumpe.
 
 ## Software-arkitektur
 

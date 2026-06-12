@@ -12,11 +12,16 @@
 // 1. Plant cup (skiftelig pr. plantestørrelse)
 // ----------------------------------------------------------------------------
 // Tre størrelser. Skift cup_size for at re-eksportere en anden variant.
+//
+// STACK-GEOMETRI (Variant A, valgt 2026-06): cuppen hænger NEDSÆNKET i
+// reservoiret fra sin top-flange, med en vand-zone under cup-bunden.
+// Derfor er L-cup max Ø160 (ikke 180): der skal altid være ≥10mm ring-gap
+// mellem cup og reservoir-indervæg til pumpe-slange, water-strip og refill.
 cup_size = "M";  // "S" | "M" | "L"
 
 cup_diameter = (cup_size == "S") ? 100 :
                (cup_size == "M") ? 140 :
-               180;  // L
+               160;  // L (max — se note ovenfor)
 
 cup_height = (cup_size == "S") ? 120 :
              (cup_size == "M") ? 160 :
@@ -33,29 +38,43 @@ soil_sensor_slot_depth = 80;     // hvor langt ned sensor stikkes
 
 
 // ----------------------------------------------------------------------------
-// 2. Reservoir
+// 2. Reservoir (Variant A: cup hænger nedsænket)
 // ----------------------------------------------------------------------------
-reservoir_volume_ml = 700;       // 700 eller 1500
+// AUDIT-FIX + redesign 2026-06: tidligere blev højden beregnet af et
+// volumen-INPUT og ignorerede at cuppen optager pladsen (fysisk umulig
+// geometri). Nu drives højden af cup-dybde + vand-zone, og kapaciteten
+// er et OUTPUT (se echo nederst).
 
-// Indvendig diameter: standardiseret så plant cups passer
-reservoir_inner_d = 180;         // skal være >= max(cup_diameter)
+// Indvendig diameter: cup + ring-gap (slange/sensorer/refill)
+reservoir_inner_d = 180;         // ≥ max cup (160) + 2×10mm ring-gap
 reservoir_outer_d = reservoir_inner_d + 2 * 3;  // 3mm wall
 reservoir_wall = 3;              // tykkere end cup (vandtryk + stabilitet)
 
-// Højde beregnet ud fra volumen (cylinder)
-// V = pi * r^2 * h  →  h = V / (pi * r^2)
-// Tilføj +30mm for top-ring og sensor-clearance
-reservoir_height = reservoir_volume_ml * 1000 /
-                   (PI * pow(reservoir_inner_d / 2, 2)) + 30;
-
-// Top-ring til plant cup
+// Top-ring til plant cup (defineres FØR reservoir_height-formlen —
+// OpenSCAD tillader ikke forward references)
 top_ring_width = 8;              // bredden af flange-overlap
 top_ring_height = 4;
 
-// Water level strip slot (vertikal kanal indvendig)
+// Vand-zone under cup-bunden — vandet lever her (+ i ringen omkring cup)
+water_zone_h = 40;
+
+// Højde: cup hænger fra flangen på top-rim; cup-bund ender water_zone_h
+// over reservoirets indre bund
+reservoir_height = (cup_height - top_ring_height) + water_zone_h + reservoir_wall;
+
+// Beregnet vandkapacitet ved max fill-line (= cup-bund niveau):
+// zone under cup er fuld cylinder. (Ringen over kan også holde vand ved
+// overfyldning, men max-fill defineres konservativt ved cup-bunden.)
+reservoir_capacity_ml = PI * pow(reservoir_inner_d / 2, 2) * water_zone_h / 1000;
+
+// Cup-flange: dækker hele reservoir-toppen uanset cup-størrelse, så
+// enhver cup (S/M/L) passer på samme reservoir-ring
+flange_outer_d = reservoir_outer_d + 2 * top_ring_width;
+
+// Water level strip slot (vertikal kanal indvendig, i ring-zonen)
 waterlevel_strip_w = 18;
 waterlevel_strip_t = 2;
-waterlevel_strip_h = 60;         // strip rækker fra bund og op
+waterlevel_strip_h = 50;         // dækker vand-zonen (0-40mm) + margin
 
 // Float switch niche (vandret monteret i bund)
 float_switch_d = 16;             // typisk vertical float switch
@@ -64,10 +83,10 @@ float_switch_x = 20;             // offset fra reservoir-center til niche
 
 // Pump output port (lodret gennem reservoir-bund / ebase-top)
 pump_port_d = 7;                 // 4mm slange + 1.5mm wall + tolerance
-pump_port_z = 15;                // højde over reservoir bund
-// AUDIT-FIX: fælles X-position så reservoir-bund og ebase-top flugter
-// (var inner_d/4 vs outer_d/4 = 1.5mm offset)
-pump_port_x = reservoir_inner_d / 4;  // 45mm fra center
+// Fælles X-position så reservoir-bund og ebase-top flugter (audit-fix).
+// Variant A: porten SKAL ligge i ring-gabet mellem L-cup (r=80) og
+// reservoir-indervæg (r=90), så slangen kan løbe op langs cuppen:
+pump_port_x = 85;                // midt i ring-gabet
 
 // Refill: v1 bruger en simpel NOTCH i reservoir top-rim (se reservoir.scad).
 // Fuld integreret refill-tube (tragt-top, ned til 1cm fra bund) er v1.1 —
@@ -162,11 +181,14 @@ $fn = 64;                        // smooth cylinder facets; sæt højere for fin
 // (cylinder, cube, etc.) her — det ville forurene alle includere.
 // Hvis du vil se geometri ved at åbne params.scad direkte, så åbn i stedet
 // en af part-filerne (plant_cup.scad, reservoir.scad, ...) der include'er denne.
-echo("=== GreenThumbs CAD params ===");
+echo("=== GreenThumbs CAD params (stack variant A) ===");
 echo("cup_size:", cup_size);
 echo("cup_diameter:", cup_diameter, "mm");
 echo("cup_height:", cup_height, "mm");
-echo("reservoir_volume:", reservoir_volume_ml, "ml");
-echo("reservoir_height:", reservoir_height, "mm");
+echo("water_zone_h:", water_zone_h, "mm");
+echo("reservoir_capacity (BEREGNET):", reservoir_capacity_ml, "ml");
+echo("reservoir_height (BEREGNET):", reservoir_height, "mm");
 echo("reservoir_outer_d:", reservoir_outer_d, "mm");
-echo("electronics_base_height:", ebase_height, "mm");
+echo("flange_outer_d:", flange_outer_d, "mm");
+echo("total_stack_height (ca.):",
+     ebase_lid_height + ebase_height + reservoir_height + top_ring_height, "mm");
