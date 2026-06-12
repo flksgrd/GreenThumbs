@@ -9,6 +9,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -131,6 +132,23 @@ bool profile_should_pump(uint8_t moisture_pct,
                           uint32_t last_pump_minutes_ago,
                           uint16_t daily_ml_so_far,
                           const plant_profile_t *profile);
+
+/**
+ * Beregn effektiv dose efter VPD-skalering (ADR 007).
+ *
+ * Hvis env-sensor ikke er tilgængelig, returneres profilens dose uændret
+ * (graceful degradation). Ellers skaleres med env_vpd_dose_scale():
+ * clamp(vpd/1.3, 0.5, 2.0). Profiler med dose_ml = 0 (wick-only, fx
+ * african_violet) forbliver 0 uanset VPD.
+ *
+ * @param profile Aktiv profil.
+ * @param vpd_kpa Aktuel VPD fra AHT20 (ignoreres hvis !env_available).
+ * @param env_available Fra env_sensor_available().
+ * @return Skaleret dose i ml.
+ */
+uint16_t profile_effective_dose_ml(const plant_profile_t *profile,
+                                    float vpd_kpa,
+                                    bool env_available);
 
 /**
  * Valider om profilen er kompatibel med aktuel hardware-konfiguration.

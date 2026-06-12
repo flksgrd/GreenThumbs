@@ -92,9 +92,11 @@ firmware/
 ## Status
 
 - [x] Repo skeleton + platformio.ini config
-- [x] profiles.h struct + factory defaults
+- [x] profiles.h struct + profiles.cpp (factory defaults + threshold/dose-logik)
 - [x] temp_humidity.h API + VPD math implementation (I2C-driver TODO Fase 1)
+- [x] buzzer.h/.cpp skeleton (refill-indikator, ADR 008)
 - [x] USB-CDC console configuration (sdkconfig.defaults)
+- [x] Audit-fixes: partitions.csv 4MB-layout, platform IDF 5.2+, task stacks
 - [x] main.cpp task skeleton
 - [ ] Implementér sensors.cpp (Fase 1)
 - [ ] Implementér pump.cpp (Fase 1)

@@ -13,6 +13,10 @@
  * STATUS: skeleton. Fyldes ud i Fase 1 (firmware bring-up).
  */
 
+// Hele filen er ESP-IDF-specifik — udelukkes fra native unit-test builds
+// (test/native/ bygger src/ via test_build_src; kun pure-math filer skal med).
+#ifndef NATIVE_TEST
+
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -149,10 +153,13 @@ extern "C" void app_main(void)
     init_matter();
 
     // 7. Spawn tasks
-    xTaskCreate(sensor_task,  "sensor",  4096, nullptr, 5, nullptr);
-    xTaskCreate(control_task, "control", 4096, nullptr, 5, nullptr);
-    xTaskCreate(matter_task,  "matter",  8192, nullptr, 4, nullptr);
-    xTaskCreate(safety_task,  "safety",  2048, nullptr, 6, nullptr);
+    // Stack sizes (audit-fix): Matter event-handling + I2C/ADC-buffere kræver
+    // mere end de oprindelige gæt. TODO Fase 1: mål reelt forbrug med
+    // uxTaskGetStackHighWaterMark() og trim.
+    xTaskCreate(sensor_task,  "sensor",  8192,  nullptr, 5, nullptr);
+    xTaskCreate(control_task, "control", 4096,  nullptr, 5, nullptr);
+    xTaskCreate(matter_task,  "matter",  16384, nullptr, 4, nullptr);
+    xTaskCreate(safety_task,  "safety",  2048,  nullptr, 6, nullptr);
 
     ESP_LOGI(TAG, "All tasks started, app_main exiting.");
 }
@@ -199,9 +206,9 @@ static void control_task(void * /*pvParameters*/)
         //   - Frigør mutex
         //   - Kald profile_should_pump(...)
         //   - Hvis true:
-        //       * Hvis env_sensor_available(): beregn VPD scale =
-        //         env_vpd_dose_scale(g_sensors.vpd_kpa), gang på dose_ml
-        //       * Trig pumpe via pump_dose_ml(actual_dose_ml)
+        //       * dose = profile_effective_dose_ml(&profile,
+        //                    g_sensors.vpd_kpa, env_sensor_available())
+        //       * Trig pumpe via pump_dose_ml(dose)
         //   - Opdater g_pump.last_pump_ms og daily_ml
 
         ESP_LOGD(TAG, "[control] eval tick");
@@ -232,3 +239,5 @@ static void safety_task(void * /*pvParameters*/)
         vTaskDelay(pdMS_TO_TICKS(5 * 1000));
     }
 }
+
+#endif  // !NATIVE_TEST

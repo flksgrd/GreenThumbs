@@ -1,10 +1,23 @@
-# Partition table for GreenThumbs Plantekrukke (ESP32-C6, 4MB flash typical)
-# Layout giver plads til Matter + OTA + NVS storage til plant profiles
+# Partition table for GreenThumbs Plantekrukke — XIAO ESP32-C6 (4MB flash!)
+#
+# AUDIT-FIX 2026-06: tidligere layout (factory + 2×OTA á 1984KB) krævede 6MB
+# og kunne ikke flashes på 4MB. Nyt layout: factory + 1 OTA (A/B-swap).
+#
+# Aritmetik (4MB = 0x400000):
+#   nvs:      0x9000  + 0x6000   = 0xF000
+#   phy_init: 0xF000  + 0x1000   = 0x10000
+#   factory:  0x10000 + 0x1C0000 = 0x1D0000   (1792 KB app slot A)
+#   ota_0:    0x1D0000+ 0x1C0000 = 0x390000   (1792 KB app slot B)
+#   storage:  0x390000+ 0x70000  = 0x400000   (448 KB profiles/calibration NVS)
+#   Total: præcis 0x400000 = 4MB ✓
+#
+# OTA-flow: ny firmware skrives til den inaktive slot (factory ↔ ota_0),
+# bootloader skifter ved succesfuld verifikation. Matter OTA requestor
+# håndterer dette via esp_ota API.
 #
 # Name,   Type, SubType,  Offset,   Size,    Flags
 nvs,      data, nvs,      0x9000,   0x6000,
 phy_init, data, phy,      0xf000,   0x1000,
-factory,  app,  factory,  0x10000,  0x1F0000,
-ota_0,    app,  ota_0,    0x200000, 0x1F0000,
-ota_1,    app,  ota_1,    0x3F0000, 0x1F0000,
-storage,  data, nvs,      0x5E0000, 0x20000,
+factory,  app,  factory,  0x10000,  0x1C0000,
+ota_0,    app,  ota_0,    0x1D0000, 0x1C0000,
+storage,  data, nvs,      0x390000, 0x70000,
