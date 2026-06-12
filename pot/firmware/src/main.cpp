@@ -22,6 +22,7 @@
 
 #include "profiles.h"
 #include "temp_humidity.h"
+#include "buzzer.h"
 
 static const char *TAG = "greenthumbs";
 
@@ -33,6 +34,7 @@ static const char *TAG = "greenthumbs";
 // D6/D7. ESP-IDF console kører på USB-CDC i stedet for UART (se ADR 007).
 constexpr int PIN_SOIL_ADC      = 0;   // D0 / GPIO0 / ADC1_CH0
 constexpr int PIN_WATER_ADC     = 1;   // D1 / GPIO1 / ADC1_CH1
+constexpr int PIN_BUZZER        = 2;   // D2 / GPIO2 (piezo buzzer, LEDC PWM)
 constexpr int PIN_FLOAT_SWITCH  = 21;  // D3 / GPIO21
 constexpr int PIN_I2C_SDA       = 22;  // D4 / GPIO22 (AHT20)
 constexpr int PIN_I2C_SCL       = 23;  // D5 / GPIO23 (AHT20)
@@ -173,6 +175,10 @@ static void sensor_task(void * /*pvParameters*/)
         //   - Læs HX711 (DETECT_WEIGHT/HYBRID modes, hvis available)
         //   - Læs AHT20 hver 60s (env_sensor_read), beregn VPD
         //   - Lås mutex, opdater g_sensors (inkl. temp/humidity/vpd), frigør mutex
+        //   - REFILL-DETECTION (ADR 008): hvis water level steg >5 procentpoint
+        //     på 10 sek → refill-mode → buzzer_pattern(BUZZ_REFILL_PROGRESS)
+        //     ved 25/50/75% og BUZZ_REFILL_FULL ved ≥95%. Forlad mode efter
+        //     30 sek stabil level.
         //
         // VIGTIGT: spring HX711-sample over hvis pump_active = true (vibrationer
         // forplanter sig fra pump til load cell). Se docs/architecture.md.

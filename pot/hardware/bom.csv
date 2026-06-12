@@ -26,3 +26,4 @@ id,category,component,specification,qty,unit_price_dkk,supplier,part_number,note
 25,filament,TPU filament 90A,250g for gaskets,1,120,"3djake.dk",,"Optional - can substitute silicone"
 26,plumbing,Wick cord cotton/nylon,4mm braided 2m roll,1,20,"AliExpress / craft store",,"OPTIONAL - for wick bottom-watering on African Violet/Peace Lily/Calathea. See ADR 006"
 27,sensor,AHT20 temperature+humidity,I2C breakout module 3.3V,1,25,"Adafruit / AliExpress / DFRobot",AHT20,"Standard v1 component - enables VPD-aware dose adjustment + HomeKit room climate. See ADR 007"
+28,indicator,Passive piezo buzzer,12mm disc PWM-driven 3.3V,1,5,"AliExpress / Conrad",,"Refill indicator + error signals on D2. See ADR 008"

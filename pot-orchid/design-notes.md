@@ -18,6 +18,16 @@ Dette dokument samler designvalg, åbne spørgsmål, og lessons learned der akku
 
 ## Designvalg (foreløbige)
 
+### Pumpe-valg: piezo-option (fra piezo-research 2026-06)
+
+Bartels BP7 piezo-mikropumpe (€57 + mp-Lowdriver €67 ≈ 925 DKK) blev fravalgt i pot/ v1 (6× pris, ingen reel energigevinst). **Men til pot-orchid er den interessant:**
+- Soak-tray fyldes langsomt → BP7's lave flow (0-9 ml/min) er ikke en ulempe her
+- Nær-lydløs drift passer soveværelses-placering
+- Præcis dosering ned til µl-niveau
+- pot/ electronics_base får dual-footprint pump-mount, så BP7 kan testes dér først
+
+→ Se [docs/research/piezo-components.md](../docs/research/piezo-components.md). Status: premium-option, beslut efter v1-validering.
+
 ### Drain-mekanisme: solenoid vs passiv overflow
 
 **Foreløbig beslutning:** Passiv overflow (enklere, ingen ekstra elektronik).

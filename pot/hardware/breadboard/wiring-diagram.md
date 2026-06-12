@@ -27,7 +27,7 @@ Total brugbare GPIO: 11
 |----------|------|----------|-------------|-------|
 | D0 | GPIO0 | ADC | Soil moisture sensor (AOUT) | Bruges af profil-system, kalibreres dry/wet |
 | D1 | GPIO1 | ADC | Water level strip (AOUT) | DFRobot SEN0204 analog |
-| D2 | GPIO2 | ADC | (Reserve — DS18B20 vand-temp v2?) | |
+| D2 | GPIO2 | GPIO PWM | **Piezo buzzer** (passiv, LEDC-drevet) | Refill-indikator + fejl-signaler. Se ADR 008 |
 | D3 | GPIO21 | GPIO ISR | Float switch | Internal pull-up; LOW = vand tomt |
 | D4 | GPIO22 | **I2C SDA** | **AHT20 SDA** | Standard I2C bus til environmental sensor |
 | D5 | GPIO23 | **I2C SCL** | **AHT20 SCL** | Standard I2C bus |
@@ -37,7 +37,7 @@ Total brugbare GPIO: 11
 | D9 | GPIO20 | GPIO | Manuel knap | Internal pull-up; LOW = pressed |
 | D10 | GPIO18 | GPIO PWM | Pump MOSFET gate | 0 = pump off, HIGH = pump on. PWM-capable for hastighedskontrol |
 
-**Fri GPIO til v2:** D2 (ADC), plus muligvis SPI hvis I2C-bussen deles med flere devices.
+**Pin-budget er nu FULDT allokeret** (alle 11 GPIO i brug). Næste sensor/aktuator kræver I2C-device (AHT20-bussen kan deles — fx en I2C GPIO-expander eller DS18B20 via I2C-bridge).
 
 > **Vigtigt ændring fra tidligere wiring:** AHT20 environmental sensor blev tilføjet som standard v1-komponent (se [ADR 007](../../../docs/decisions/007-env-sensor-aht20.md)). Det krævede:
 > - HX711 flyttet fra D4/D5 til D6/D7 (frigør I2C-bussen for AHT20)

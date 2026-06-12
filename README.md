@@ -49,6 +49,7 @@ Deler MCU + firmware-platform med plantekrukken.
 - **Planteprofiler**: [docs/plant-profiles.md](docs/plant-profiles.md)
 - **Arkitektur**: [docs/architecture.md](docs/architecture.md)
 - **Designbeslutninger (ADR)**: [docs/decisions/](docs/decisions/)
+- **Research-noter**: [docs/research/](docs/research/) (KiCad rund PCB, piezo-komponenter)
 - **Kalibrering**: [docs/calibration.md](docs/calibration.md)
 
 ## Tech stack
