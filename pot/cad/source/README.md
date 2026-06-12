@@ -11,7 +11,7 @@ Parametriske 3D-modeller for plantekrukken. Alle dimensioner styres fra `params.
 | [params.scad](params.scad) | Ingen geometri — kun variable + echo til console. Åbn for at *redigere* dimensioner. |
 | [plant_cup.scad](plant_cup.scad) | Skifteligt indre kop (jord + plante). Størrelse styret via `cup_size`. |
 | [reservoir.scad](reservoir.scad) | Vand-beholder med sensor-slots + pump-port + refill-notch. |
-| [electronics_base.scad](electronics_base.scad) | Vandtæt elektronik-kammer + aftageligt låg (renderes side-by-side). |
+| [electronics_base.scad](electronics_base.scad) | Vandtæt elektronik-kammer + aftageligt låg (renderes side-by-side). Lid har **dual-footprint pump-mount**: Kamoer KPP (2× M3, 46mm c-c) eller Bartels BP7 piezo + driver (4× M3, 24mm kvadrat) — se [piezo-research](../../../docs/research/piezo-components.md). |
 | [load_cell_mount.scad](load_cell_mount.scad) | Vægt-platform (lower plate + upper plate + load cell visualisering). |
 
 ## Skift plantestørrelse
@@ -67,6 +67,16 @@ For planter der foretrækker bottom-watering installeres en cotton/nylon-wick ge
 6. Når cup placeres i reservoir, skal den nedhængende ende dyppe i vandet.
 
 Ingen CAD-ændring nødvendig — eksisterende 4mm center drænhul er rigeligt for 4mm snor. Se [ADR 006](../../../docs/decisions/006-bottom-watering-strategies.md) og [plant-profiles.md](../../../docs/plant-profiles.md) for hvilke profiler der bruger wick.
+
+## ⚠️ Kendt åben design-beslutning: stack-geometri
+
+Audit (2026-06) fandt at cup_height (S=120/M=160/L=200) ikke kan forenes med
+det beregnede reservoir_height (~57mm for 700ml) hvis cuppen skal hænge fra
+top-ringen. To redesign-varianter er under evaluering (A: cup nedsænket i
+højere reservoir; B: cup ovenpå lukket reservoir). Reservoir/cup-geometri og
+volumen-formlen i params.scad ændres når varianten er valgt. **Print IKKE
+reservoir + plant_cup før dette er afklaret** — electronics_base, lid og
+load_cell_mount er upåvirkede og kan printes.
 
 ## v1 → v1.1 TODO
 

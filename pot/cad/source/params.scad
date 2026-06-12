@@ -62,15 +62,16 @@ float_switch_d = 16;             // typisk vertical float switch
 float_switch_h = 25;
 float_switch_x = 20;             // offset fra reservoir-center til niche
 
-// Pump output port (i siden, op til drip-ring)
+// Pump output port (lodret gennem reservoir-bund / ebase-top)
 pump_port_d = 7;                 // 4mm slange + 1.5mm wall + tolerance
 pump_port_z = 15;                // højde over reservoir bund
+// AUDIT-FIX: fælles X-position så reservoir-bund og ebase-top flugter
+// (var inner_d/4 vs outer_d/4 = 1.5mm offset)
+pump_port_x = reservoir_inner_d / 4;  // 45mm fra center
 
-// Refill tube (integreret i siden, vertikal)
-refill_tube_outer_d = 22;
-refill_tube_inner_d = 16;        // funnel i top
-refill_tube_z_top = reservoir_height - 5;
-refill_tube_z_bottom = 10;       // 1cm fra bund
+// Refill: v1 bruger en simpel NOTCH i reservoir top-rim (se reservoir.scad).
+// Fuld integreret refill-tube (tragt-top, ned til 1cm fra bund) er v1.1 —
+// parametre genindføres dér. (AUDIT-FIX: døde tube-params fjernet)
 
 
 // ----------------------------------------------------------------------------
@@ -90,8 +91,17 @@ gasket_groove_offset = 4;           // fra ydre kant
 gland_hole_d = 12;                  // PG7 = 12mm hole
 gland_count = 2;                    // 1x USB-C, 1x sensor-bundt
 
-// Drænhul (fail-safe ved lækage)
-drain_hole_d = 3;
+// Drænhul (fail-safe ved lækage). AUDIT-FIX: 3→4mm (hurtigere afløb ved
+// pumpe-lækage) + roteres 45° i ebase så det ikke skærer mounting bosses.
+drain_hole_d = 4;
+
+// Pump mount — DUAL FOOTPRINT på lid'ets indvendige side (piezo-research):
+// passer både Kamoer KPP peristaltisk (2× M3, 46mm c-c flange) og
+// Bartels BP7 + mp-Lowdriver (4× M3 i 24mm kvadrat til clamp/standoffs).
+pump_mount_boss_h = 4;            // boss-højde over lid-flade
+pump_mount_boss_d = 9;            // boss-diameter (M3 insert = 4.0mm hul)
+pump_mount_kamoer_spacing = 46;   // 2-huls flange c-c
+pump_mount_bp7_square = 24;       // 4-huls kvadrat side-længde
 
 
 // ----------------------------------------------------------------------------
@@ -141,7 +151,7 @@ m3_screw_head_d = 6.0;           // M3 socket head clearance
 // 6. Globale rendering settings
 // ----------------------------------------------------------------------------
 $fn = 64;                        // smooth cylinder facets; sæt højere for final render
-PI = 3.14159265;                 // OpenSCAD har built-in PI, men eksplicit her for clarity
+// (AUDIT-FIX: lokal PI-redefinition fjernet — OpenSCAD har built-in PI)
 
 
 // ----------------------------------------------------------------------------

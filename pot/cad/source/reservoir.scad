@@ -43,9 +43,10 @@ module reservoir() {
 
         // Pump output port (lodret hul gennem reservoir bund)
         // Pumpe sidder i electronics base nedenunder; slange går op herigennem
-        // og videre til pump_port-hullet i plant cup
+        // og videre til pump_port-hullet i plant cup.
+        // Fælles pump_port_x sikrer alignment med ebase-toppens port (audit-fix)
         rotate([0, 0, 180])
-            translate([reservoir_inner_d / 4, 0, -0.5])
+            translate([pump_port_x, 0, -0.5])
                 cylinder(d = pump_port_d + 1,
                          h = reservoir_wall + 1);
 
