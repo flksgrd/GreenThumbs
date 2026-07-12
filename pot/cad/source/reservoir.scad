@@ -1,21 +1,20 @@
 // =============================================================================
 // Reservoir — Vand-beholder som plant cup hænger nedsænket i (Variant A)
 // =============================================================================
-// STACK VARIANT A (valgt 2026-06): høj cylinder hvor cuppen hænger fra
-// top-rimmen via sin flange. Vandet lever i zonen UNDER cup-bunden
-// (water_zone_h) og i ringen omkring cuppen. Højde og kapacitet beregnes
-// i params.scad ud fra cup-størrelse:
-//   M-cup: reservoir ~199mm høj, kapacitet ~1018 ml
+// ZERO-PENETRATION (ADR 009): reservoiret har INGEN gennemføringer under
+// vandlinjen — bunden og væggen under overflow-niveau er 100% tætte.
+// Eneste hul er OVERFLOW-hullet (over max-fill, det er selve pointen).
+// Slanger og kabler ruter gennem ring-gabet og cup-flangens åbninger.
 //
-// Indhold:
-//   - Lodret slot til kapacitiv water level strip (i ring-zonen)
-//   - Bund-niche til float switch (under cuppen, i vand-zonen)
-//   - Lodret pump-port gennem bunden ved pump_port_x=85 (i ring-gabet,
-//     flugter med electronics_base port + plant_cup flange-hul)
+// Features (vinkler jf. params.scad allokering):
+//    0°: to lodrette guide-ribber til water level strip (klemmes imellem)
+//   90°: float switch klips-ring i bunden (kabel op gennem ring-gab)
+//  270°: overflow-hul i væggen, 8mm under cup-bund-niveau
+//  315°: rotations-index tap på rim (matcher notch i cup-flangen)
 //
-// Refill: gennem plant_cup'ens flange-åbning ved 270° → vandet falder
-// direkte ned i ring-gabet. (Tidligere rim-notch fjernet — flangen
-// dækker nu hele rimmen.)
+// STACK VARIANT A: høj cylinder hvor cuppen hænger fra top-rimmen via sin
+// flange. Vandet lever i zonen UNDER cup-bunden. Højde og kapacitet
+// beregnes i params.scad (M-cup: ~199mm, ~815 ml til overflow-niveau).
 //
 // PRINT: PETG. 3 perimeters minimum. 100% bund. Print upright med brim.
 // Høj print (~200mm) — Prusa XL klarer det fint; brug draft shield ved træk.
@@ -24,40 +23,65 @@
 include <params.scad>
 
 module reservoir() {
-    difference() {
-        // ─── Solid outer body ───────────────────────────────────────────────
-        cylinder(d = reservoir_outer_d, h = reservoir_height);
+    union() {
+        difference() {
+            // ─── Solid outer body ───────────────────────────────────────────
+            cylinder(d = reservoir_outer_d, h = reservoir_height);
 
-        // ─── Subtractions ───────────────────────────────────────────────────
-        // Hovedhulrum (vand + plads til nedsænket cup)
-        translate([0, 0, reservoir_wall])
-            cylinder(d = reservoir_inner_d,
-                     h = reservoir_height + 1);
+            // Hovedhulrum (vand + plads til nedsænket cup)
+            translate([0, 0, reservoir_wall])
+                cylinder(d = reservoir_inner_d,
+                         h = reservoir_height + 1);
 
-        // Water level strip slot (vertikal kanal i indervæggen, ring-zonen)
-        // Dækker vand-zonen (0-40mm) + margin; bunder 5mm over reservoir-bund
-        translate([reservoir_inner_d / 2 - waterlevel_strip_t,
-                   -waterlevel_strip_w / 2 - print_tolerance / 2,
-                   reservoir_wall + 5])
-            cube([waterlevel_strip_t + reservoir_wall + 1,
-                  waterlevel_strip_w + print_tolerance,
-                  waterlevel_strip_h]);
+            // Overflow-hul ved 270° — eneste hul, og det sidder BEVIDST
+            // ved max-fill niveau (8mm under cup-bund). Overløb drypper
+            // ud i pyntepotten, synligt fra refill-åbningen ovenover.
+            rotate([0, 0, 270])
+                translate([0, 0, overflow_z])
+                    rotate([0, 90, 0])
+                        cylinder(d = overflow_hole_d,
+                                 h = reservoir_outer_d / 2 + 2);
+        }
 
-        // Float switch niche (bund-monteret, lodret, UNDER cuppen)
-        // Roteret 90° fra water level strip så de ikke overlapper
+        // ─── Additive features (ingen af dem gennembryder væggen) ───────────
+
+        // Water level strip guide-ribber ved 0°: strippen skubbes ned
+        // mellem ribberne og hviler mod indervæggen. (Erstatter tidligere
+        // gennemskåret slot = lækage-bug.)
+        for (side = [-1, 1]) {
+            rotate([0, 0, 0])
+                translate([reservoir_inner_d / 2 - strip_rib_t,
+                           side * (waterlevel_strip_w / 2 + print_tolerance
+                                   + strip_rib_w / 2) - strip_rib_w / 2,
+                           reservoir_wall])
+                    cube([strip_rib_t, strip_rib_w,
+                          waterlevel_strip_h + 10]);
+        }
+
+        // Float switch klips-ring i bunden ved 90° (åben ring, floaten
+        // presses ned i). Kablet føres langs bunden ud til ring-gabet.
         rotate([0, 0, 90])
-            translate([float_switch_x, 0, reservoir_wall - 0.5])
-                cylinder(d = float_switch_d + print_tolerance,
-                         h = float_switch_h);
+            translate([float_switch_x, 0, reservoir_wall])
+                difference() {
+                    cylinder(d = float_switch_d + 2 * float_clip_wall
+                                 + print_tolerance,
+                             h = float_clip_h);
+                    translate([0, 0, -0.5])
+                        cylinder(d = float_switch_d + print_tolerance,
+                                 h = float_clip_h + 1);
+                    // Kabel-udgang i klips-ringen (mod ring-gabet, +X lokal)
+                    translate([0, -3, -0.5])
+                        cube([float_switch_d, 6, float_clip_h + 1]);
+                }
 
-        // Pump output port (lodret hul gennem reservoir bund, i ring-gabet)
-        // Pumpe sidder i electronics base nedenunder; slangen går op her,
-        // op gennem ring-gabet, gennem flange-hullet, og ind i cup-toppen.
-        // Fælles pump_port_x sikrer alignment hele vejen (audit-fix).
-        rotate([0, 0, 180])
-            translate([pump_port_x, 0, -0.5])
-                cylinder(d = pump_port_d + 1,
-                         h = reservoir_wall + 1);
+        // Rotations-index tap på rim ved 315° — cup-flangen har matchende
+        // notch, så flange-åbningerne altid flugter med reservoir-features
+        rotate([0, 0, 315])
+            translate([reservoir_inner_d / 2 - index_tab_l / 2, 0,
+                       reservoir_height])
+                translate([0, -index_tab_w / 2, 0])
+                    cube([index_tab_l + reservoir_wall,
+                          index_tab_w, index_tab_h]);
     }
 }
 

@@ -62,35 +62,70 @@ water_zone_h = 40;
 // over reservoirets indre bund
 reservoir_height = (cup_height - top_ring_height) + water_zone_h + reservoir_wall;
 
-// Beregnet vandkapacitet ved max fill-line (= cup-bund niveau):
-// zone under cup er fuld cylinder. (Ringen over kan også holde vand ved
-// overfyldning, men max-fill defineres konservativt ved cup-bunden.)
-reservoir_capacity_ml = PI * pow(reservoir_inner_d / 2, 2) * water_zone_h / 1000;
+// OVERFLOW (ADR 009): fysisk beskyttelse mod overfyldning. Hul i
+// reservoir-væggen overflow_margin under cup-bunden — fylder man forbi,
+// løber overskuddet ud i pyntepotten i stedet for op i jorden.
+// Placeret ved 270° (under refill-åbningen) så overløb ses ved påfyldning.
+overflow_margin = 8;             // afstand fra cup-bund ned til overflow-niveau
+overflow_hole_d = 5;
+overflow_z = reservoir_wall + water_zone_h - overflow_margin;
+
+// Beregnet vandkapacitet ved max fill-line (= overflow-niveau):
+reservoir_capacity_ml = PI * pow(reservoir_inner_d / 2, 2)
+                        * (water_zone_h - overflow_margin) / 1000;
 
 // Cup-flange: dækker hele reservoir-toppen uanset cup-størrelse, så
 // enhver cup (S/M/L) passer på samme reservoir-ring
 flange_outer_d = reservoir_outer_d + 2 * top_ring_width;
 
-// Water level strip slot (vertikal kanal indvendig, i ring-zonen)
+// ============================================================================
+// ZERO-PENETRATION PRINCIP (ADR 009): INGEN huller under vandlinjen.
+// Alle slanger + kabler ruter: op gennem ring-gabet → gennem åbninger i
+// cup-flangen → ned UDVENDIGT langs reservoiret → ind i ebase via side-glands.
+//
+// Vinkel-allokering (set oppefra, konsistent på tværs af alle dele):
+//    0°: water-strip guide-ribber (indvendig) + USB-C gland (ebase)
+//   45°: drænhul (ebase, fri af bosses)
+//   90°: kabel-slids i flange + kabel-gland (ebase) + float-klips (bund)
+//  180°: slange-åbning i flange + slange-gland (ebase)
+//  270°: refill-åbning i flange + overflow-hul (reservoir-væg)
+//  315°: rotations-index tap (rim) + notch (flange)
+// ============================================================================
+
+// Water level strip — holdes af to lodrette guide-ribber på indervæggen
+// (IKKE en fræset slot: det skar gennem væggen = lækage. Audit-fix 2.)
 waterlevel_strip_w = 18;
 waterlevel_strip_t = 2;
 waterlevel_strip_h = 50;         // dækker vand-zonen (0-40mm) + margin
+strip_rib_w = 3;                 // ribbe-bredde (tangentielt)
+strip_rib_t = 3;                 // ribbe-dybde (radialt, ind i ring-gabet)
 
-// Float switch niche (vandret monteret i bund)
+// Float switch — sidder i en print-integreret klips-ring i bunden.
+// Kablet går op gennem vandet/ring-gabet (float-kabler er vandtætte).
 float_switch_d = 16;             // typisk vertical float switch
-float_switch_h = 25;
-float_switch_x = 20;             // offset fra reservoir-center til niche
+float_switch_x = 30;             // offset fra center (fri af cup-S skygge? nej
+                                 // — under cuppen er fint, kablet føres skråt
+                                 // ud til ring-gabet ved 90°)
+float_clip_h = 10;               // klips-ring højde
+float_clip_wall = 2;
 
-// Pump output port (lodret gennem reservoir-bund / ebase-top)
-pump_port_d = 7;                 // 4mm slange + 1.5mm wall + tolerance
-// Fælles X-position så reservoir-bund og ebase-top flugter (audit-fix).
-// Variant A: porten SKAL ligge i ring-gabet mellem L-cup (r=80) og
-// reservoir-indervæg (r=90), så slangen kan løbe op langs cuppen:
-pump_port_x = 85;                // midt i ring-gabet
+// Slanger (2× 6mm OD: suge + tryk) gennem flange-åbning ved 180°
+pump_port_d = 7;                 // hul i CUP-VÆGGEN til trykslangens dyse
+hose_pass_d = 14;                // flange-åbning: plads til 2× Ø6 slanger
+hose_pass_x = 85;                // radial position, midt i ring-gabet
 
-// Refill: v1 bruger en simpel NOTCH i reservoir top-rim (se reservoir.scad).
-// Fuld integreret refill-tube (tragt-top, ned til 1cm fra bund) er v1.1 —
-// parametre genindføres dér. (AUDIT-FIX: døde tube-params fjernet)
+// Kabel-slids i flangen ved 90° — åben mod kanten så kabler med stik kan
+// lægges i fra siden ved montering
+cable_slot_w = 8;
+
+// Rotations-indexering: tap på reservoir-rim ved 315° + matchende notch i
+// flangens underside → flangens åbninger flugter ALTID med reservoirets
+// features (overflow under refill, ribber ved 0°, osv.)
+index_tab_w = 8;                 // tangentielt
+index_tab_l = 5;                 // radialt
+index_tab_h = 2.5;
+
+// Refill: gennem flange-åbningen ved 270°. Fuld refill-tube m. tragt = v1.1.
 
 
 // ----------------------------------------------------------------------------
@@ -106,9 +141,13 @@ gasket_groove_w = 2.5;              // for 2mm O-ring
 gasket_groove_d = 1.6;
 gasket_groove_offset = 4;           // fra ydre kant
 
-// Cable gland gennemføring (USB-C + sensor wires)
-gland_hole_d = 12;                  // PG7 = 12mm hole
-gland_count = 2;                    // 1x USB-C, 1x sensor-bundt
+// Cable glands i ebase-siden (zero-penetration: alt kommer ind fra siden,
+// ebase-toppen er nu HELT lukket). Vinkler matcher flange-åbningerne lodret:
+//   0° = USB-C (PG7), 90° = sensor-kabler (PG7), 180° = slanger (PG9/grommet)
+gland_hole_d = 12;                  // PG7 = 12mm hul (USB-C + kabler)
+hose_gland_d = 16;                  // PG9 = 16mm hul (2× Ø6 slanger)
+gland_angles = [0, 90];             // PG7-positioner
+hose_gland_angle = 180;
 
 // Drænhul (fail-safe ved lækage). AUDIT-FIX: 3→4mm (hurtigere afløb ved
 // pumpe-lækage) + roteres 45° i ebase så det ikke skærer mounting bosses.

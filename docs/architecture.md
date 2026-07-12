@@ -68,29 +68,40 @@ Total stak-højde: S ~208mm, M ~248mm, L ~288mm (+ ~33mm med load cell).
 Passer i pyntepotter Ø ≥ 21cm.
 ```
 
-## Vandstrøm
+## Vandstrøm (zero-penetration, ADR 009)
+
+Reservoiret har INGEN gennemføringer under vandlinjen — begge slanger ruter
+gennem ring-gabet og flangens 180°-åbning, og løber udvendigt ned til
+electronics base's side-glands:
 
 ```
 Reservoir vand-zone (under cup)
      │
-     ↓ Sugeslange ned gennem pump-port (x=85, i ring-gabet) til pumpe
+     ↓ SUGESLANGE (m. sinker-vægt) op gennem ring-gab → flange-åbning 180°
+       → ned UDVENDIGT → PG9-gland i ebase-siden → pumpe-indgang
      │
      ↓ Peristaltisk pumpe i electronics base (drevet via MOSFET, 12V)
      │
-     ↓ Trykslange op gennem samme ring-gab → gennem flange-hullet (180°)
-     │
-     ↓ Ind i cup-toppens side-hul → dripper på jord-overfladen
+     ↓ TRYKSLANGE ud af PG9 → op UDVENDIGT → flange-åbning 180°
+       → ind i cup-toppens side-hul → dripper på jord-overfladen
      │
      ↓ Jord → plantens rødder
      │
      ↓ Overskud drypper gennem cup-drænhuller → tilbage i vand-zonen
        (lille intern recirkulation; acceptabelt — jordmængden i dryppet
         er minimal, og wick-planter trækker alligevel direkte fra zonen)
+
+OVERFYLDNING: vandstand > overflow-niveau (8mm under cup-bund)
+     → overskud løber ud af overflow-hullet (270°, under refill-åbningen)
+       ned i pyntepotten — synligt signal, planten drukner ALDRIG
 ```
 
 **Wick-flow (ADR 006):** for bottom-watering planter hænger en bomulds-wick
 fra cup'ens center-drænhul direkte ned i vand-zonen (20-50mm afstand) —
 kontinuert kapillær-vanding uden pumpe.
+
+**Sensor-kabler** (soil, water-strip, float): op gennem ring-gab → flangens
+kabel-slids (90°) → ned udvendigt → PG7-gland i ebase-siden.
 
 ## Software-arkitektur
 

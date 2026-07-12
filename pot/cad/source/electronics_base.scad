@@ -8,9 +8,13 @@
 //     Kamoer KPP peristaltisk ELLER Bartels BP7 piezo + driver — se
 //     docs/research/piezo-components.md)
 //
-// Top mod reservoir har O-ring groove for vandtæt seal.
+// ZERO-PENETRATION (ADR 009): toppen er HELT lukket — reservoiret ovenpå
+// har ingen bund-gennemføringer, så selv ved reservoir-lækage ned langs
+// siderne er elektronikken beskyttet af den lukkede top + kant-O-ring.
+// Alt (USB, kabler, slanger) kommer ind via side-glands:
+//    0° PG7 = USB-C, 90° PG7 = sensor-kabler, 180° PG9 = 2× slanger
+//
 // Adgang sker via aftageligt låg i BUNDEN (lid skrues på med M3-skruer).
-// Cable glands i siden til USB-C og sensor-wires.
 //
 // AUDIT-FIX 2026-06: mounting bosses var tidligere i samme union som
 // shell'en FØR cavity-subtraktionen — cavity-cylinderen åd bosserne så kun
@@ -38,22 +42,22 @@ module electronics_base() {
                 // O-ring/gasket groove på TOPpen (mod reservoir bund)
                 gasket_groove_top();
 
-                // Cable glands gennem side-væg (2x, modsat hinanden)
-                for (i = [0, 180]) {
-                    rotate([0, 0, i])
+                // Cable glands gennem side-væg (zero-penetration, ADR 009:
+                // toppen er nu HELT lukket — alt kommer ind fra siden).
+                // PG7 ved 0° (USB-C) og 90° (sensor-kabler):
+                for (a = gland_angles) {
+                    rotate([0, 0, a])
                         translate([0, 0, ebase_height / 2])
                             rotate([0, 90, 0])
                                 cylinder(d = gland_hole_d,
-                                         h = ebase_outer_d + 4,
-                                         center = true);
+                                         h = ebase_outer_d / 2 + 2);
                 }
-
-                // Pump output port — lodret gennem top, flugter med
-                // reservoir-bundens port (fælles pump_port_x, audit-fix)
-                rotate([0, 0, 180])
-                    translate([pump_port_x, 0, ebase_height - ebase_wall - 0.5])
-                        cylinder(d = pump_port_d + 1,
-                                 h = ebase_wall + 1);
+                // PG9 ved 180° (2× Ø6 slanger — suge + tryk):
+                rotate([0, 0, hose_gland_angle])
+                    translate([0, 0, ebase_height / 2])
+                        rotate([0, 90, 0])
+                            cylinder(d = hose_gland_d,
+                                     h = ebase_outer_d / 2 + 2);
 
                 // Drænhul (fail-safe ved lækage) — roteret 45° så det går
                 // MELLEM bosserne ved 0/90/180/270° (audit-fix)

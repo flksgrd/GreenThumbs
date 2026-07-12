@@ -38,7 +38,9 @@ Procent beregnes som: `pct = 100 * (adc_dry - reading) / (adc_dry - adc_wet)`, c
 
 1. Tom reservoir helt (eller fjern strippen og hold den tør).
 2. Læs ADC-værdi. Notér som `adc_empty`.
-3. Fyld reservoir til "fuldt" niveau (definitionen er praktisk: hvor strippen er fuldt nedsænket).
+3. Fyld reservoir til **overflow-niveau**: hæld til det begynder at dryppe
+   fra overflow-hullet (270°), stop, og vent til dryppet er ophørt. Det er
+   det fysisk entydige 100%-punkt (ADR 009).
 4. Læs ADC-værdi. Notér som `adc_full`.
 5. Gem via `cal water <adc_empty> <adc_full>`.
 
