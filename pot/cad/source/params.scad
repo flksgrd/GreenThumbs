@@ -9,23 +9,33 @@
 
 
 // ----------------------------------------------------------------------------
-// 1. Plant cup (skiftelig pr. plantestørrelse)
+// 1. Plant cup — driver HELE stakkens dimensioner (adaptivt design)
 // ----------------------------------------------------------------------------
-// Tre størrelser. Skift cup_size for at re-eksportere en anden variant.
+// ADAPTIV DIAMETER (2026-07): cup-størrelsen driver alle diametre nedstrøms
+// (reservoir, electronics base, lid, load cell platform) via et FAST ring_gap.
+// Hver størrelse er dermed et MATCHENDE SÆT — reservoir og base re-printes
+// per størrelse, til gengæld er gabet altid ens og reservoiret maksimalt.
 //
-// STACK-GEOMETRI (Variant A, valgt 2026-06): cuppen hænger NEDSÆNKET i
-// reservoiret fra sin top-flange, med en vand-zone under cup-bunden.
-// Derfor er L-cup max Ø160 (ikke 180): der skal altid være ≥10mm ring-gap
-// mellem cup og reservoir-indervæg til pumpe-slange, water-strip og refill.
-cup_size = "M";  // "S" | "M" | "L"
+// STACK-GEOMETRI (Variant A): cuppen hænger NEDSÆNKET i reservoiret fra sin
+// top-flange, med en vand-zone under cup-bunden. Centrerings-lugs på
+// flangens underside holder cuppen præcist i midten.
+cup_size = "M";  // "S" | "M" | "L" | "CUSTOM"
+
+// CUSTOM: sæt frit til din pyntepotte. Eksemplet her er tunet til en potte
+// med indre mål Ø260×H230: ydre reservoir Ø236 (12mm luft per side), total
+// stak-højde ~229mm (flugter med pottens kant). Kapacitet ~1.3 L.
+custom_cup_diameter = 190;
+custom_cup_height   = 145;
 
 cup_diameter = (cup_size == "S") ? 100 :
                (cup_size == "M") ? 140 :
-               160;  // L (max — se note ovenfor)
+               (cup_size == "L") ? 180 :
+               custom_cup_diameter;
 
 cup_height = (cup_size == "S") ? 120 :
              (cup_size == "M") ? 160 :
-             200;  // L
+             (cup_size == "L") ? 200 :
+             custom_cup_height;
 
 cup_wall = 2.4;                  // vægtykkelse (6 perimeters @ 0.4mm nozzle)
 cup_drain_hole_d = 4;            // diameter på drænhuller i bund
@@ -38,17 +48,19 @@ soil_sensor_slot_depth = 80;     // hvor langt ned sensor stikkes
 
 
 // ----------------------------------------------------------------------------
-// 2. Reservoir (Variant A: cup hænger nedsænket)
+// 2. Reservoir (Variant A: cup hænger nedsænket) — ADAPTIV diameter
 // ----------------------------------------------------------------------------
-// AUDIT-FIX + redesign 2026-06: tidligere blev højden beregnet af et
-// volumen-INPUT og ignorerede at cuppen optager pladsen (fysisk umulig
-// geometri). Nu drives højden af cup-dybde + vand-zone, og kapaciteten
-// er et OUTPUT (se echo nederst).
+// Højde drives af cup-dybde + vand-zone; diameter drives af cup-diameter +
+// FAST ring_gap. Kapaciteten er et OUTPUT (se echo nederst).
 
-// Indvendig diameter: cup + ring-gap (slange/sensorer/refill)
-reservoir_inner_d = 180;         // ≥ max cup (160) + 2×10mm ring-gap
-reservoir_outer_d = reservoir_inner_d + 2 * 3;  // 3mm wall
+// FAST ring-gab (per side) mellem cup-væg og reservoir-indervæg.
+// Dimensionerer plads til: 2× Ø6 slanger, water-strip + ribber (5mm),
+// sensor-kabler, og påfyldning med vandkande-tud. Ens for ALLE størrelser.
+ring_gap = 20;
+
 reservoir_wall = 3;              // tykkere end cup (vandtryk + stabilitet)
+reservoir_inner_d = cup_diameter + 2 * ring_gap;   // ADAPTIV
+reservoir_outer_d = reservoir_inner_d + 2 * reservoir_wall;
 
 // Top-ring til plant cup (defineres FØR reservoir_height-formlen —
 // OpenSCAD tillader ikke forward references)
@@ -74,9 +86,20 @@ overflow_z = reservoir_wall + water_zone_h - overflow_margin;
 reservoir_capacity_ml = PI * pow(reservoir_inner_d / 2, 2)
                         * (water_zone_h - overflow_margin) / 1000;
 
-// Cup-flange: dækker hele reservoir-toppen uanset cup-størrelse, så
-// enhver cup (S/M/L) passer på samme reservoir-ring
+// Cup-flange: dækker hele reservoir-toppen (matchende sæt per størrelse)
 flange_outer_d = reservoir_outer_d + 2 * top_ring_width;
+
+// CENTRERING + ROTATIONS-INDEXERING i ét: 4 tapper på reservoir-RIMMEN
+// (peger op — printer perfekt ved upright print) griber op i matchende
+// LOMMER i flangens underside (subtraktioner — heller intet print-problem).
+// Vinklerne er BEVIDST asymmetriske → flangen passer kun i ÉN orientering,
+// og de tætte lomme-tolerancer holder samtidig cuppen præcist centreret
+// med ens ring-gab hele vejen rundt.
+// Vinkler valgt fri af flange-åbningerne (90° slids, 180° slanger,
+// 270° refill):
+rim_tab_angles = [30, 150, 210, 315];
+rim_tab_w = 8;                   // tangentielt (radial dybde = reservoir_wall)
+rim_tab_h = 2.5;                 // højde over rim
 
 // ============================================================================
 // ZERO-PENETRATION PRINCIP (ADR 009): INGEN huller under vandlinjen.
@@ -89,7 +112,7 @@ flange_outer_d = reservoir_outer_d + 2 * top_ring_width;
 //   90°: kabel-slids i flange + kabel-gland (ebase) + float-klips (bund)
 //  180°: slange-åbning i flange + slange-gland (ebase)
 //  270°: refill-åbning i flange + overflow-hul (reservoir-væg)
-//  315°: rotations-index tap (rim) + notch (flange)
+//  30/150/210/315°: rim-tapper (centrering + rotations-indexering)
 // ============================================================================
 
 // Water level strip — holdes af to lodrette guide-ribber på indervæggen
@@ -112,18 +135,19 @@ float_clip_wall = 2;
 // Slanger (2× 6mm OD: suge + tryk) gennem flange-åbning ved 180°
 pump_port_d = 7;                 // hul i CUP-VÆGGEN til trykslangens dyse
 hose_pass_d = 14;                // flange-åbning: plads til 2× Ø6 slanger
-hose_pass_x = 85;                // radial position, midt i ring-gabet
+// Radial position: midt i ring-gabet — ADAPTIV, følger cup-størrelsen
+hose_pass_x = cup_diameter / 2 + ring_gap / 2;
+
+// Refill-åbning i flangen ved 270° — samme radiale position som slangerne
+refill_opening_x = hose_pass_x;
+refill_opening_d = min(20, ring_gap - 2);   // 18mm ved ring_gap=20
 
 // Kabel-slids i flangen ved 90° — åben mod kanten så kabler med stik kan
 // lægges i fra siden ved montering
 cable_slot_w = 8;
 
-// Rotations-indexering: tap på reservoir-rim ved 315° + matchende notch i
-// flangens underside → flangens åbninger flugter ALTID med reservoirets
-// features (overflow under refill, ribber ved 0°, osv.)
-index_tab_w = 8;                 // tangentielt
-index_tab_l = 5;                 // radialt
-index_tab_h = 2.5;
+// (Rotations-indexering er slået sammen med centrering — se rim_tab_*
+//  parametrene ovenfor. De 4 asymmetriske rim-tapper klarer begge dele.)
 
 // Refill: gennem flange-åbningen ved 270°. Fuld refill-tube m. tragt = v1.1.
 
@@ -220,14 +244,17 @@ $fn = 64;                        // smooth cylinder facets; sæt højere for fin
 // (cylinder, cube, etc.) her — det ville forurene alle includere.
 // Hvis du vil se geometri ved at åbne params.scad direkte, så åbn i stedet
 // en af part-filerne (plant_cup.scad, reservoir.scad, ...) der include'er denne.
-echo("=== GreenThumbs CAD params (stack variant A) ===");
+echo("=== GreenThumbs CAD params (variant A, adaptiv diameter) ===");
 echo("cup_size:", cup_size);
 echo("cup_diameter:", cup_diameter, "mm");
 echo("cup_height:", cup_height, "mm");
+echo("ring_gap (fast):", ring_gap, "mm");
 echo("water_zone_h:", water_zone_h, "mm");
 echo("reservoir_capacity (BEREGNET):", reservoir_capacity_ml, "ml");
 echo("reservoir_height (BEREGNET):", reservoir_height, "mm");
-echo("reservoir_outer_d:", reservoir_outer_d, "mm");
-echo("flange_outer_d:", flange_outer_d, "mm");
+echo("reservoir_outer_d (BEREGNET):", reservoir_outer_d, "mm");
+echo("flange_outer_d (BEREGNET):", flange_outer_d, "mm");
 echo("total_stack_height (ca.):",
      ebase_lid_height + ebase_height + reservoir_height + top_ring_height, "mm");
+echo("--- Pyntepotte-krav: indre diameter >=", flange_outer_d + 4,
+     "mm, hoejde ca.", ebase_lid_height + ebase_height + reservoir_height, "mm ---");

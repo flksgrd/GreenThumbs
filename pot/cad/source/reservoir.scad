@@ -10,7 +10,8 @@
 //    0°: to lodrette guide-ribber til water level strip (klemmes imellem)
 //   90°: float switch klips-ring i bunden (kabel op gennem ring-gab)
 //  270°: overflow-hul i væggen, 8mm under cup-bund-niveau
-//  315°: rotations-index tap på rim (matcher notch i cup-flangen)
+//  30/150/210/315°: rim-tapper — centrering + rotations-indexering
+//  (asymmetriske vinkler → cup-flangen passer kun i én orientering)
 //
 // STACK VARIANT A: høj cylinder hvor cuppen hænger fra top-rimmen via sin
 // flange. Vandet lever i zonen UNDER cup-bunden. Højde og kapacitet
@@ -74,14 +75,16 @@ module reservoir() {
                         cube([float_switch_d, 6, float_clip_h + 1]);
                 }
 
-        // Rotations-index tap på rim ved 315° — cup-flangen har matchende
-        // notch, så flange-åbningerne altid flugter med reservoir-features
-        rotate([0, 0, 315])
-            translate([reservoir_inner_d / 2 - index_tab_l / 2, 0,
-                       reservoir_height])
-                translate([0, -index_tab_w / 2, 0])
-                    cube([index_tab_l + reservoir_wall,
-                          index_tab_w, index_tab_h]);
+        // Rim-tapper: centrering + rotations-indexering i ét. Fire tapper
+        // ved asymmetriske vinkler (30/150/210/315°) griber op i matchende
+        // lommer i cup-flangens underside — cuppen kan kun sidde i ÉN
+        // orientering og holdes præcist centreret. Tapperne sidder på
+        // rim-bandet (inner→outer radius) og printer perfekt (peger op).
+        for (a = rim_tab_angles)
+            rotate([0, 0, a])
+                translate([reservoir_inner_d / 2, -rim_tab_w / 2,
+                           reservoir_height])
+                    cube([reservoir_wall, rim_tab_w, rim_tab_h]);
     }
 }
 

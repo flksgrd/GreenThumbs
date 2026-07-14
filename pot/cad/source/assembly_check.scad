@@ -28,7 +28,9 @@ view = "iso";  // override med -D
 z_lid   = 0;
 z_ebase = ebase_lid_height;
 z_res   = z_ebase + ebase_height;
-z_cup   = z_res + reservoir_height - (cup_height - top_ring_height);
+// -0.05: marginal interpenetration mellem flange og rim, så STL-eksport af
+// visualiseringen ikke får coincident faces (ren PNG-preview er upåvirket)
+z_cup   = z_res + reservoir_height - (cup_height - top_ring_height) - 0.05;
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 module half() {

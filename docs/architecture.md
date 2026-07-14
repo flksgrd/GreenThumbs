@@ -64,8 +64,19 @@ STACK VARIANT A (besluttet 2026-06): cup hænger NEDSÆNKET i reservoiret.
 │     rubber feet på lid i stedet   │
 └───────────────────────────────────┘
 
-Total stak-højde: S ~208mm, M ~248mm, L ~288mm (+ ~33mm med load cell).
-Passer i pyntepotter Ø ≥ 21cm.
+ADAPTIV DIAMETER (2026-07): cup-størrelsen driver alle diametre via fast
+ring_gap = 20mm. Hver størrelse er et matchende sæt:
+
+| Størrelse | Cup | Ydre Ø | Kapacitet | Total højde | Pyntepotte |
+|---|---|---|---|---|---|
+| S | Ø100×120 | 146 | ~493 ml | ~208mm | ≥ Ø166 |
+| M | Ø140×160 | 186 | ~814 ml | ~248mm | ≥ Ø206 |
+| L | Ø180×200 | 226 | ~1216 ml | ~288mm | ≥ Ø246 |
+| CUSTOM | frit | beregnes | beregnes | beregnes | tunes til potten |
+
+(+ ~33mm højde med optional load cell.) Centrering + rotations-lås via 4
+asymmetriske rim-tapper der griber i flange-lommer — cuppen sidder altid
+centreret og orienteret korrekt.
 ```
 
 ## Vandstrøm (zero-penetration, ADR 009)

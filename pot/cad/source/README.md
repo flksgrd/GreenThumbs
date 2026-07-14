@@ -68,27 +68,38 @@ For planter der foretrækker bottom-watering installeres en cotton/nylon-wick ge
 
 Ingen CAD-ændring nødvendig — eksisterende 4mm center drænhul er rigeligt for 4mm snor. Se [ADR 006](../../../docs/decisions/006-bottom-watering-strategies.md) og [plant-profiles.md](../../../docs/plant-profiles.md) for hvilke profiler der bruger wick.
 
-## Stack-geometri: Variant A (besluttet 2026-06)
+## Stack-geometri: Variant A + adaptiv diameter (2026-07)
 
-Cuppen hænger **nedsænket** i reservoiret fra sin universal-flange (Ø202,
-ens for alle cup-størrelser). Vandet lever i 40mm-zonen under cup-bunden +
-ringen omkring cuppen. Kapacitet ~1018 ml uanset cup-størrelse.
+Cuppen hænger **nedsænket** i reservoiret fra sin flange. Vandet lever i
+zonen under cup-bunden (op til overflow-niveau, ADR 009) — ring-gabet er
+en TØR servicekanal.
 
-| cup_size | Cup | Reservoir-højde | Total stak (m. ebase+lid) |
-|---|---|---|---|
-| S | Ø100×120 | 159mm | ~208mm |
-| M | Ø140×160 | 199mm | ~248mm |
-| L | Ø160×200 | 239mm | ~288mm |
+**Adaptivt design:** cup-størrelsen driver ALLE diametre via et **fast
+ring_gap på 20mm** — reservoir, electronics base, lid og load cell-platform
+skalerer med. Hver størrelse er et **matchende sæt** (reservoir/base
+re-printes per størrelse); til gengæld er gabet altid ens, og reservoiret
+maksimalt for pyntepotten.
 
-Bemærk: L-cup er Ø160 (ikke 180) — der skal altid være ≥10mm ring-gap til
-pumpe-slange, water-strip og refill. Slangen ruter: ebase → reservoir-bund
-port (x=85, i ring-gabet) → op gennem ringen → flange-hul (180°) → cup-top
-side-hul. Refill: gennem flange-åbningen ved 270° direkte ned i ringen.
+| cup_size | Cup | Reservoir ydre Ø | Kapacitet | Total højde | Pyntepotte (indre) |
+|---|---|---|---|---|---|
+| S | Ø100×120 | 146 | ~493 ml | ~208mm | ≥ Ø166 |
+| M | Ø140×160 | 186 | ~814 ml | ~248mm | ≥ Ø206 |
+| L | Ø180×200 | 226 | ~1216 ml | ~288mm | ≥ Ø246 |
+| CUSTOM (eksempel) | Ø190×145 | 236 | ~1330 ml | ~233mm | Ø260×230 (Monstera-potte) |
 
-Verificér samlingen visuelt med [assembly_check.scad](assembly_check.scad)
-(halv-snit af cup+reservoir+vand). Render: [preview](../preview/stack-variant-A-assembly.png).
-[stack_variants_preview.scad](stack_variants_preview.scad) er det historiske
-beslutningsgrundlag (A vs B) og holdes ikke opdateret.
+**CUSTOM**: sæt `custom_cup_diameter`/`custom_cup_height` i params.scad frit
+efter din pyntepotte — echo-outputtet viser pyntepotte-kravet direkte.
+
+**Centrering + rotations-lås:** 4 tapper på reservoir-rimmen (asymmetriske
+vinkler 30/150/210/315°) griber op i lommer i flangens underside. Cuppen
+kan kun sidde i ÉN orientering og altid præcist centreret — ring-gabet er
+ens hele vejen rundt, og flange-åbningerne flugter altid med reservoirets
+features (overflow under refill osv.).
+
+Visualisér med [assembly_check.scad](assembly_check.scad) — view-modes:
+`iso|section|top|exploded|reservoir|ebase` (se fil-header). Renders i
+[../preview/](../preview/). [stack_variants_preview.scad](stack_variants_preview.scad)
+er historisk beslutningsgrundlag (A vs B) og holdes ikke opdateret.
 
 ## v1 → v1.1 TODO
 

@@ -15,8 +15,9 @@
 ## Vinkel-orientering (vigtig!)
 
 Alle dele er vinkel-indekserede (se [ADR 009](decisions/009-zero-penetration-overflow.md)).
-Reservoir-rimmens **tap** griber flangens **notch** ved 315° — cuppen kan kun
-sidde i én orientering, og så flugter alt:
+Reservoir-rimmens **4 tapper** (asymmetriske vinkler) griber op i lommer i
+flangens underside — de både **centrerer** cuppen (ens ring-gab hele vejen
+rundt) og låser rotationen, så cuppen kun kan sidde i én orientering:
 
 - **0°**: water-strip mellem guide-ribberne, USB-C gland i ebase nedenunder
 - **90°**: kabel-slids i flangen, float-klips i bunden, kabel-gland i ebase
@@ -49,7 +50,8 @@ Læg **2-3 cm LECA-kugler (lerkugler) i bunden af plant cup** før jorden:
 1. Træd wick gennem center-drænhullet hvis planten skal bottom-vandes (se [ADR 006](decisions/006-bottom-watering-strategies.md))
 2. LECA-lag, derefter jord + plante
 3. Stik soil-sensoren i jorden (elektronik-enden over jordniveau), kabel via flange-slidsen
-4. Sænk cuppen i reservoiret — **drej til index-tappen klikker i notchen**
+4. Sænk cuppen i reservoiret — **drej til alle 4 rim-tapper falder i
+   flange-lommerne** (der er kun én orientering der passer)
 5. Fyld vand gennem refill-åbningen (270°) til buzzeren dobbelt-bipper
    — eller til der drypper fra overflow-hullet (så er den HELT fuld; stop)
 
