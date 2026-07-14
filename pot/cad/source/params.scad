@@ -22,9 +22,11 @@
 cup_size = "M";  // "S" | "M" | "L" | "CUSTOM"
 
 // CUSTOM: sæt frit til din pyntepotte. Eksemplet her er tunet til en potte
-// med indre mål Ø260×H230: ydre reservoir Ø236 (12mm luft per side), total
-// stak-højde ~229mm (flugter med pottens kant). Kapacitet ~1.3 L.
-custom_cup_diameter = 190;
+// med indre mål Ø260×H230: flange Ø254 (3mm luft per side), total stak-
+// højde ~229mm (flugter med pottens kant). Kapacitet ~1.35 L. Med
+// scalloped-designet (ADR 010) er cuppen Ø230 — 46% mere jord-areal end
+// det gamle ring-gab-design gav i samme potte.
+custom_cup_diameter = 230;
 custom_cup_height   = 145;
 
 cup_diameter = (cup_size == "S") ? 100 :
@@ -48,19 +50,30 @@ soil_sensor_slot_depth = 80;     // hvor langt ned sensor stikkes
 
 
 // ----------------------------------------------------------------------------
-// 2. Reservoir (Variant A: cup hænger nedsænket) — ADAPTIV diameter
+// 2. Reservoir (Variant A: cup hænger nedsænket) — SCALLOPED CUP (ADR 010)
 // ----------------------------------------------------------------------------
-// Højde drives af cup-dybde + vand-zone; diameter drives af cup-diameter +
-// FAST ring_gap. Kapaciteten er et OUTPUT (se echo nederst).
+// Cuppen fylder næsten HELE reservoir-åbningen (kun 1mm kant-clearance).
+// Ring-gabet er erstattet af 3 lodrette SERVICE-KANALER — konkave cirkel-
+// udskæringer i cup-kanten med hver sin funktion (kabler/slanger/refill).
+// Det maksimerer jord-arealet (~40% af tværsnittet var før spildt gab) og
+// kanalerne selv låser orienteringen (se channel_* nedenfor).
 
-// FAST ring-gab (per side) mellem cup-væg og reservoir-indervæg.
-// Dimensionerer plads til: 2× Ø6 slanger, water-strip + ribber (5mm),
-// sensor-kabler, og påfyldning med vandkande-tud. Ens for ALLE størrelser.
-ring_gap = 20;
-
+cup_clearance = 1;               // kant-spillerum cup ↔ reservoir-indervæg
 reservoir_wall = 3;              // tykkere end cup (vandtryk + stabilitet)
-reservoir_inner_d = cup_diameter + 2 * ring_gap;   // ADAPTIV
+reservoir_inner_d = cup_diameter + 2 * cup_clearance;   // ADAPTIV
 reservoir_outer_d = reservoir_inner_d + 2 * reservoir_wall;
+
+// SERVICE-KANALER: cirkler centreret PÅ cup-omkredsen, skåret lodret ned
+// gennem cup-krop + flange. Forskellige diametre → strip-ribberne på
+// reservoir-væggen (ved 270°) kan KUN passere gennem den brede refill-
+// kanal → cuppen kan kun sænkes ned i ÉN orientering. Centrering klares
+// af den tætte kant-clearance.
+channel_cable_angle  = 90;       // sensor-kabler (soil/strip/float)
+channel_cable_d      = 16;
+channel_hose_angle   = 180;      // 2× Ø6 slanger (suge + tryk)
+channel_hose_d       = 18;
+channel_refill_angle = 270;      // påfyldning + water-strip + ribber
+channel_refill_d     = 28;       // ≥ strip-ribbe-spænd (~26mm) → unik lås
 
 // Top-ring til plant cup (defineres FØR reservoir_height-formlen —
 // OpenSCAD tillader ikke forward references)
@@ -86,70 +99,47 @@ overflow_z = reservoir_wall + water_zone_h - overflow_margin;
 reservoir_capacity_ml = PI * pow(reservoir_inner_d / 2, 2)
                         * (water_zone_h - overflow_margin) / 1000;
 
-// Cup-flange: dækker hele reservoir-toppen (matchende sæt per størrelse)
+// Cup-flange: dækker hele reservoir-toppen (matchende sæt per størrelse).
+// Kanalerne fortsætter op gennem flangen (klippet til reservoir-åbningen
+// så påfyldt vand kun kan lande I reservoiret).
 flange_outer_d = reservoir_outer_d + 2 * top_ring_width;
-
-// CENTRERING + ROTATIONS-INDEXERING i ét: 4 tapper på reservoir-RIMMEN
-// (peger op — printer perfekt ved upright print) griber op i matchende
-// LOMMER i flangens underside (subtraktioner — heller intet print-problem).
-// Vinklerne er BEVIDST asymmetriske → flangen passer kun i ÉN orientering,
-// og de tætte lomme-tolerancer holder samtidig cuppen præcist centreret
-// med ens ring-gab hele vejen rundt.
-// Vinkler valgt fri af flange-åbningerne (90° slids, 180° slanger,
-// 270° refill):
-rim_tab_angles = [30, 150, 210, 315];
-rim_tab_w = 8;                   // tangentielt (radial dybde = reservoir_wall)
-rim_tab_h = 2.5;                 // højde over rim
 
 // ============================================================================
 // ZERO-PENETRATION PRINCIP (ADR 009): INGEN huller under vandlinjen.
-// Alle slanger + kabler ruter: op gennem ring-gabet → gennem åbninger i
-// cup-flangen → ned UDVENDIGT langs reservoiret → ind i ebase via side-glands.
+// Alle slanger + kabler ruter: op gennem SERVICE-KANALERNE i cup-kanten
+// (ADR 010) → ned UDVENDIGT langs reservoiret → ind i ebase via side-glands.
 //
 // Vinkel-allokering (set oppefra, konsistent på tværs af alle dele):
-//    0°: water-strip guide-ribber (indvendig) + USB-C gland (ebase)
+//    0°: USB-C gland (ebase)
 //   45°: drænhul (ebase, fri af bosses)
-//   90°: kabel-slids i flange + kabel-gland (ebase) + float-klips (bund)
-//  180°: slange-åbning i flange + slange-gland (ebase)
-//  270°: refill-åbning i flange + overflow-hul (reservoir-væg)
-//  30/150/210/315°: rim-tapper (centrering + rotations-indexering)
+//   90°: KABEL-KANAL (cup) + float-klips (bund) + kabel-gland (ebase)
+//  180°: SLANGE-KANAL (cup) + trykslange-hul i kanal-væg + PG9-gland (ebase)
+//  270°: REFILL-KANAL (cup) + water-strip ribber (væg) + overflow-hul (væg)
+//
+// Orientering: strip-ribberne (spænd ~26mm) passerer kun refill-kanalen
+// (Ø28) — kabel/slange-kanalerne (Ø16/18) er for smalle → kun ÉN rotation
+// er fysisk mulig. Centrering: 1mm kant-clearance.
 // ============================================================================
 
 // Water level strip — holdes af to lodrette guide-ribber på indervæggen
+// ved 270° (inde i refill-kanalen — strippen er vandtæt og måler jo netop
+// vand, så påfyldnings-strømmen forbi den er uproblematisk).
 // (IKKE en fræset slot: det skar gennem væggen = lækage. Audit-fix 2.)
 waterlevel_strip_w = 18;
 waterlevel_strip_t = 2;
 waterlevel_strip_h = 50;         // dækker vand-zonen (0-40mm) + margin
 strip_rib_w = 3;                 // ribbe-bredde (tangentielt)
-strip_rib_t = 3;                 // ribbe-dybde (radialt, ind i ring-gabet)
+strip_rib_t = 3;                 // ribbe-dybde (radialt, ind i kanal-rummet)
 
 // Float switch — sidder i en print-integreret klips-ring i bunden.
-// Kablet går op gennem vandet/ring-gabet (float-kabler er vandtætte).
+// Kablet går op gennem vandet og op ad kabel-kanalen ved 90°.
 float_switch_d = 16;             // typisk vertical float switch
-float_switch_x = 30;             // offset fra center (fri af cup-S skygge? nej
-                                 // — under cuppen er fint, kablet føres skråt
-                                 // ud til ring-gabet ved 90°)
+float_switch_x = 30;             // offset fra center (under cuppen)
 float_clip_h = 10;               // klips-ring højde
 float_clip_wall = 2;
 
-// Slanger (2× 6mm OD: suge + tryk) gennem flange-åbning ved 180°
-pump_port_d = 7;                 // hul i CUP-VÆGGEN til trykslangens dyse
-hose_pass_d = 14;                // flange-åbning: plads til 2× Ø6 slanger
-// Radial position: midt i ring-gabet — ADAPTIV, følger cup-størrelsen
-hose_pass_x = cup_diameter / 2 + ring_gap / 2;
-
-// Refill-åbning i flangen ved 270° — samme radiale position som slangerne
-refill_opening_x = hose_pass_x;
-refill_opening_d = min(20, ring_gap - 2);   // 18mm ved ring_gap=20
-
-// Kabel-slids i flangen ved 90° — åben mod kanten så kabler med stik kan
-// lægges i fra siden ved montering
-cable_slot_w = 8;
-
-// (Rotations-indexering er slået sammen med centrering — se rim_tab_*
-//  parametrene ovenfor. De 4 asymmetriske rim-tapper klarer begge dele.)
-
-// Refill: gennem flange-åbningen ved 270°. Fuld refill-tube m. tragt = v1.1.
+// Trykslangens dyse-hul i cup-væggen (i slange-kanalens flade, nær toppen)
+pump_port_d = 7;                 // 4mm slange + tolerance
 
 
 // ----------------------------------------------------------------------------
@@ -244,11 +234,12 @@ $fn = 64;                        // smooth cylinder facets; sæt højere for fin
 // (cylinder, cube, etc.) her — det ville forurene alle includere.
 // Hvis du vil se geometri ved at åbne params.scad direkte, så åbn i stedet
 // en af part-filerne (plant_cup.scad, reservoir.scad, ...) der include'er denne.
-echo("=== GreenThumbs CAD params (variant A, adaptiv diameter) ===");
+echo("=== GreenThumbs CAD params (variant A, scalloped cup ADR 010) ===");
 echo("cup_size:", cup_size);
 echo("cup_diameter:", cup_diameter, "mm");
 echo("cup_height:", cup_height, "mm");
-echo("ring_gap (fast):", ring_gap, "mm");
+echo("kanaler (kabel/slange/refill):",
+     channel_cable_d, "/", channel_hose_d, "/", channel_refill_d, "mm");
 echo("water_zone_h:", water_zone_h, "mm");
 echo("reservoir_capacity (BEREGNET):", reservoir_capacity_ml, "ml");
 echo("reservoir_height (BEREGNET):", reservoir_height, "mm");

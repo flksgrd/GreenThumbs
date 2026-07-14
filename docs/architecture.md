@@ -64,19 +64,21 @@ STACK VARIANT A (besluttet 2026-06): cup hænger NEDSÆNKET i reservoiret.
 │     rubber feet på lid i stedet   │
 └───────────────────────────────────┘
 
-ADAPTIV DIAMETER (2026-07): cup-størrelsen driver alle diametre via fast
-ring_gap = 20mm. Hver størrelse er et matchende sæt:
+SCALLOPED CUP (ADR 010, 2026-07): cuppen fylder næsten hele reservoir-
+åbningen; 3 lodrette service-kanaler i cup-kanten (kabel Ø16 @ 90°,
+slange Ø18 @ 180°, refill Ø28 @ 270°) erstatter ring-gabet. Cup-størrelsen
+driver alle diametre — hver størrelse er et matchende sæt:
 
 | Størrelse | Cup | Ydre Ø | Kapacitet | Total højde | Pyntepotte |
 |---|---|---|---|---|---|
-| S | Ø100×120 | 146 | ~493 ml | ~208mm | ≥ Ø166 |
-| M | Ø140×160 | 186 | ~814 ml | ~248mm | ≥ Ø206 |
-| L | Ø180×200 | 226 | ~1216 ml | ~288mm | ≥ Ø246 |
+| S | Ø100×120 | 108 | ~261 ml | ~208mm | ≥ Ø128 |
+| M | Ø140×160 | 148 | ~507 ml | ~248mm | ≥ Ø168 |
+| L | Ø180×200 | 188 | ~832 ml | ~288mm | ≥ Ø208 |
 | CUSTOM | frit | beregnes | beregnes | beregnes | tunes til potten |
 
-(+ ~33mm højde med optional load cell.) Centrering + rotations-lås via 4
-asymmetriske rim-tapper der griber i flange-lommer — cuppen sidder altid
-centreret og orienteret korrekt.
+(+ ~33mm højde med optional load cell.) Rotations-lås: reservoir-væggens
+strip-ribber passerer kun refill-kanalen → kun én mulig orientering.
+Centrering: 1mm kant-clearance.
 ```
 
 ## Vandstrøm (zero-penetration, ADR 009)

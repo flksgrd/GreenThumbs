@@ -68,33 +68,39 @@ For planter der foretrækker bottom-watering installeres en cotton/nylon-wick ge
 
 Ingen CAD-ændring nødvendig — eksisterende 4mm center drænhul er rigeligt for 4mm snor. Se [ADR 006](../../../docs/decisions/006-bottom-watering-strategies.md) og [plant-profiles.md](../../../docs/plant-profiles.md) for hvilke profiler der bruger wick.
 
-## Stack-geometri: Variant A + adaptiv diameter (2026-07)
+## Stack-geometri: Variant A + scalloped cup (ADR 010, 2026-07)
 
-Cuppen hænger **nedsænket** i reservoiret fra sin flange. Vandet lever i
-zonen under cup-bunden (op til overflow-niveau, ADR 009) — ring-gabet er
-en TØR servicekanal.
+Cuppen hænger **nedsænket** i reservoiret fra sin flange og fylder næsten
+hele åbningen (1mm kant-clearance). I stedet for et koncentrisk ring-gab
+har cuppen **3 lodrette service-kanaler** — konkave udskæringer i kanten:
 
-**Adaptivt design:** cup-størrelsen driver ALLE diametre via et **fast
-ring_gap på 20mm** — reservoir, electronics base, lid og load cell-platform
-skalerer med. Hver størrelse er et **matchende sæt** (reservoir/base
-re-printes per størrelse); til gengæld er gabet altid ens, og reservoiret
-maksimalt for pyntepotten.
+| Vinkel | Kanal | Ø | Funktion |
+|---|---|---|---|
+| 90° | Kabel | 16 | Soil/strip/float-kabler |
+| 180° | Slange | 18 | Suge + tryk (dyse-hul i kanal-flade nær top) |
+| 270° | Refill | 28 | Påfyldning + water-strip m. ribber |
 
-| cup_size | Cup | Reservoir ydre Ø | Kapacitet | Total højde | Pyntepotte (indre) |
+Vandet lever i zonen under cup-bunden (op til overflow-niveau, ADR 009) —
+kanalerne er TØRRE servicekanaler.
+
+**Orientering:** strip-ribberne på reservoir-væggen (fuld højde, ved 270°)
+passerer kun den brede refill-kanal → cuppen kan kun sænkes ned i ÉN
+rotation. **Centrering:** kant-clearance. Ingen tapper/lommer.
+
+**Adaptivt:** cup-størrelsen driver alle diametre (matchende sæt per
+størrelse — reservoir/base re-printes ved størrelses-skift):
+
+| cup_size | Cup | Ydre Ø | Kapacitet | Total højde | Pyntepotte (indre) |
 |---|---|---|---|---|---|
-| S | Ø100×120 | 146 | ~493 ml | ~208mm | ≥ Ø166 |
-| M | Ø140×160 | 186 | ~814 ml | ~248mm | ≥ Ø206 |
-| L | Ø180×200 | 226 | ~1216 ml | ~288mm | ≥ Ø246 |
-| CUSTOM (eksempel) | Ø190×145 | 236 | ~1330 ml | ~233mm | Ø260×230 (Monstera-potte) |
+| S | Ø100×120 | 108 | ~261 ml | ~208mm | ≥ Ø128 |
+| M | Ø140×160 | 148 | ~507 ml | ~248mm | ≥ Ø168 |
+| L | Ø180×200 | 188 | ~832 ml | ~288mm | ≥ Ø208 |
+| CUSTOM (eksempel) | Ø230×145 | 238 | ~1353 ml | ~233mm | Ø260×230 (Monstera-potte) |
 
 **CUSTOM**: sæt `custom_cup_diameter`/`custom_cup_height` i params.scad frit
 efter din pyntepotte — echo-outputtet viser pyntepotte-kravet direkte.
-
-**Centrering + rotations-lås:** 4 tapper på reservoir-rimmen (asymmetriske
-vinkler 30/150/210/315°) griber op i lommer i flangens underside. Cuppen
-kan kun sidde i ÉN orientering og altid præcist centreret — ring-gabet er
-ens hele vejen rundt, og flange-åbningerne flugter altid med reservoirets
-features (overflow under refill osv.).
+**Mere kapacitet?** Øg `water_zone_h` (40 → 55mm giver +47% vand for +15mm
+total højde).
 
 Visualisér med [assembly_check.scad](assembly_check.scad) — view-modes:
 `iso|section|top|exploded|reservoir|ebase` (se fil-header). Renders i

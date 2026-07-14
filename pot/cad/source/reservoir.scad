@@ -6,12 +6,12 @@
 // Eneste hul er OVERFLOW-hullet (over max-fill, det er selve pointen).
 // Slanger og kabler ruter gennem ring-gabet og cup-flangens åbninger.
 //
-// Features (vinkler jf. params.scad allokering):
-//    0°: to lodrette guide-ribber til water level strip (klemmes imellem)
-//   90°: float switch klips-ring i bunden (kabel op gennem ring-gab)
-//  270°: overflow-hul i væggen, 8mm under cup-bund-niveau
-//  30/150/210/315°: rim-tapper — centrering + rotations-indexering
-//  (asymmetriske vinkler → cup-flangen passer kun i én orientering)
+// Features (vinkler jf. params.scad allokering / ADR 010 scalloped cup):
+//   90°: float switch klips-ring i bunden (kabel op ad cup'ens kabel-kanal)
+//  270°: to lodrette guide-ribber til water level strip — de stikker ind i
+//        cup'ens brede REFILL-KANAL og fungerer samtidig som rotations-lås
+//        (ribbe-spændet passer kun i den kanal) — plus overflow-hul i
+//        væggen, 8mm under cup-bund-niveau
 //
 // STACK VARIANT A: høj cylinder hvor cuppen hænger fra top-rimmen via sin
 // flange. Vandet lever i zonen UNDER cup-bunden. Højde og kapacitet
@@ -46,17 +46,19 @@ module reservoir() {
 
         // ─── Additive features (ingen af dem gennembryder væggen) ───────────
 
-        // Water level strip guide-ribber ved 0°: strippen skubbes ned
-        // mellem ribberne og hviler mod indervæggen. (Erstatter tidligere
-        // gennemskåret slot = lækage-bug.)
+        // Water level strip guide-ribber ved 270° — inde i cup'ens
+        // refill-kanal. Strippen skubbes ned mellem ribberne og hviler
+        // mod indervæggen. Ribberne går i FULD højde op til rimmen:
+        // de fungerer samtidig som rotations-lås (spændet ~26mm passerer
+        // kun cup'ens Ø28 refill-kanal — de smallere kanaler blokerer).
         for (side = [-1, 1]) {
-            rotate([0, 0, 0])
+            rotate([0, 0, channel_refill_angle])
                 translate([reservoir_inner_d / 2 - strip_rib_t,
                            side * (waterlevel_strip_w / 2 + print_tolerance
                                    + strip_rib_w / 2) - strip_rib_w / 2,
                            reservoir_wall])
                     cube([strip_rib_t, strip_rib_w,
-                          waterlevel_strip_h + 10]);
+                          reservoir_height - reservoir_wall]);
         }
 
         // Float switch klips-ring i bunden ved 90° (åben ring, floaten
@@ -75,16 +77,8 @@ module reservoir() {
                         cube([float_switch_d, 6, float_clip_h + 1]);
                 }
 
-        // Rim-tapper: centrering + rotations-indexering i ét. Fire tapper
-        // ved asymmetriske vinkler (30/150/210/315°) griber op i matchende
-        // lommer i cup-flangens underside — cuppen kan kun sidde i ÉN
-        // orientering og holdes præcist centreret. Tapperne sidder på
-        // rim-bandet (inner→outer radius) og printer perfekt (peger op).
-        for (a = rim_tab_angles)
-            rotate([0, 0, a])
-                translate([reservoir_inner_d / 2, -rim_tab_w / 2,
-                           reservoir_height])
-                    cube([reservoir_wall, rim_tab_w, rim_tab_h]);
+        // (Rim-tapper fjernet — ADR 010: orientering låses af strip-
+        //  ribberne i refill-kanalen, centrering af 1mm kant-clearance.)
     }
 }
 
