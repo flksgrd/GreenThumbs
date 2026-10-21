@@ -45,7 +45,7 @@ Deler MCU + firmware-platform med plantekrukken.
 ## Quick reference
 
 - **Komponentliste / BOM**: [pot/hardware/bom.csv](pot/hardware/bom.csv)
-- **Indkøbsliste (begge versioner)**: [docs/shopping-list.md](docs/shopping-list.md)
+- **Indkøbslister (orkide + pot/)**: [docs/shopping-list.md](docs/shopping-list.md)
 - **Wiring-diagram**: [pot/hardware/breadboard/wiring-diagram.md](pot/hardware/breadboard/wiring-diagram.md)
 - **Planteprofiler**: [docs/plant-profiles.md](docs/plant-profiles.md)
 - **Arkitektur**: [docs/architecture.md](docs/architecture.md)
