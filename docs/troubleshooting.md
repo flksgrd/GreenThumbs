@@ -47,7 +47,7 @@ Pumpen sidder i electronics base, direkte over load cell. Mekaniske vibrationer 
 1. Tag electronics base af.
 2. Tør komplet med absorbing klud + 24t i tørt rum.
 3. Inspicer for korrosion på pin headers og passive komponenter.
-4. Find lækage-kilde: typisk slange-grommet eller PG7 cable gland. Skift gasket.
+4. Find lækage-kilde: typisk slange-grommet eller M12 cable gland. Skift gasket.
 5. Test electronics base separat (uden vand) før samling igen.
 
 **Forebyggelse**: drænhullet i electronics base bund skal være åbent (papir-clip kan rense det).

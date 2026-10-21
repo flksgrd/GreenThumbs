@@ -10,7 +10,7 @@ Er der noget at hente med piezo-komponenter — strømbesparelse, energi, eller 
 
 ### Data (Bartels mikropumper, markedets standard)
 
-| Parameter | Bartels BP7 (piezo) | Kamoer KPP (peristaltisk, vores valg) |
+| Parameter | Bartels BP7 (piezo) | Kamoer KXF-DC (peristaltisk, vores valg) |
 |---|---|---|
 | Flow (vand) | 0–9 ml/min | ~30 ml/min |
 | Effekt | **~50 mW** | ~3.6 W |

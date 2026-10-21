@@ -73,7 +73,7 @@ channel_cable_d      = 16;
 channel_hose_angle   = 180;      // 2× Ø6 slanger (suge + tryk)
 channel_hose_d       = 18;
 channel_refill_angle = 270;      // påfyldning + water-strip + ribber
-channel_refill_d     = 28;       // ≥ strip-ribbe-spænd (~26mm) → unik lås
+channel_refill_d     = 30;       // > strip-ribbe-spænd (~26.6mm) → unik lås
 
 // Top-ring til plant cup (defineres FØR reservoir_height-formlen —
 // OpenSCAD tillader ikke forward references)
@@ -113,21 +113,24 @@ flange_outer_d = reservoir_outer_d + 2 * top_ring_width;
 //    0°: USB-C gland (ebase)
 //   45°: drænhul (ebase, fri af bosses)
 //   90°: KABEL-KANAL (cup) + float-klips (bund) + kabel-gland (ebase)
-//  180°: SLANGE-KANAL (cup) + trykslange-hul i kanal-væg + PG9-gland (ebase)
+//  180°: SLANGE-KANAL (cup) + trykslange-hul i kanal-væg + M16-gland (ebase)
 //  270°: REFILL-KANAL (cup) + water-strip ribber (væg) + overflow-hul (væg)
 //
-// Orientering: strip-ribberne (spænd ~26mm) passerer kun refill-kanalen
-// (Ø28) — kabel/slange-kanalerne (Ø16/18) er for smalle → kun ÉN rotation
+// Orientering: strip-ribberne (spænd ~26.6mm) passerer kun refill-kanalen
+// (Ø30) — kabel/slange-kanalerne (Ø16/18) er for smalle → kun ÉN rotation
 // er fysisk mulig. Centrering: 1mm kant-clearance.
 // ============================================================================
 
-// Water level strip — holdes af to lodrette guide-ribber på indervæggen
-// ved 270° (inde i refill-kanalen — strippen er vandtæt og måler jo netop
-// vand, så påfyldnings-strømmen forbi den er uproblematisk).
+// Water level sensor: Seeed Grove Water Level Sensor 10cm (101020635) —
+// kapacitiv, belagt PCB, I2C 0x77/0x78, 20×133mm, ±5mm. Holdes af to
+// lodrette guide-ribber på indervæggen ved 270° (inde i refill-kanalen —
+// sensoren er vandtæt og måler netop vand, så påfyldnings-strømmen forbi
+// den er uproblematisk). Vandet må aldrig nå sensorens hvide skillelinje
+// (elektronik-zonen) — max-vand er overflow-niveau (~32mm), langt under.
 // (IKKE en fræset slot: det skar gennem væggen = lækage. Audit-fix 2.)
-waterlevel_strip_w = 18;
+waterlevel_strip_w = 20;         // Grove-sensorens PCB-bredde
 waterlevel_strip_t = 2;
-waterlevel_strip_h = 50;         // dækker vand-zonen (0-40mm) + margin
+waterlevel_strip_h = 133;        // Grove-sensorens længde (passer i alle sæt)
 strip_rib_w = 3;                 // ribbe-bredde (tangentielt)
 strip_rib_t = 3;                 // ribbe-dybde (radialt, ind i kanal-rummet)
 
@@ -155,12 +158,16 @@ gasket_groove_w = 2.5;              // for 2mm O-ring
 gasket_groove_d = 1.6;
 gasket_groove_offset = 4;           // fra ydre kant
 
-// Cable glands i ebase-siden (zero-penetration: alt kommer ind fra siden,
-// ebase-toppen er nu HELT lukket). Vinkler matcher flange-åbningerne lodret:
-//   0° = USB-C (PG7), 90° = sensor-kabler (PG7), 180° = slanger (PG9/grommet)
-gland_hole_d = 12;                  // PG7 = 12mm hul (USB-C + kabler)
-hose_gland_d = 16;                  // PG9 = 16mm hul (2× Ø6 slanger)
-gland_angles = [0, 90];             // PG7-positioner
+// Gennemføringer i ebase-siden (zero-penetration: alt kommer ind fra siden,
+// ebase-toppen er HELT lukket). Metriske glands — hul-Ø = gevind-Ø:
+//    0° = USB-C PANEL-MOUNT (et USB-C-stik kan ikke trækkes gennem en
+//         M12-gland). 12mm er en placeholder: TILPAS hullet til den
+//         valgte panel-mount-del når den er købt.
+//   90° = sensor-kabler (M12×1.5 gland, kabel-Ø 3-6.5mm)
+//  180° = slanger (M16×1.5 gland m. 2-huls indsats, eller split-grommet)
+gland_hole_d = 12;                  // M12 = 12mm hul
+hose_gland_d = 16;                  // M16 = 16mm hul (2× Ø6 slanger)
+gland_angles = [0, 90];             // 0° = USB-C panel-mount, 90° = M12
 hose_gland_angle = 180;
 
 // Drænhul (fail-safe ved lækage). AUDIT-FIX: 3→4mm (hurtigere afløb ved
@@ -168,27 +175,31 @@ hose_gland_angle = 180;
 drain_hole_d = 4;
 
 // Pump mount — DUAL FOOTPRINT på lid'ets indvendige side (piezo-research):
-// passer både Kamoer KPP peristaltisk (2× M3, 46mm c-c flange) og
-// Bartels BP7 + mp-Lowdriver (4× M3 i 24mm kvadrat til clamp/standoffs).
+// peristaltisk pumpe (2× M3 flange) og Bartels BP7 + mp-Lowdriver
+// (4× M3 i 24mm kvadrat til clamp/standoffs).
+// OBS: 46mm c-c er en ANTAGELSE — ingen datablad fundet for hulafstanden.
+// Mål flangen på den pumpe du køber og ret pump_mount_kamoer_spacing.
 pump_mount_boss_h = 4;            // boss-højde over lid-flade
 pump_mount_boss_d = 9;            // boss-diameter (M3 insert = 4.0mm hul)
-pump_mount_kamoer_spacing = 46;   // 2-huls flange c-c
+pump_mount_kamoer_spacing = 46;   // 2-huls flange c-c — VERIFICÉR
 pump_mount_bp7_square = 24;       // 4-huls kvadrat side-længde
 
 
 // ----------------------------------------------------------------------------
 // 4. Load cell mount
 // ----------------------------------------------------------------------------
-// Bar load cell — TAL220 5kg eller equivalent
-// (Samme fysiske dimensioner som 1kg-varianten; 5kg giver safety margin for
-// succulenter/orkide. Se ADR 004.)
+// Bar load cell — GENERISK 80×12.7×12.7mm 5kg aluminiums-bar (den type der
+// følger med de fleste HX711-kits). OBS: SparkFun TAL220B 5kg er kun 55mm
+// lang med M5-huller og passer IKKE disse mål. Generiske bars har ofte M4
+// i den ene ende og M5 i den anden — pladernes huller er 4.2mm; bor op til
+// 5.3mm på den plade der møder M5-enden. Se ADR 004.
 loadcell_length = 80;
 loadcell_height = 13;
 loadcell_width = 13;
-loadcell_screw_spacing = 15;     // afstand mellem M4-huller på cellen
+loadcell_screw_spacing = 15;     // afstand mellem huller i hver ende
 
 // Hvor langt fra cellens center er bolt-hullerne (ene end vs anden end)
-// Standard TAL220: ~8mm fra hver ende. Negativ = fixed end, positiv = free end.
+// Generisk 80mm-bar: ~8mm fra hver ende. Negativ = fixed end, positiv = free end.
 loadcell_fixed_x = -loadcell_length / 2 + 8;  // ≈ -32mm for 80mm cell
 loadcell_free_x  =  loadcell_length / 2 - 8;  // ≈ +32mm
 

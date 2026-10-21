@@ -26,7 +26,7 @@ Total brugbare GPIO: 11
 | XIAO pin | GPIO | Function | Tilslutning | Notes |
 |----------|------|----------|-------------|-------|
 | D0 | GPIO0 | ADC | Soil moisture sensor (AOUT) | Bruges af profil-system, kalibreres dry/wet |
-| D1 | GPIO1 | ADC | Water level strip (AOUT) | DFRobot SEN0204 analog |
+| D1 | GPIO1 | ADC | (Reserve) | Frigjort: water level-sensoren er nu I2C (deler bus med AHT20) |
 | D2 | GPIO2 | GPIO PWM | **Piezo buzzer** (passiv, LEDC-drevet) | Refill-indikator + fejl-signaler. Se ADR 008 |
 | D3 | GPIO21 | GPIO ISR | Float switch | Internal pull-up; LOW = vand tomt |
 | D4 | GPIO22 | **I2C SDA** | **AHT20 SDA** | Standard I2C bus til environmental sensor |
@@ -37,7 +37,7 @@ Total brugbare GPIO: 11
 | D9 | GPIO20 | GPIO | Manuel knap | Internal pull-up; LOW = pressed |
 | D10 | GPIO18 | GPIO PWM | Pump MOSFET gate | 0 = pump off, HIGH = pump on. PWM-capable for hastighedskontrol |
 
-**Pin-budget er nu FULDT allokeret** (alle 11 GPIO i brug). Næste sensor/aktuator kræver I2C-device (AHT20-bussen kan deles — fx en I2C GPIO-expander eller DS18B20 via I2C-bridge).
+**Fri GPIO: D1 (ADC-capable).** I2C-bussen (D4/D5) deles af AHT20 (0x38) og Grove water level-sensoren (0x77 + 0x78) — flere I2C-devices kan tilføjes uden at bruge pins.
 
 > **Vigtigt ændring fra tidligere wiring:** AHT20 environmental sensor blev tilføjet som standard v1-komponent (se [ADR 007](../../../docs/decisions/007-env-sensor-aht20.md)). Det krævede:
 > - HX711 flyttet fra D4/D5 til D6/D7 (frigør I2C-bussen for AHT20)
@@ -95,7 +95,7 @@ USB-C Adapter (≥30W PD)
 
 XIAO ESP32-C6
   3V3 ──→ Soil sensor VCC
-        → Water level strip VCC
+        → Grove water level VCC (3.3V)
         → HX711 VCC
         → AHT20 VCC
         → Float switch (en side; anden side til GPIO)
@@ -103,7 +103,7 @@ XIAO ESP32-C6
   GND ──→ All sensor GNDs (shared ground)
 
   D0 (ADC) ──→ Soil sensor AOUT
-  D1 (ADC) ──→ Water level strip AOUT
+  D1 (ADC) ──→ (reserve)
   D3 ──→ Float switch (via 10kΩ pull-up til 3.3V, switch til GND when wet)
   D4 (SDA) ──→ AHT20 SDA   ←─[ 4.7kΩ pull-up til 3.3V ]─
   D5 (SCL) ──→ AHT20 SCL   ←─[ 4.7kΩ pull-up til 3.3V ]─
@@ -129,6 +129,23 @@ AHT20 modul (Adafruit 4566 eller AliExpress generic)
 **I2C address:** 0x38 (fast)
 **Pull-ups:** De fleste AHT20 breakout-boards har integrerede 10kΩ pull-ups på SDA/SCL. Hvis dit board IKKE har dem, tilføj 4.7kΩ resistorer til 3.3V på hver linje.
 **Placering:** Mount AHT20 et sted i electronics base hvor luften kan cirkulere — IKKE direkte over MP1584 buck-converter (varm) eller ESP32 (varm). Helst ved siden af en cable gland så ekstern luft kan nå sensoren.
+
+## Water level-sensor (Seeed Grove 10cm) detaljer
+
+Deler I2C-bussen med AHT20 — ingen ekstra GPIO.
+
+```
+Grove Water Level Sensor 10cm (101020635) — 4-pin Grove-stik
+  ┌─────────────┐
+  │ VCC ──→ 3.3V│
+  │ GND ──→ GND │
+  │ SDA ──→ D4  │ (samme bus som AHT20)
+  │ SCL ──→ D5  │
+  └─────────────┘
+```
+
+**I2C adresser:** 0x77 (nederste 8 pads) + 0x78 (øverste 12 pads) — ingen konflikt med AHT20 (0x38).
+**Kabel:** sensoren sidder i reservoiret (270°); kablet løber op ad refill-kanalen, over flangen og ned udvendigt til M12-glanden ved 90° — ca. 0.5-0.6m. Brug skærmet 4-leder kabel. Bliver bussen ustabil på den længde: sænk I2C-clock til 50 kHz eller stram pull-ups til 2.2kΩ.
 
 ## HX711 detaljer
 

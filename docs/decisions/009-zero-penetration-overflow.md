@@ -31,16 +31,16 @@ Konkret vinkel-allokering (set oppefra, håndhævet af rotations-indexering):
 
 | Vinkel | Flange | Reservoir | Ebase (side) |
 |---|---|---|---|
-| 0° | — | Water-strip guide-ribber (indvendig) | PG7 gland: USB-C |
+| 0° | — | Water-strip guide-ribber (indvendig) | M12 gland: USB-C |
 | 45° | — | — | Drænhul (fail-safe) |
-| 90° | Kabel-slids (åben mod kant) | Float-klips i bund | PG7 gland: sensor-kabler |
-| 180° | Slange-åbning Ø14 | — | PG9 gland: 2× Ø6 slanger |
+| 90° | Kabel-slids (åben mod kant) | Float-klips i bund | M12 gland: sensor-kabler |
+| 180° | Slange-åbning Ø14 | — | M16 gland: 2× Ø6 slanger |
 | 270° | Refill-åbning | **Overflow-hul** | — |
 | 315° | Index-notch (underside) | Index-tap (rim) | — |
 
 - **Water-strip**: holdes af to printede guide-ribber på indervæggen (additivt — intet hul). Kabel op gennem ring-gab.
 - **Float switch**: sidder i en print-integreret klips-ring i bunden. Float-kabler er vandtætte; kablet går op gennem vandet/ring-gabet.
-- **Pumpe-slanger**: sugeslangen hænger ned i vand-zonen gennem ring-gabet (vægtet ende); trykslangen går op samme vej og ind i cup-toppens side-hul. Begge passerer flangens Ø14-åbning og løber udvendigt ned til ebase's PG9-gland.
+- **Pumpe-slanger**: sugeslangen hænger ned i vand-zonen gennem ring-gabet (vægtet ende); trykslangen går op samme vej og ind i cup-toppens side-hul. Begge passerer flangens Ø14-åbning og løber udvendigt ned til ebase's M16-gland.
 - **Rotations-indexering**: tap på reservoir-rim (315°) + notch i flange-underside sikrer at alle åbninger altid flugter.
 
 ### B. Fysisk overflow-beskyttelse
@@ -52,7 +52,7 @@ Konsekvens for kapacitet: max-fill = overflow-niveau → ~814 ml (var ~1018 ved 
 Suppleret af:
 - **LECA-lag** (2-3cm lerkugler) i cup-bunden — bryder kapillær kontakt selv ved kortvarig vandkontakt (assembly-guide)
 - **Buzzer-tærskler (ADR 008)** relativt til overflow-niveau: 100% = overflow, dobbelt-beep ved 95%
-- **Kalibrering**: `adc_full` for water-strip måles ved overflow-niveau — entydigt fysisk referencepunkt
+- **Kalibrering**: 100%-punktet for water-level-sensoren måles ved overflow-niveau — entydigt fysisk referencepunkt
 
 ## Consequences
 
@@ -81,5 +81,5 @@ Suppleret af:
 ## Implementation notes
 
 - CAD: `reservoir.scad` (overflow, ribber, float-klips, index-tap), `plant_cup.scad` (flange-åbninger, index-notch), `electronics_base.scad` (lukket top, 3 side-glands), `params.scad` (vinkel-allokering dokumenteret i header-kommentar)
-- Firmware: refill-detection (ADR 008) skal bruge overflow-relateret skala; `adc_full` kalibreres ved overflow-niveau
-- BOM: PG9-gland til slanger (pos 23 udvidet), LECA, slange-sinker
+- Firmware: refill-detection (ADR 008) skal bruge overflow-relateret skala; 100%-punktet kalibreres ved overflow-niveau
+- BOM: M16-gland til slanger (pos 23 udvidet), LECA, slange-sinker

@@ -14,7 +14,7 @@ Dokumenteret procedure for at kalibrere alle sensorer og pumpe på en samlet kru
 6. Gem i NVS via firmware-kommandoen `cal pump <ml_per_sec>`.
 7. **Verifikation**: kør pumpe i 5 sek og 20 sek, mål output. Forventet inden for ±5%.
 
-Typisk værdi for Kamoer KPP @ 12V: ~0.5 ml/sek (30 ml/min).
+Typisk værdi for Kamoer KXF-DC-S06 @ 12V: ~0.6 ml/sek (forhandler-spec 37 ml/min — mål selv, flow afhænger af slangen).
 
 ## 2. Soil moisture sensor (kapacitiv)
 
@@ -32,19 +32,28 @@ Typiske værdier (DFRobot kapacitiv v2.0 @ 3.3V):
 
 Procent beregnes som: `pct = 100 * (adc_dry - reading) / (adc_dry - adc_wet)`, clampet til [0, 100].
 
-## 3. Water level strip (kapacitiv)
+## 3. Water level sensor (Seeed Grove 10cm, I2C)
 
-**Formål**: Sæt `adc_empty` og `adc_full` for vandniveau-strip.
+**Formål**: Sæt pad-tærskel og 100%-punkt for vandniveau-sensoren.
 
-1. Tom reservoir helt (eller fjern strippen og hold den tør).
-2. Læs ADC-værdi. Notér som `adc_empty`.
-3. Fyld reservoir til **overflow-niveau**: hæld til det begynder at dryppe
+Sensoren har 20 kapacitive pads (8 på I2C 0x77, 12 på 0x78) langs 10cm og
+returnerer én råværdi per pad. Vandstand = antal pads over tærskel × ~5mm
+(spec: ±5mm). Kun de nederste ~7 pads ligger i vand-zonen (max ~32mm) —
+det er rigeligt til refill-buzzerens 25%-trin.
+
+1. Tom reservoir helt. Læs alle 20 pad-værdier (`sensor read water raw`).
+   Notér tør-niveauet.
+2. Fyld reservoir til **overflow-niveau**: hæld til det begynder at dryppe
    fra overflow-hullet (270°), stop, og vent til dryppet er ophørt. Det er
    det fysisk entydige 100%-punkt (ADR 009).
-4. Læs ADC-værdi. Notér som `adc_full`.
-5. Gem via `cal water <adc_empty> <adc_full>`.
+3. Læs pad-værdierne igen. Sæt tærsklen midt mellem tør- og våd-værdierne
+   (Seeeds eksempelkode bruger ~100 som default).
+4. Notér antal våde pads ved overflow som `water_full_pads`.
+5. Gem via `cal water <threshold> <water_full_pads>`.
 
-Typiske værdier (DFRobot SEN0204): `adc_empty` ≈ 0, `adc_full` ≈ 3000.
+Procent beregnes som `pct = 100 * wet_pads / water_full_pads`, clampet til [0, 100].
+Vandet må aldrig nå sensorens hvide skillelinje (elektronik-zonen) — ved
+overflow-niveau er der ~10cm margin.
 
 ## 4. Float switch (binær)
 

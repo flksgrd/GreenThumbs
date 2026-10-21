@@ -23,9 +23,9 @@ på cup-omkredsen, med hver sin funktion og bevidst forskellige størrelser:**
 
 | Vinkel | Kanal | Ø | Indhold |
 |---|---|---|---|
-| 90° | Kabel-kanal | 16 | Soil/strip/float-kabler (op til flangen, ned udvendigt til PG7-gland) |
+| 90° | Kabel-kanal | 16 | Soil/strip/float-kabler (op til flangen, ned udvendigt til M12-gland) |
 | 180° | Slange-kanal | 18 | Suge- + trykslange (Ø6); trykslangens dyse-hul sidder i kanal-fladen nær cup-toppen |
-| 270° | Refill-kanal | 28 | Påfyldning (vandkande-tud) + water-strip med guide-ribber på reservoir-væggen |
+| 270° | Refill-kanal | 30 | Påfyldning (vandkande-tud) + water-strip med guide-ribber på reservoir-væggen |
 
 Kanalerne fortsætter op gennem flangen (klippet til reservoir-åbningen så
 påfyldt vand kun kan lande i reservoiret). Implementeret som 2D-profil
@@ -35,8 +35,8 @@ påfyldt vand kun kan lande i reservoiret). Implementeret som 2D-profil
 ### Orientering og centrering — gratis
 
 - **Rotations-lås:** water-strip-ribberne på reservoir-indervæggen (ved
-  270°, nu i FULD højde) spænder ~26mm — de kan kun passere gennem
-  refill-kanalen (Ø28). Kabel- (16) og slange-kanalen (18) er for smalle.
+  270°, nu i FULD højde) spænder ~26.6mm — de kan kun passere gennem
+  refill-kanalen (Ø30). Kabel- (16) og slange-kanalen (18) er for smalle.
   Cuppen kan derfor fysisk kun sænkes ned i ÉN rotation.
 - **Centrering:** 1mm kant-clearance — cuppen kan maksimalt forskydes 2mm.
 - Rim-tapperne + flange-lommerne fra forrige iteration er FJERNET
@@ -63,7 +63,7 @@ påfyldt vand kun kan lande i reservoiret). Implementeret som 2D-profil
   pointen), eller ved at øge `water_zone_h` (40 → fx 55mm giver +47%
   kapacitet for +15mm højde).
 - **Refill-åbningen er mindre** end vandkande-venlige Ø18+ i gamle design?
-  Nej — refill-kanalen er Ø28, større end før. OK.
+  Nej — refill-kanalen er Ø30, større end før. OK.
 - Cup-print er marginalt mere komplekst (konkave flader) — men lodrette
   vægge, ingen support.
 - Strip-ribber i fuld højde bruger lidt mere filament.

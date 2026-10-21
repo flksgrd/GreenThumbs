@@ -9,11 +9,11 @@
 //    90°: KABEL-KANAL (Ø16) — soil/strip/float-kabler
 //   180°: SLANGE-KANAL (Ø18) — suge + tryk (Ø6); trykslangens dyse-hul
 //         sidder i kanal-fladen nær toppen
-//   270°: REFILL-KANAL (Ø28) — påfyldning; reservoir-væggens strip-ribber
+//   270°: REFILL-KANAL (Ø30) — påfyldning; reservoir-væggens strip-ribber
 //         stikker ind i denne kanal
 //
 // ORIENTERING: strip-ribberne (spænd ~26mm) kan kun passere refill-kanalen
-// (Ø28) — cuppen kan fysisk kun sænkes ned i ÉN rotation. Centrering
+// (Ø30) — cuppen kan fysisk kun sænkes ned i ÉN rotation. Centrering
 // klares af den tætte kant-clearance. (Ingen tapper/lommer nødvendige.)
 //
 // STACK VARIANT A: cuppen hænger fra sin top-flange på reservoir-rimmen.

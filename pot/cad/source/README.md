@@ -11,7 +11,7 @@ Parametriske 3D-modeller for plantekrukken. Alle dimensioner styres fra `params.
 | [params.scad](params.scad) | Ingen geometri — kun variable + echo til console. Åbn for at *redigere* dimensioner. |
 | [plant_cup.scad](plant_cup.scad) | Skifteligt indre kop (jord + plante). Størrelse styret via `cup_size`. |
 | [reservoir.scad](reservoir.scad) | Vand-beholder med sensor-slots + pump-port + refill-notch. |
-| [electronics_base.scad](electronics_base.scad) | Vandtæt elektronik-kammer + aftageligt låg (renderes side-by-side). Lid har **dual-footprint pump-mount**: Kamoer KPP (2× M3, 46mm c-c) eller Bartels BP7 piezo + driver (4× M3, 24mm kvadrat) — se [piezo-research](../../../docs/research/piezo-components.md). |
+| [electronics_base.scad](electronics_base.scad) | Vandtæt elektronik-kammer + aftageligt låg (renderes side-by-side). Lid har **dual-footprint pump-mount**: Kamoer KXF-DC (2× M3, 46mm c-c) eller Bartels BP7 piezo + driver (4× M3, 24mm kvadrat) — se [piezo-research](../../../docs/research/piezo-components.md). |
 | [load_cell_mount.scad](load_cell_mount.scad) | Vægt-platform (lower plate + upper plate + load cell visualisering). |
 
 ## Skift plantestørrelse
@@ -78,7 +78,7 @@ har cuppen **3 lodrette service-kanaler** — konkave udskæringer i kanten:
 |---|---|---|---|
 | 90° | Kabel | 16 | Soil/strip/float-kabler |
 | 180° | Slange | 18 | Suge + tryk (dyse-hul i kanal-flade nær top) |
-| 270° | Refill | 28 | Påfyldning + water-strip m. ribber |
+| 270° | Refill | 30 | Påfyldning + water-strip m. ribber |
 
 Vandet lever i zonen under cup-bunden (op til overflow-niveau, ADR 009) —
 kanalerne er TØRRE servicekanaler.
@@ -115,6 +115,6 @@ Ting der mangler men ikke blokerer for første prototype:
 - [ ] Pump-slange grommet i electronics base top
 - [ ] Refill funnel-design (separat top-del der klikker på reservoir)
 - [ ] Drip ring på top af plant cup (jævn fordeling af vand)
-- [ ] Snap-fit cable gland (alternativ til M12/PG7 metal glands)
+- [ ] Snap-fit cable gland (alternativ til M12 metal glands)
 - [ ] Hex-pattern dræn i bund (lige nu er det 1 center + 6 ring; hex giver bedre flow)
 - [ ] Optional wick-guide tube under center drænhul (holder wick aligned + minimiserer sideways drag)

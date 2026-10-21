@@ -5,14 +5,14 @@
 //   - XIAO ESP32-C6 + AHT20 + buzzer
 //   - MOSFET + buck-converter + PD-trigger på prototype board
 //   - Pumpe monteret på lid'ets indvendige side (DUAL FOOTPRINT:
-//     Kamoer KPP peristaltisk ELLER Bartels BP7 piezo + driver — se
+//     Kamoer KXF-DC peristaltisk ELLER Bartels BP7 piezo + driver — se
 //     docs/research/piezo-components.md)
 //
 // ZERO-PENETRATION (ADR 009): toppen er HELT lukket — reservoiret ovenpå
 // har ingen bund-gennemføringer, så selv ved reservoir-lækage ned langs
 // siderne er elektronikken beskyttet af den lukkede top + kant-O-ring.
 // Alt (USB, kabler, slanger) kommer ind via side-glands:
-//    0° PG7 = USB-C, 90° PG7 = sensor-kabler, 180° PG9 = 2× slanger
+//    0° M12 = USB-C, 90° M12 = sensor-kabler, 180° M16 = 2× slanger
 //
 // Adgang sker via aftageligt låg i BUNDEN (lid skrues på med M3-skruer).
 //
@@ -44,7 +44,7 @@ module electronics_base() {
 
                 // Cable glands gennem side-væg (zero-penetration, ADR 009:
                 // toppen er nu HELT lukket — alt kommer ind fra siden).
-                // PG7 ved 0° (USB-C) og 90° (sensor-kabler):
+                // M12 ved 0° (USB-C) og 90° (sensor-kabler):
                 for (a = gland_angles) {
                     rotate([0, 0, a])
                         translate([0, 0, ebase_height / 2])
@@ -52,7 +52,7 @@ module electronics_base() {
                                 cylinder(d = gland_hole_d,
                                          h = ebase_outer_d / 2 + 2);
                 }
-                // PG9 ved 180° (2× Ø6 slanger — suge + tryk):
+                // M16 ved 180° (2× Ø6 slanger — suge + tryk):
                 rotate([0, 0, hose_gland_angle])
                     translate([0, 0, ebase_height / 2])
                         rotate([0, 90, 0])
@@ -125,12 +125,12 @@ module electronics_base_lid() {
     }
 }
 
-// ─── Dual-footprint pump mount (Kamoer KPP eller Bartels BP7) ───────────────
+// ─── Dual-footprint pump mount (Kamoer KXF-DC eller Bartels BP7) ───────────────
 // Bosserne sidder centreret på lid'et — frit for lid-skruerne ved kanten.
 //   - 2× boss på 46mm c-c (Kamoer flange, langs X)
 //   - 4× boss i 24mm kvadrat (BP7 clamp-plade / mp-Lowdriver standoffs)
 module pump_mount_positions() {
-    // Kamoer KPP: 2 huller langs X
+    // Kamoer KXF-DC: 2 huller langs X
     for (dx = [-pump_mount_kamoer_spacing / 2, pump_mount_kamoer_spacing / 2])
         translate([dx, 0, 0]) children();
 

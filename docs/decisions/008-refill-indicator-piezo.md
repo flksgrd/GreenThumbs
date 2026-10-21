@@ -23,7 +23,7 @@ Firmware-flow (implementeres i Fase 1):
 **Skala-reference (ADR 009):** 100% = **overflow-niveau** (det fysiske hul i
 reservoir-væggen, 8mm under cup-bund). Buzzeren advarer altså FØR vandet når
 overflow — overflow-hullet er sidste fysiske forsvarslinje, buzzeren den
-første. `adc_full` kalibreres ved overflow-niveau (se calibration.md).
+første. 100%-punktet kalibreres ved overflow-niveau (se calibration.md).
 
 Buzzeren genbruges desuden til fejl-signalering:
 - Lav buzz (200 Hz, 1 sek) ved profil/hardware-mismatch (fx orkide-profil uden load cell, ADR 004)

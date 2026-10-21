@@ -25,7 +25,7 @@
 |        └──→ MP1584 buck (12V→5V) ──→ XIAO ESP32-C6              |
 |                                          │                       |
 |                                          ├── ADC0: soil moisture │
-|                                          ├── ADC1: water level   │
+|                                          ├── I2C: water level    │ (Grove, 0x77/78)
 |                                          ├── GPIO ISR: float     │
 |                                          ├── I2C: AHT20          │ (temp + RH)
 |                                          ├── GPIO: HX711 SCK/DT  │ (optional)
@@ -55,7 +55,7 @@ STACK VARIANT A (besluttet 2026-06): cup hænger NEDSÆNKET i reservoiret.
 │   • XIAO ESP32-C6 + AHT20 + buzzer│
 │   • MOSFET + buck-converter       │
 │   • Pumpe på lid (dual footprint: │
-│     Kamoer KPP eller BP7 piezo)   │
+│     Kamoer KXF-DC eller BP7 piezo)   │
 │   • O-ring/EPDM gasket på top     │
 ├───────────────────────────────────┤
 │  LOAD CELL platform (OPTIONAL)    │ ← kun for orkide / power-user
@@ -66,7 +66,7 @@ STACK VARIANT A (besluttet 2026-06): cup hænger NEDSÆNKET i reservoiret.
 
 SCALLOPED CUP (ADR 010, 2026-07): cuppen fylder næsten hele reservoir-
 åbningen; 3 lodrette service-kanaler i cup-kanten (kabel Ø16 @ 90°,
-slange Ø18 @ 180°, refill Ø28 @ 270°) erstatter ring-gabet. Cup-størrelsen
+slange Ø18 @ 180°, refill Ø30 @ 270°) erstatter ring-gabet. Cup-størrelsen
 driver alle diametre — hver størrelse er et matchende sæt:
 
 | Størrelse | Cup | Ydre Ø | Kapacitet | Total højde | Pyntepotte |
@@ -91,11 +91,11 @@ electronics base's side-glands:
 Reservoir vand-zone (under cup)
      │
      ↓ SUGESLANGE (m. sinker-vægt) op gennem ring-gab → flange-åbning 180°
-       → ned UDVENDIGT → PG9-gland i ebase-siden → pumpe-indgang
+       → ned UDVENDIGT → M16-gland i ebase-siden → pumpe-indgang
      │
      ↓ Peristaltisk pumpe i electronics base (drevet via MOSFET, 12V)
      │
-     ↓ TRYKSLANGE ud af PG9 → op UDVENDIGT → flange-åbning 180°
+     ↓ TRYKSLANGE ud af M16 → op UDVENDIGT → flange-åbning 180°
        → ind i cup-toppens side-hul → dripper på jord-overfladen
      │
      ↓ Jord → plantens rødder
@@ -114,7 +114,7 @@ fra cup'ens center-drænhul direkte ned i vand-zonen (20-50mm afstand) —
 kontinuert kapillær-vanding uden pumpe.
 
 **Sensor-kabler** (soil, water-strip, float): op gennem ring-gab → flangens
-kabel-slids (90°) → ned udvendigt → PG7-gland i ebase-siden.
+kabel-slids (90°) → ned udvendigt → M12-gland i ebase-siden.
 
 ## Software-arkitektur
 

@@ -50,7 +50,7 @@ module reservoir() {
         // refill-kanal. Strippen skubbes ned mellem ribberne og hviler
         // mod indervæggen. Ribberne går i FULD højde op til rimmen:
         // de fungerer samtidig som rotations-lås (spændet ~26mm passerer
-        // kun cup'ens Ø28 refill-kanal — de smallere kanaler blokerer).
+        // kun cup'ens Ø30 refill-kanal — de smallere kanaler blokerer).
         for (side = [-1, 1]) {
             rotate([0, 0, channel_refill_angle])
                 translate([reservoir_inner_d / 2 - strip_rib_t,

@@ -14,7 +14,7 @@ Pumpen skal være:
 
 ## Decision
 
-Vi bruger en **peristaltisk 12V DC pumpe** (Kamoer KPP eller tilsvarende generisk, ~30 ml/min) drevet via N-channel logic-level MOSFET (IRLB8721) fra ESP32-C6 GPIO.
+Vi bruger en **peristaltisk 12V DC pumpe** (Kamoer KXF-DC eller tilsvarende generisk, ~30 ml/min) drevet via N-channel logic-level MOSFET (IRLB8721) fra ESP32-C6 GPIO.
 
 ## Consequences
 

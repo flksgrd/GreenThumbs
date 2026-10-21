@@ -92,7 +92,7 @@ Hvis validering fejler: HomeKit Mode Select cluster reporterer fejl, status-LED 
 ### Hardware-build
 
 - For Monstera/Peace Lily/store planter: spring `load_cell_mount.scad` over. Tilføj 3-4× stick-on rubber feet (~Ø15mm) til bunden af `electronics_base_lid`.
-- For orkide/succulent: print `load_cell_mount.scad` og brug 5kg TAL220 (eller equivalent) med M4-bolte + 2mm spacer-skiver.
+- For orkide/succulent: print `load_cell_mount.scad` og brug en generisk 80×12.7×12.7mm 5kg bar (HX711-kit-typen — IKKE SparkFun TAL220B, som er 55mm) med M4/M5-bolte; pladernes bosser er spacerne.
 
 ### Kalibrering
 

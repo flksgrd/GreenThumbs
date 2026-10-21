@@ -37,11 +37,13 @@ static const char *TAG = "greenthumbs";
 // NB: D4/D5 er nu reserveret til AHT20 I2C (SDA/SCL). HX711 er flyttet til
 // D6/D7. ESP-IDF console kører på USB-CDC i stedet for UART (se ADR 007).
 constexpr int PIN_SOIL_ADC      = 0;   // D0 / GPIO0 / ADC1_CH0
-constexpr int PIN_WATER_ADC     = 1;   // D1 / GPIO1 / ADC1_CH1
+// D1 / GPIO1 er reserve — water level-sensoren (Grove 10cm) sidder på I2C
+constexpr uint8_t WATER_I2C_LOW   = 0x77; // nederste 8 pads
+constexpr uint8_t WATER_I2C_HIGH  = 0x78; // øverste 12 pads
 constexpr int PIN_BUZZER        = 2;   // D2 / GPIO2 (piezo buzzer, LEDC PWM)
 constexpr int PIN_FLOAT_SWITCH  = 21;  // D3 / GPIO21
-constexpr int PIN_I2C_SDA       = 22;  // D4 / GPIO22 (AHT20)
-constexpr int PIN_I2C_SCL       = 23;  // D5 / GPIO23 (AHT20)
+constexpr int PIN_I2C_SDA       = 22;  // D4 / GPIO22 (I2C: AHT20 + water level)
+constexpr int PIN_I2C_SCL       = 23;  // D5 / GPIO23 (I2C: AHT20 + water level)
 constexpr int PIN_HX711_SCK     = 16;  // D6 / GPIO16
 constexpr int PIN_HX711_DOUT    = 17;  // D7 / GPIO17
 constexpr int PIN_STATUS_LED    = 19;  // D8 / GPIO19 (WS2812)
@@ -177,7 +179,8 @@ static void sensor_task(void * /*pvParameters*/)
     for (;;) {
         // TODO Fase 1:
         //   - Læs soil ADC, beregn moisture_pct via profile_moisture_pct()
-        //   - Læs water level ADC, beregn pct
+        //   - Læs water level via I2C (0x77: 8 bytes, 0x78: 12 bytes), tæl
+        //     pads over tærskel → pct af water_full_pads (calibration.md §3)
         //   - Læs float switch
         //   - Læs HX711 (DETECT_WEIGHT/HYBRID modes, hvis available)
         //   - Læs AHT20 hver 60s (env_sensor_read), beregn VPD
