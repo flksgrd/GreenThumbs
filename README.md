@@ -7,7 +7,7 @@ DIY auto-vandings-system til hjemmeplanter med Apple HomeKit-integration via Mat
 | Komponent | Status | Note |
 |---|---|---|
 | **v1: Smart Plantekrukke** | 🟡 Planlægning færdig, bygges nu | Modulær 3D-printet selvvandende krukke (med valgfri wick til bottom-watering) |
-| **v2a: Pot-Orchid** | 🟡 Design v0 (CAD + koncept, ADR 011) | Orkide-vase med automatisk soak: fyld → soak → dræn |
+| **v2a: Pot-Orchid** | 🟡 Design v1 (CAD, ADR 012) | Orkide i dyrkningspotte i en pyntepotte: fyld → soak → dræn |
 | **v2b: Vægmonteret Tower** | ⚪ Designfase only | Hydroponic til krydderurter/leafy greens |
 
 ## Oversigt
@@ -19,21 +19,21 @@ To designs til forskellige behov:
 En modulær 3D-printet krukke der lever inde i en pyntepotte:
 
 - **Plug-and-play planteprofiler**: Monstera, Pothos, Peace Lily, African Violet, Succulent, Orkide
-- **Modulær sensor-stack**: kapacitiv jord-fugtighed + vandstand + float-switch + AHT20 (temp + RH) som basis. **Optional**: HX711 + 5kg load cell tilføjer vægt-detektion (krævet for orkide-bark; ikke nødvendigt for jord-planter)
+- **Modulær sensor-stack**: kapacitiv jord-fugtighed + vandstand + float-switch + AHT20 (temp + RH) som basis. **Optional**: HX711 + 5kg load cell tilføjer vægt-detektion
 - **VPD-aware vanding**: AHT20 measurer rum-klima og firmware skalerer dose dynamisk baseret på Vapor Pressure Deficit — mere vand i tør radiator-vinter, mindre i fugtigt klima
 - **Bottom-watering option (v1 wick)**: bomulds-snor gennem center-drænhul → continuous capillary watering for African Violet, Peace Lily, Calathea og lignende fugt-elskere
 - **Stille peristaltisk pumpe**: præcis dosering 5–100 ml, selv-primende, dry-run tolerant
 - **Modulær størrelse**: skiftelig plantebeholder (S/M/L) — én reservoir + elektronik-base passer alle
 - **Apple HomeKit** via Matter over Thread fra dag 1 (HomePod/Apple TV som Thread Border Router)
-- **Strøm**: USB-C kablet i v1. Batteri-feasibility analyseret — realistisk i v2 med 3S 18650 + Sleepy End Device (~5-6 mdrs runtime)
+- **Strøm**: batteri — 2× 18650 (1S2P) ladet via USB-C, Matter sleepy device, estimeret ~3,5-6,5 mdr. pr. opladning ([ADR 013](docs/decisions/013-battery-1s2p.md))
 
 → Se [pot/](pot/) for byggeguide, hardware, firmware og CAD.
 
-### 🪻 Pot-Orchid med automatisk soak (v2a — design v0)
+### 🪻 Pot-Orchid med automatisk soak (v2a — design v1)
 
-Orkide-vase i klar PETG: en vendbar peristaltisk pumpe oversvømmer barken nedefra fra et lager i basen, holder soak-tiden (5-20 min, profil-parameter) og pumper vandet tilbage, så rødderne aldrig står i vand. Tør skakt til slanger/kabler bevarer zero-penetration. Genbruger det meste af v1-elektronikken.
+Et Ø180 tårn der står i en pyntepotte. Orkideen bliver i sin 12cm dyrkningspotte og står i en skål; en vendbar peristaltisk pumpe fylder skålen fra en lager-ring rundt om, holder soak-tiden og pumper vandet tilbage. Skålens kant er et mekanisk loft for soak-dybden. Trigger: interval justeret med VPD — ingen sensor i barken. Samme batteri som v1.
 
-→ Se [pot-orchid/README.md](pot-orchid/README.md) og [ADR 011](docs/decisions/011-orchid-flood-and-drain.md).
+→ Se [pot-orchid/README.md](pot-orchid/README.md) og [ADR 012](docs/decisions/012-orchid-v1-nursery-pot-ring-tank.md).
 
 ### 🌿 Vægmonteret Hydroponic Tower (v2b — kun planlægning)
 

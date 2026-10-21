@@ -1,50 +1,70 @@
 # Pot-Orchid — BOM (forskel fra pot/)
 
-**Status:** Foreløbig — design v0 (ADR 011). Grundlaget er
+**Status:** Foreløbig — design v1 (ADR 012 + ADR 013). Grundlaget er
 [pot/hardware/bom.csv](../pot/hardware/bom.csv); her står kun hvad der er
 anderledes. Pos-numre henviser til pot/-BOM'en.
 
-## Kort svar: ~80% af BOM'en er den samme
+## Samme som pot/
 
-Samme dele: XIAO ESP32-C6 (1), PD-trigger (12), buck (13), USB-C-adapter (14),
-WS2812 (15), knap (16), JST-kit (17), stripboard (18), silikone-ledning (19),
-M3-inserts/-bolte (20, 21), silikoneslange (3), Grove water level (8),
-float switch (9), AHT20 (27), buzzer (28), USB-C panel-mount (31),
-skærmet kabel (32), PLA til testprint (33).
+XIAO ESP32-C6 (1), silikoneslange (3), flyback-diode (5), USB-C-lader (14),
+knap (16), JST-kit (17), stripboard (18), silikone-ledning (19), M3-inserts/
+-bolte (20, 21), PETG (24), AHT20 (27), buzzer (28), USB-C panel-mount (31 —
+afventer ladestik-beslutningen), PLA til testprint (33), hele batteridelen
+(36-43, dog kun ét switch-kredsløb — se nedenfor).
 
 ## Ændret
 
 | pot/-pos | pot/ | Orkide | Hvorfor |
 |---|---|---|---|
-| 2 | Kamoer KXF-DC (37 ml/min) | **Kamoer KPHM200** (12V 0.7A, 260 ml/min — forhandler-spec) | Fyld/dræn på ~2,5 min i stedet for ~16 min. VERIFICÉR: børstet DC-variant (vendbar), ikke stepper, og mål til pump-mount |
-| 4-6 | MOSFET + diode + modstand | **H-bro DRV8871-breakout** (Adafruit 3190 el. lign., 6.5-45V) | Pumpen skal kunne køre baglæns (dræn). IN1 = D10, IN2 = D1 |
-| 10, 11 | HX711 + 5kg load cell: OPTIONAL | **PÅKRÆVET** | Soak-trigger (ADR 004) + lager-niveau til refill-feedback. Totalvægt ~3-3,3 kg < 5 kg ✓ |
-| 34 | M4/M5-bolte: optional | **Påkrævet** | Load cell-mount |
-| 24 | PETG 2 kg (opak) | **1 kg opak + 1 kg KLAR PETG** | Klar: cup ~210g + kammervægge ~240g. Opak: lager ~245g + ebase/låg ~345g + kammergulv ~110g (massiv volumen-estimat) |
-| 22 | EPDM-strip til ebase-pakning | EPDM/TPU-**skive** til skaktens krave | Tætner soak-gulvet mod skakten (ebase-pakningen udgår — ebase-toppen er tør) |
-| 23, 23b | M12- + M16-glands | **Udgår** | Alt går gennem den tørre skakt; kun USB-C i siden |
+| 2 | Kamoer KXF-DC (37 ml/min) | **Kamoer NKP-DC-S10B** (12V, 70-80 ml/min, ~5W — forhandler-spec) | Fyld/dræn ~5 min i stedet for ~10. VERIFICÉR: børstet DC (vendbar), mål (~67×55×41mm) til pumpe-mount |
+| 6 | 10kΩ pulldown | Samme, på D8 (switch A) | Boost-switchen sidder på D8 i orkiden; D10 er H-bro IN1 |
+| 9 | 1 float switch | **2 mini-floats** (lodret, M8-stamme) | Lager lavt + lager fuldt (refill-bip). Beslag i tank.scad: Ø8,5 hul |
+| 24 | PETG 2 kg | **1 kg opak PETG** | Tank ~373g + låg ~58g + bay ~171g ≈ 600g (massiv volumen) |
+| 39-42 | 2 switches (pumpe + sensorer) | **1 switch** (boost) | Ingen sensor-skinne: AHT20 er eneste I2C-enhed (µA i hvile), XKC fødes fra boostens 12V |
 
 ## Udgår
 
 | pot/-pos | Del | Hvorfor |
 |---|---|---|
-| 7 | Soil moisture-sensor | Upålidelig i bark (ADR 004) |
+| 7 | Soil moisture-sensor | Upålidelig i bark; triggeren er interval + VPD |
+| 8 | Grove water level | Skålens kant styrer soak-dybden mekanisk |
+| 10, 11, 34 | HX711 + load cell + bolte | Valgt fra (ADR 012) — målingen nulstilles hver gang potten løftes |
+| 22, 23, 23b | Pakning + glands | Tank-gulvet er massivt; alt går gennem den tørre skakt |
 | 26 | Wick | Orkideen vandes ved soak |
-| 29 | LECA | Bark i stedet |
-| 35 | Gummifødder | Load cell er påkrævet (platformen har egne fødder) |
+| 29 | LECA | Bark i dyrkningspotten |
+| 30 | Slange-lod | Slangerne ligger i sumpen/ringens bund via kanal |
+| 32 | Skærmet kabel | Alle kabler er korte (inde i bay'en + gennem skakten) |
+| 35 | Gummifødder | Bay'ens fas løfter porte over evt. pyt (TODO: bekræft) |
 
 ## Nyt
 
 | Del | Spec | Est. pris | Note |
 |---|---|---|---|
-| Klar PETG | 1 kg | ~170 DKK | Cup + kammer-vægge |
+| H-bro | DRV8871-breakout (Adafruit 3190 el. lign., 6,5-45V, 3,6A) | ~60 DKK | Pumpen skal kunne køre baglæns (dræn). IN1 = D10, IN2 = D1 |
+| Berøringsfri niveausensor | XKC-Y25-NPN (5-24V, NPN-udgang) | ~40 DKK | "Skål tom": limes op under skålens sump i bay'en, måler gennem tank-gulvet. Fødes fra boostens 12V. VERIFICÉR: udgangens polaritet og at den ser gennem 4mm PETG |
 | Orkide-bark | Fin/medium fyrrebark ~2 L | ~40 DKK | Forbrugsvare; skiftes hvert ~2. år |
-| Si til sump-slange | Rustfrit net / lille akvarie-si til Ø6 slange | ~15 DKK | Holder bark-smuld ude af pumpen |
-| Stænk-hætte til skakten | Printes (TPU/PETG) | — | TODO i CAD: skaktens top er en åbning ned til elektronikken |
-| Underskål | Ø ≥ 180mm | — | Overflow-hullerne drypper udad (kun ved overfyldning/fejl) |
+| Sump-si | Rustfrit net / lille akvarie-si til Ø6 slange | ~15 DKK | Holder bark-smuld ude af pumpen |
+| Stænk-hætte | Printes (TPU/PETG) | — | TODO i CAD: skaktens top |
+
+## Pin-allokering (orkide)
+
+| Pin | Funktion |
+|---|---|
+| D0 | Batteri-ADC (2× 200kΩ) |
+| D1 | H-bro IN2 (dræn) |
+| D2 | Buzzer |
+| D3 | XKC "skål tom" (NPN, intern pull-up) |
+| D4 / D5 | I2C — AHT20 |
+| D6 | Float lav |
+| D7 | Float fuld |
+| D8 | Switch A — boost 12V |
+| D9 | Knap |
+| D10 | H-bro IN1 (fyld) |
 
 ## Åbne punkter før bestilling
-- KPHM200: bekræft pris, at det er DC-varianten (vendbar), og fysiske mål.
-  ebase_height = 60mm er en placeholder
-- DRV8871: strømgrænsen sættes af en modstand (ILIM) — tjek breakout'ens
-  værdi mod pumpens 0.7A drift og startstrøm
+- NKP-DC-S10B: bekræft børstet DC-variant, strømforbrug og fysiske mål
+  (bay_h = 47mm er sat efter forhandler-mål)
+- DRV8871: strømgrænsen sættes af ILIM-modstanden — tjek breakout'ens værdi
+  mod pumpens drift- og startstrøm
+- Pololu U3V40F12 ved 5W: ~1,7A fra batteriet ved 3,5V — inden for spec,
+  men mål temperaturen i den lukkede bay under et 5-min fyld

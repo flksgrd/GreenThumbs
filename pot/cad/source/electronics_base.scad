@@ -3,7 +3,8 @@
 // =============================================================================
 // Cylindrisk kammer der sidder under reservoir. Indeholder:
 //   - XIAO ESP32-C6 + AHT20 + buzzer
-//   - MOSFET + buck-converter + PD-trigger på prototype board
+//   - Switches + boost 12V på prototype board
+//   - 2× 18650 (1S2P) i vugge på lid'et (ADR 013)
 //   - Pumpe monteret på lid'ets indvendige side (DUAL FOOTPRINT:
 //     Kamoer KXF-DC peristaltisk ELLER Bartels BP7 piezo + driver — se
 //     docs/research/piezo-components.md)
@@ -99,12 +100,14 @@ module gasket_groove_top() {
 }
 
 // ─── Aftageligt låg (skrues på bunden af electronics_base) ──────────────────
-// Lid'ets TOP-side (indvendig når monteret) bærer pump-mount bosserne.
+// Lid'ets TOP-side (indvendig når monteret) bærer pump-mount bosserne og
+// batteri-vuggen (ADR 013).
 module electronics_base_lid() {
     difference() {
         union() {
             cylinder(d = ebase_outer_d, h = ebase_lid_height);
             pump_mount_bosses();
+            if (battery_fits) battery_cradle();
         }
 
         // Gennemgående huller til M3-skruer (M3 cap head fra undersiden)
@@ -151,6 +154,20 @@ module pump_mount_insert_holes() {
     translate([0, 0, ebase_lid_height + pump_mount_boss_h - m3_insert_h])
         pump_mount_positions()
             cylinder(d = m3_insert_d, h = m3_insert_h + 1);
+}
+
+// ─── Batteri-vugge (ADR 013): 2× 18650 side om side, to sadler ─────────────
+module battery_cradle() {
+    for (sx = [-1, 1])
+        translate([sx * (cell_l / 2 - 10), 0, ebase_lid_height - 0.01])
+            difference() {
+                translate([-3, cradle_y - cell_d - 3, 0])
+                    cube([6, 2 * cell_d + 6, cell_d / 2 + 1]);
+                for (sy = [-1, 1])
+                    translate([-5, cradle_y + sy * (cell_d / 2 + 0.5), cell_d / 2 + 0.5])
+                        rotate([0, 90, 0])
+                            cylinder(d = cell_d + 0.6, h = 10);
+            }
 }
 
 // ─── Render begge dele ved siden af hinanden når filen åbnes direkte ────────

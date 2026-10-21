@@ -1,47 +1,51 @@
 # 🪻 Pot-Orchid — automatisk soak-vanding til orkideer
 
-**Status:** Design v0 (oktober 2026) — CAD for alle dele + koncept besluttet
-([ADR 011](../docs/decisions/011-orchid-flood-and-drain.md)). Intet printet.
+**Status:** Design v1 (oktober 2026) — CAD for alle dele
+([ADR 012](../docs/decisions/012-orchid-v1-nursery-pot-ring-tank.md),
+batteri: [ADR 013](../docs/decisions/013-battery-1s2p.md)). Intet printet.
 
-Dedikeret variant til **Phalaenopsis i bark**. I stedet for pot/'s top-drip
-oversvømmes barken nedefra i 5-20 min og tømmes derefter helt — som når man
-sætter en orkide i blød i vasken, bare automatisk.
+Dedikeret variant til **Phalaenopsis i bark**. Orkideen bliver i sin
+medfølgende 12cm dyrkningspotte og står i en skål, der fyldes nedefra, står
+lidt og tømmes igen — som når man sætter en orkide i blød i vasken, bare
+automatisk. Hele tårnet står skjult i en pyntepotte.
 
 ## Sådan virker den
 
 ```
-  ┌══[ FLANGE ]══════════════════┐
-  │  ORKIDE-CUP (klar PETG)      │  bark + rødder; bund-huller + side-slidser
-  │  ~~~~~~~ max soak ~~~~~~~~~~ │← overflow-hul udad (fysisk loft)
-  │  SOAK-KAMMER (klar PETG)     │  fyldes og tømmes af pumpen
-  ╞═════ gulv (opak) ═══ sump ═══╡
-  │  LAGER (opak PETG)  ~~~~~~~  │← overflow-hul udad; float switch i bund
-  │        ║ tør skakt ║         │  slanger + kabler går her
-  ╞════════╩═══════════╩═════════╡
-  │  ELECTRONICS BASE + pumpe    │
-  └──────────────────────────────┘
-       LOAD CELL (påkrævet)
+   ┌ ring-låg ─┐   ┌─ dyrkningspotte ─┐   ┌ ring-låg ┐
+   │  LAGER-   │   │     (bark)       │   │  RING    │
+   │  RING     │ ~~│~~ skål-kant ~~~~ │~~ │          │  ← soak-loft
+   │ ~~~~~~~~  │  S K Å L (konisk)    │   │ ~~~~~~~~ │
+   ╞═══════════╧══════════════════════╧═══╧══════════╡  ← tank-gulv (massivt)
+   │  BAY: 2× 18650, pumpe, XIAO, H-bro, boost       │
+   └─────────────────────────────────────────────────┘
 ```
 
-1. **Trigger:** load cell'en ser at barken har tabt nok vægt siden sidste soak
-2. **Fyld:** pumpen kører forlæns, lager → soak-kammer (~2,5 min, 260 ml/min)
-3. **Soak:** står i `soak_hold_s` (default 10 min)
-4. **Dræn:** pumpen kører baglæns, sump → lager, indtil Grove-sensoren viser
-   tomt kammer
+1. **Trigger:** hver ~7. dag, justeret med VPD (tør luft → oftere)
+2. **Fyld:** pumpen kører forlæns, ring → skål. Skålens kant er loftet —
+   overskud løber tilbage i ringen, så dybden er altid den samme
+3. **Soak:** står i `soak_hold_s` (default 5 min)
+4. **Dræn:** pumpen kører baglæns, sump → ring, indtil den berøringsfri
+   sensor under skålen melder tom
 
 | Beregnet (12cm Phalaenopsis) | |
 |---|---|
-| Cup | Ø132 × 115mm (klar PETG) |
-| Soak-volumen | ~655 ml |
-| Lager | ~1,2 L (~550 ml reserve ≈ 3-5 uger mellem påfyldning) |
-| Fyld / dræn | ~2,5 min hver vej |
-| Total højde | 266mm (+33mm load cell) |
-| Base-diameter | Ø170mm (bred for stabilitet med høj blomsterstængel) |
+| Tårn | Ø180 × 133mm (+ potten → top i 163mm) |
+| Pyntepotte | indv. Ø210 / maks. potte Ø190 / ~185mm indv. højde |
+| Soak-dybde | 68mm over pottens bund (~62% af potten) |
+| Soak-volumen | ~376 ml |
+| Lager-ring | ~900 ml (~520 ml reserve ≈ 3-5 uger) |
+| Fyld / dræn | ~5 min hver vej (Kamoer NKP, ~75 ml/min) |
+| Strøm | 2× 18650 (1S2P), ~2,5-4 mdr. pr. opladning (estimat) |
+| Filament | ~600g opak PETG |
+
+Påfyldning: gennem hullet i ring-låget, eller løft planten og hæld i
+skålen — det løber over i ringen.
 
 ## Filer
 
-- [cad/source/](cad/source/) — OpenSCAD: `params.scad`, `orchid_cup.scad`,
-  `soak_chamber.scad`, `storage.scad`, `ebase_orchid.scad`, `assembly.scad`
+- [cad/source/](cad/source/) — OpenSCAD: `params.scad`, `tank.scad`
+  (ring + skål + skakt + float-beslag), `lid.scad`, `bay.scad`, `assembly.scad`
 - [cad/preview/](cad/preview/) — renders: iso, snit i hvile, snit under soak,
   top, eksploderet
 - [preliminary-bom.md](preliminary-bom.md) — hvad der adskiller BOM'en fra pot/
@@ -50,10 +54,10 @@ sætter en orkide i blød i vasken, bare automatisk.
 
 ## Genbrug fra pot/
 
-MCU, strømdel, AHT20, Grove water level, float switch, buzzer, HX711 + load
-cell, firmware-skelet og Matter-opsætning genbruges. Nyt: større vendbar
-pumpe (Kamoer KPHM200) med H-bro (DRV8871), klar PETG, tør skakt i stedet for
-side-glands. Se [preliminary-bom.md](preliminary-bom.md).
+MCU, batteri/strømdel, AHT20, buzzer, knap, firmware-skelet og Matter-
+opsætning. Nyt: vendbar pumpe (Kamoer NKP) med H-bro (DRV8871),
+berøringsfri niveausensor under skålen, to mini-floats i ringen. Ingen
+load cell, ingen soil- eller Grove-sensor. Se [preliminary-bom.md](preliminary-bom.md).
 
 ## License
 

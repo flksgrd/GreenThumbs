@@ -26,109 +26,114 @@ Total brugbare GPIO: 11
 | XIAO pin | GPIO | Function | Tilslutning | Notes |
 |----------|------|----------|-------------|-------|
 | D0 | GPIO0 | ADC | Soil moisture sensor (AOUT) | Bruges af profil-system, kalibreres dry/wet |
-| D1 | GPIO1 | ADC | (Reserve) | Frigjort: water level-sensoren er nu I2C (deler bus med AHT20) |
+| D1 | GPIO1 | ADC | **Batteri-spænding** | 2× 200kΩ deler fra BAT+ (ADR 013) |
 | D2 | GPIO2 | GPIO PWM | **Piezo buzzer** (passiv, LEDC-drevet) | Refill-indikator + fejl-signaler. Se ADR 008 |
 | D3 | GPIO21 | GPIO ISR | Float switch | Internal pull-up; LOW = vand tomt |
 | D4 | GPIO22 | **I2C SDA** | **AHT20 SDA** | Standard I2C bus til environmental sensor |
 | D5 | GPIO23 | **I2C SCL** | **AHT20 SCL** | Standard I2C bus |
 | D6 | GPIO16 | GPIO | **HX711 SCK** (clock) | Flyttet fra UART TX — USB-CDC console nu i brug |
 | D7 | GPIO17 | GPIO | **HX711 DOUT** (data) | Flyttet fra UART RX |
-| D8 | GPIO19 | GPIO | WS2812 LED data | Status indicator |
+| D8 | GPIO19 | GPIO | **Sensor-skinne** (switch B) | LOW = sensorer tændt (P-FET gate). Soil + Grove + AHT20 slukkes mellem målinger |
 | D9 | GPIO20 | GPIO | Manuel knap | Internal pull-up; LOW = pressed |
-| D10 | GPIO18 | GPIO PWM | Pump MOSFET gate | 0 = pump off, HIGH = pump on. PWM-capable for hastighedskontrol |
+| D10 | GPIO18 | GPIO | **Pumpe** (switch A → boost) | HIGH = boost + pumpe tændt. 10kΩ pulldown → slukket under boot |
 
-**Fri GPIO: D1 (ADC-capable).** I2C-bussen (D4/D5) deles af AHT20 (0x38) og Grove water level-sensoren (0x77 + 0x78) — flere I2C-devices kan tilføjes uden at bruge pins.
+**Ingen frie GPIO** (WS2812 er droppet, D1/D8 bruges til batteri — ADR 013). I2C-bussen (D4/D5) deles af AHT20 (0x38) og Grove water level-sensoren (0x77 + 0x78) — flere I2C-devices kan tilføjes uden at bruge pins.
 
 > **Vigtigt ændring fra tidligere wiring:** AHT20 environmental sensor blev tilføjet som standard v1-komponent (se [ADR 007](../../../docs/decisions/007-env-sensor-aht20.md)). Det krævede:
 > - HX711 flyttet fra D4/D5 til D6/D7 (frigør I2C-bussen for AHT20)
 > - UART TX/RX (D6/D7) er ikke længere i brug; ESP-IDF console er routet til **USB-CDC** via `CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y` i `sdkconfig.defaults`
 > - Serial monitor virker stadig — bare via samme USB-C kabel som programmering. På macOS: `/dev/cu.usbmodem*`
 
-## Power rails
+## Power rails (batteri — ADR 013)
 
 ```
-USB-C 5V/PD ──→ ZY12PDN ──┬──→ 12V rail ──→ Pumpe (via MOSFET drain)
-                          │
-                          └──→ MP1584 ──→ 5V rail ──→ XIAO 5V pin
-                                                    └──→ Sensorer (3.3V via XIAO 3V3-pin)
+USB-C 5V ──→ XIAO ESP32-C6 (indbygget Li-ion-lader, BAT+/BAT- pads)
+                 │
+              1S-beskyttelsesprint (DW01A + FS8205A)
+                 │
+              2× 18650 parallelt (1S2P, 3,0-4,2V)
 
-GND rail: alt deler GND fra ZY12PDN GND-pin.
+BAT+ ──┬──→ switch A (P-FET, D10) ──→ boost 12V (Pololu U3V40F12) ──→ pumpe
+       └──→ 200k ─┬─ 200k ──→ GND
+                  └──→ D1 (batteri-ADC, 100nF til GND)
+
+XIAO 3V3 ──→ switch B (P-FET, D8) ──→ sensor-skinne: soil, Grove, AHT20
+         └──→ HX711 (power-down via SCK), float switch (intern pull-up)
 ```
 
-**Vigtig**: Sensorer kører på 3.3V (fra XIAO 3V3-pin), IKKE 5V. Soil sensor, water-level strip, HX711, og AHT20 er alle 3.3V-tolerante (eller har on-board regulator).
+**Hvorfor skifte boostens input?** En boost-converter trækker mA i tomgang og
+sender Vbat − diodefald videre, selv når den er "disabled" via EN — pumpen
+ville sive. Switch A afbryder den helt.
+
+**Hvorfor skifte sensorerne?** Soil-sensoren trækker ~5 mA konstant. AHT20
+ligger på samme skinne som Grove-sensoren, fordi de deler I2C: hvis kun den
+ene var slukket, ville pull-ups'ene føde den gennem SDA/SCL.
+
+Sensorer kører på 3.3V (fra XIAO 3V3-pin), IKKE batterispænding.
 
 ## Komplet wiring
 
 ```
-USB-C Adapter (≥30W PD)
-    │ USB-C cable
-    ↓
-┌──────────────┐
-│  ZY12PDN     │
-│  PD trigger  │
-│  (set 12V)   │
-└──────────────┘
-    │ 12V output     ┌──────────────┐
-    ├────────────────┤   MP1584     │
-    │                │   buck conv  │── 5V ──→ XIAO 5V pin
-    │                │   12V→5V     │── GND ─→ XIAO GND
-    │                └──────────────┘
-    │
-    │ 12V                                   ┌──── MOSFET drain
-    └──────────────────────────────────────→│
-                                            │  IRLB8721
-    GPIO D10 ──[ 10kΩ pulldown to GND ]─────│  N-channel
-                                            │
-                                  source ───┴──── GND
-                                            │
-                                            │ Pump terminal +
-                                            ↓
-                                       ┌─────────┐
-                                       │ Pump 12V│
-                                       │  Kamoer │
-                                       └─────────┘
-                                            │ Pump terminal -
-                                            ↓
-                                           GND
-                                       (+ 1N5819 diode i parallel,
-                                        cathode mod +12V, anode mod GND-side)
+Switch A — high-side, pumpe (Vbat > 3.3V → kræver N-FET-driver)
+
+  BAT+ ──┬──────────── source ┐
+         │                    │ AO3401A (P-FET)
+       100kΩ          gate ───┤
+         │             │      │ drain ──→ U3V40F12 VIN ──→ 12V ──→ pumpe +
+         └─────────────┘                 U3V40F12 GND ──→ GND     pumpe − ──→ GND
+                       │                 (1N5819 over pumpen: katode mod +)
+                 2N7002 drain
+  D10 ──[10kΩ til GND]── 2N7002 gate
+                 2N7002 source ──→ GND
+
+Switch B — high-side, sensorer (source = 3V3 = GPIO-niveau → direkte drev)
+
+  3V3 ──┬──── source ┐
+      100kΩ          │ AO3401A
+        │    gate ───┤
+  D8 ───┴────┘       │ drain ──→ sensor-skinne (3V3_SW)
 
 XIAO ESP32-C6
-  3V3 ──→ Soil sensor VCC
-        → Grove water level VCC (3.3V)
-        → HX711 VCC
-        → AHT20 VCC
-        → Float switch (en side; anden side til GPIO)
+  3V3_SW ──→ Soil sensor VCC
+          → Grove water level VCC (3.3V)
+          → AHT20 VCC
+  3V3 ────→ HX711 VCC (power-down mellem målinger)
+          → Float switch (en side; anden side til GPIO)
 
   GND ──→ All sensor GNDs (shared ground)
 
   D0 (ADC) ──→ Soil sensor AOUT
-  D1 (ADC) ──→ (reserve)
-  D3 ──→ Float switch (via 10kΩ pull-up til 3.3V, switch til GND when wet)
-  D4 (SDA) ──→ AHT20 SDA   ←─[ 4.7kΩ pull-up til 3.3V ]─
-  D5 (SCL) ──→ AHT20 SCL   ←─[ 4.7kΩ pull-up til 3.3V ]─
+  D1 (ADC) ──→ Batteri-deler (midtpunkt)
+  D2 ──→ Piezo buzzer
+  D3 ──→ Float switch (intern pull-up, switch til GND when wet)
+  D4 (SDA) ──→ AHT20 + Grove SDA  (pull-ups på breakouts → 3V3_SW)
+  D5 (SCL) ──→ AHT20 + Grove SCL
   D6 ──→ HX711 SCK
   D7 ──→ HX711 DOUT
-  D8 ──→ WS2812 DIN
+  D8 ──→ Switch B gate (LOW = sensorer on)
   D9 ──→ Manual button (internal pull-up, switch til GND)
-  D10 ──→ MOSFET gate (via 10kΩ pulldown til GND)
+  D10 ──→ Switch A driver (HIGH = pumpe on)
 ```
+
+**Firmware-rækkefølge ved måling:** D8 LOW → vent ~50 ms (AHT20 opstart) →
+init I2C → mål → sæt SDA/SCL til input → D8 HIGH. Bussen må ikke drives,
+mens skinnen er slukket.
 
 ## AHT20 (environmental sensor) detaljer
 
 ```
 AHT20 modul (Adafruit 4566 eller AliExpress generic)
   ┌─────────────┐
-  │ VCC ──→ 3.3V│
+  │ VCC ──→ 3V3_SW│ (switch B)
   │ GND ──→ GND │
-  │ SDA ──→ D4  │ (med 4.7kΩ pull-up til 3.3V)
-  │ SCL ──→ D5  │ (med 4.7kΩ pull-up til 3.3V)
+  │ SDA ──→ D4  │ (med 4.7kΩ pull-up til 3V3_SW)
+  │ SCL ──→ D5  │ (med 4.7kΩ pull-up til 3V3_SW)
   └─────────────┘
 ```
 
 **I2C address:** 0x38 (fast)
 **Pull-ups:** De fleste AHT20 breakout-boards har integrerede 10kΩ pull-ups på SDA/SCL. Hvis dit board IKKE har dem, tilføj 4.7kΩ resistorer til 3.3V på hver linje.
-**Placering:** Mount AHT20 et sted i electronics base hvor luften kan cirkulere — IKKE direkte over MP1584 buck-converter (varm) eller ESP32 (varm). Helst ved siden af en cable gland så ekstern luft kan nå sensoren.
+**Placering:** Mount AHT20 et sted i electronics base hvor luften kan cirkulere — IKKE direkte over boost-converteren (varm under pumpning) eller ESP32. Helst ved siden af en cable gland så ekstern luft kan nå sensoren.
 
 ## Water level-sensor (Seeed Grove 10cm) detaljer
 
@@ -137,7 +142,7 @@ Deler I2C-bussen med AHT20 — ingen ekstra GPIO.
 ```
 Grove Water Level Sensor 10cm (101020635) — 4-pin Grove-stik
   ┌─────────────┐
-  │ VCC ──→ 3.3V│
+  │ VCC ──→ 3V3_SW│ (switch B)
   │ GND ──→ GND │
   │ SDA ──→ D4  │ (samme bus som AHT20)
   │ SCL ──→ D5  │
@@ -182,10 +187,12 @@ D3 har INTERNAL pull-up enabled in firmware
 
 For v1 breadboard:
 1. XIAO på 0.1" header → breadboard
-2. MOSFET, MP1584, ZY12PDN på samme breadboard
+2. Switch A + B (AO3401A/2N7002 på SOT-23-adaptere) og boost-modulet på samme breadboard
+   — test først med laboratorieforsyning 3,7V i stedet for cellerne
 3. AHT20 breakout board direkte på breadboard (lille)
 4. Sensorer via JST-XH connectors (laver pigtail kabel: JST → male jumper pins)
-5. Pumpe direkte til breadboard 12V rail med skrue-terminaler eller solid wire
+5. Pumpe til boostens 12V-udgang med skrue-terminaler
+6. Mål hvilestrømmen med alt slukket (mål: < 1 mA i snit som Matter-ICD) — afgør batteritiden
 
 For v2 custom PCB (senere): KiCad schematic baseret på dette diagram. Allerede planlagt i `pot/hardware/schematic/`.
 
@@ -204,7 +211,8 @@ Hvis du af en eller anden grund vil bruge UART i stedet (fx ekstern USB-UART kon
 
 ## ESD/safety notes
 
-- Ingen 230V AC i selve pot-elektronikken — USB-C adapter håndterer alt mains-side.
-- Pumpe 12V og GPIO 3.3V er på samme GND men galvanisk uadskilte. MOSFET-switching kan injicere støj — placér 100µF elko ved MP1584 input/output, og 10µF tæt på XIAO 5V pin.
+- Ingen 230V AC — USB-C-laderen håndterer alt mains-side.
+- Li-ion: brug altid beskyttelsesprintet (over-/underspænding, kortslutning). Celler med loddefaner — lod aldrig direkte på en celle uden.
+- Pumpe 12V og GPIO 3.3V er på samme GND. Boost-start trækker en strømspids fra batteriet — placér 100µF elko ved boostens input og 10µF tæt på XIAO'ens BAT-pads.
 - Sensor-kabler op til ~50cm bør være shielded eller twisted pair for at undgå ADC-støj fra pumpe-switching.
 - AHT20 I2C-kabler holdes korte (<20cm); ellers tilføj stærkere pull-ups (2.2kΩ).

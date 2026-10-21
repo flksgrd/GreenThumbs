@@ -1,87 +1,100 @@
 // =============================================================================
-// Pot-Orchid assembly — visualisering af hele stakken (ADR 011)
+// Pot-Orchid v1 assembly (ADR 012)
 // =============================================================================
 //   openscad -D 'view="section"' -o out.png assembly.scad
 //
 // Views:
-//   "iso"       hel samling, lager fuldt (hvile-tilstand)
-//   "section"   halv-snit, hvile-tilstand: vandet i lageret, kammeret tomt
-//   "soaking"   halv-snit under soak: kammeret oversvømmet til max soak,
-//               lageret tilsvarende tømt
-//   "top"       set oppefra — flangens kanal-åbninger
+//   "iso"       hele tårnet + dyrkningspotte, pyntepotten som skygge
+//   "section"   halvsnit i hvile: vandet i lager-ringen, skålen tom
+//   "soaking"   halvsnit under soak: skålen fyldt til kanten, ringen sænket
+//   "top"       oppefra — kun planten i potten + ring-låget ses
 //   "exploded"  dele adskilt lodret
 //
-// Farver: klar PETG = halvgennemsigtig hvid, opak = grå, vand = cyan,
-//         skakt = orange-markeret, Grove-sensor = grøn plade
+// Farver: opak PETG = grå, vand = cyan, dyrkningspotte = grøn,
+//         pyntepotte = svag terrakotta-skygge, sensor = orange
 // =============================================================================
 
 include <params.scad>
-use <ebase_orchid.scad>
-use <storage.scad>
-use <soak_chamber.scad>
-use <orchid_cup.scad>
+use <bay.scad>
+use <tank.scad>
+use <lid.scad>
 
 view = "iso";
 
-floor_top_hi = soak_floor_t + floor_slope;
+z_tank = bay_h;
+z_lid  = bay_h + ring_wall_h;
+z_pot  = bay_h + z_pot_bottom;
 
-z_lid     = 0;
-z_ebase   = ebase_lid_height;
-z_storage = z_ebase + ebase_height;
-z_chamber = z_storage + storage_height;            // soak-gulv hviler på rimmen
-z_rim     = z_chamber + floor_top_hi + chamber_height;
-z_cup     = z_rim - (cup_height - top_ring_height);
+opaque   = [0.45, 0.47, 0.5];
+water    = [0.2, 0.75, 0.95, 0.55];
+potcol   = [0.55, 0.75, 0.45, 0.6];
+cachecol = [0.75, 0.45, 0.3, 0.18];
 
-clear  = [0.85, 0.93, 1.0, 0.35];
-opaque = [0.45, 0.47, 0.5];
-water  = [0.2, 0.75, 0.95, 0.55];
-
+// Snit-kuben må ikke omslutte kameraet (OpenCSG-preview fejler så)
 module half() {
-    // Snit-kuben må ikke omslutte kameraet — så fejler OpenCSG-previewet
     difference() { children(); translate([-400, -300, -50]) cube([800, 300, 800]); }
 }
-
-// Vandmængder i de to tilstande (cylinder-approksimation til visualisering)
-storage_area = PI * pow(storage_inner_d / 2, 2);
-storage_level_soaking = storage_water_h - soak_volume_ml * 1000 / storage_area;
-
-module grove_board() {
-    R = chamber_inner_d / 2;
-    color([0.1, 0.55, 0.25])
-        rotate([0, 0, ch_sensor_angle])
-            translate([R - grove_wall_gap - grove_t, -grove_w / 2, z_chamber + soak_floor_t])
-                cube([grove_t, grove_w, grove_h]);
-}
-
-// Snittet lægges om HVER del (inden for color()) — OpenCSG-previewet anvender
-// ikke en difference der ligger uden om farvede, halvgennemsigtige objekter.
 module cut(on) { if (on) half() children(); else children(); }
 
-module stack(explode = 0, soaking = false, sec = false) {
-    color(opaque) cut(sec) translate([0, 0, z_lid]) ebase_orchid_lid();
-    color(opaque) cut(sec) translate([0, 0, z_ebase + explode]) ebase_orchid();
-    color(opaque) cut(sec) translate([0, 0, z_storage + 2 * explode]) storage();
-    color(clear)  cut(sec) translate([0, 0, z_chamber + 3 * explode]) soak_chamber();
-    color(clear)  cut(sec) translate([0, 0, z_cup + 4 * explode]) orchid_cup();
-    if (explode == 0) grove_board();
-
-    // Vand i lageret
-    color(water) cut(sec)
-        translate([0, 0, z_storage + 2 * explode + storage_wall])
-            cylinder(d = storage_inner_d - 0.5,
-                     h = soaking ? storage_level_soaking : storage_water_h);
-
-    // Vand i soak-kammeret (kun under soak)
-    if (soaking)
-        color(water) cut(sec)
-            translate([0, 0, z_chamber + soak_floor_t])
-                cylinder(d = chamber_inner_d - 0.5,
-                         h = floor_top_hi - soak_floor_t + max_soak_level);
+module nursery_pot() {
+    difference() {
+        cylinder(r1 = pot_r(0), r2 = pot_r(pot_h), h = pot_h);
+        translate([0, 0, 1.2])
+            cylinder(r1 = pot_r(0) - 1, r2 = pot_r(pot_h) - 1, h = pot_h);
+    }
 }
 
-if (view == "iso")           stack();
-else if (view == "section")  stack(sec = true);
-else if (view == "soaking")  stack(soaking = true, sec = true);
-else if (view == "top")      stack();
-else if (view == "exploded") stack(explode = 40);
+// Pyntepotte: vandret bund, indvendig Ø210, ydre højde 200 (anslået)
+module cachepot() {
+    translate([0, 0, -(200 - cachepot_inner_h)])
+        difference() {
+            cylinder(d = cachepot_inner_d + 10, h = 200);
+            translate([0, 0, 200 - cachepot_inner_h])
+                cylinder(d = cachepot_inner_d, h = 201);
+        }
+}
+
+ring_area          = ring_capacity_ml * 1000 / (ring_overflow_z - tank_floor_t);
+ring_level_rest    = float_full_z - tank_floor_t;
+ring_level_soaking = ring_level_rest - soak_volume_ml * 1000 / ring_area;
+
+module ring_water(level) {
+    translate([0, 0, z_tank + tank_floor_t])
+        difference() {
+            cylinder(r = ring_outer_r - 0.3, h = level);
+            translate([0, 0, -1])
+                cylinder(r1 = bowl_r_in_bottom + bowl_wall + 0.3,
+                         r2 = bowl_r_in_top + bowl_wall + 0.3, h = bowl_rim_z);
+            rotate([0, 0, conduit_angle]) translate([conduit_r, 0, -1])
+                cylinder(d = conduit_od + 0.6, h = level + 2);
+        }
+}
+
+module bowl_water() {
+    translate([0, 0, z_tank + tank_floor_t])
+        cylinder(r1 = bowl_r_in_bottom - 0.3, r2 = bowl_r_in_top - 0.3,
+                 h = bowl_rim_z - tank_floor_t);
+}
+
+module stack(explode = 0, soaking = false, sec = false, ghost = false) {
+    color(opaque) cut(sec) bay();
+    color(opaque) cut(sec) translate([0, 0, z_tank + explode]) tank();
+    color(opaque) cut(sec) translate([0, 0, z_lid + 2 * explode]) ring_lid();
+    color(potcol) cut(sec) translate([0, 0, z_pot + 3 * explode]) nursery_pot();
+
+    if (explode == 0) {
+        color(water) cut(sec) ring_water(soaking ? ring_level_soaking : ring_level_rest);
+        if (soaking) color(water) cut(sec) bowl_water();
+        // "Skål tom"-sensor limet op under skålens sump
+        color([0.95, 0.55, 0.1]) rotate([0, 0, hose_ch_angle])
+            translate([bowl_r_in_bottom - 14, -14, z_tank - 12]) cube([28, 28, 12]);
+    }
+    if (ghost) color(cachecol) cut(sec) cachepot();
+}
+
+if (view == "iso")           stack(ghost = true);
+else if (view == "section")  stack(sec = true, ghost = true);
+else if (view == "soaking")  stack(soaking = true, sec = true, ghost = true);
+else if (view == "top")      stack(ghost = true);
+else if (view == "exploded") stack(explode = 45);
 else echo("Ukendt view — brug iso|section|soaking|top|exploded");

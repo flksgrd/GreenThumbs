@@ -6,8 +6,8 @@ Common issues og hvordan du diagnostiserer dem. Opdateres løbende under prototy
 
 1. **Tjek float switch**: hvis reservoir er tom → safety-interlock blokerer pumpe. Fyld vand op.
 2. **Tjek HomeKit-status**: er manuel-pump-switch ON? Står der "Pump disabled" i log?
-3. **Tjek 12V skinne**: mål med multimeter ved pumpe-terminaler når GPIO er HIGH. Skal være 12V ±0.5V.
-4. **Tjek MOSFET-gate**: GPIO PWM skal være HIGH (3.3V). Hvis 0V: software-bug i `pump.cpp`.
+3. **Tjek batteriet**: under ~3,3V kan boosten ikke levere pumpens startstrøm. Se batteriniveau i HomeKit, eller mål ved BAT-pads. Oplad.
+4. **Tjek 12V fra boosten**: mål ved pumpe-terminaler når D10 er HIGH. Skal være 12V ±0.5V. 0V: tjek switch A (D10 HIGH → 2N7002 leder → P-FET gate trukket lav). Hvis D10 er 0V: software-bug i `pump.cpp`.
 5. **Tjek slange**: er der knæk på slangen? Er pumpe-rotoren blokeret?
 
 ## HomeKit viser ikke device
@@ -27,7 +27,7 @@ Common issues og hvordan du diagnostiserer dem. Opdateres løbende under prototy
 ## Vægt-aflæsning drifter
 
 1. **Temperatur-skift**: HX711 har ~50 ppm/°C drift. Hvis værelse-temperatur ændres betydeligt → re-tare via HomeKit-knap.
-2. **Termisk drift fra egen elektronik**: ESP32 + buck-converter genererer ~1-2W der vandrer ned gennem electronics base i load cell. Drift på ~0.5g/°C ved 5kg cell. **Mitigation**: indsæt 2-3mm rubber-pad mellem `electronics_base_lid` og `load_cell_mount` upper plate.
+2. **Termisk drift fra egen elektronik**: Boost + pumpe genererer ~0,5-1W under pumpning, som vandrer ned gennem electronics base i load cell. Drift på ~0.5g/°C ved 5kg cell. **Mitigation**: indsæt 2-3mm rubber-pad mellem `electronics_base_lid` og `load_cell_mount` upper plate.
 3. **Krukke flyttet**: load cell er sensitiv overfor placering. Hvis krukken er flyttet → re-tare.
 4. **Cable issue**: tjek at load cell wires ikke er løse i HX711-modulet.
 
@@ -56,7 +56,7 @@ Pumpen sidder i electronics base, direkte over load cell. Mekaniske vibrationer 
 
 1. **Pumpe mekanisk klik**: normalt for peristaltisk pumpe. Acceptabelt ved 100 sek/dag drift.
 2. **Vibration fra electronics base**: monteringen er løs. Spænd M3-bolte.
-3. **Whining / pibe-lyd**: buck-converter switching noise. Forsøg at flytte MP1584 længere væk fra MCU og pumpe-loop. Tilføj 100µF elko ved input/output.
+3. **Whining / pibe-lyd under pumpning**: boost-converterens spole. Tilføj 100µF elko ved boostens input; flyt modulet væk fra MCU.
 
 ## Firmware bygger ikke
 

@@ -37,7 +37,7 @@ static const char *TAG = "greenthumbs";
 // NB: D4/D5 er nu reserveret til AHT20 I2C (SDA/SCL). HX711 er flyttet til
 // D6/D7. ESP-IDF console kører på USB-CDC i stedet for UART (se ADR 007).
 constexpr int PIN_SOIL_ADC      = 0;   // D0 / GPIO0 / ADC1_CH0
-// D1 / GPIO1 er reserve — water level-sensoren (Grove 10cm) sidder på I2C
+constexpr int PIN_BATT_ADC      = 1;   // D1 / GPIO1 / ADC1_CH1 (2× 200k deler, ADR 013)
 constexpr uint8_t WATER_I2C_LOW   = 0x77; // nederste 8 pads
 constexpr uint8_t WATER_I2C_HIGH  = 0x78; // øverste 12 pads
 constexpr int PIN_BUZZER        = 2;   // D2 / GPIO2 (piezo buzzer, LEDC PWM)
@@ -46,9 +46,9 @@ constexpr int PIN_I2C_SDA       = 22;  // D4 / GPIO22 (I2C: AHT20 + water level)
 constexpr int PIN_I2C_SCL       = 23;  // D5 / GPIO23 (I2C: AHT20 + water level)
 constexpr int PIN_HX711_SCK     = 16;  // D6 / GPIO16
 constexpr int PIN_HX711_DOUT    = 17;  // D7 / GPIO17
-constexpr int PIN_STATUS_LED    = 19;  // D8 / GPIO19 (WS2812)
+constexpr int PIN_SENSOR_PWR    = 19;  // D8 / GPIO19 (switch B, LOW = sensorer tændt)
 constexpr int PIN_MANUAL_BUTTON = 20;  // D9 / GPIO20
-constexpr int PIN_PUMP_GATE     = 18;  // D10 / GPIO18 (MOSFET PWM)
+constexpr int PIN_PUMP_EN       = 18;  // D10 / GPIO18 (switch A → boost 12V → pumpe)
 
 
 // =============================================================================
@@ -102,10 +102,9 @@ static esp_err_t init_nvs(void)
 static void init_pins(void)
 {
     // TODO: gpio_config for alle pins
-    // ADC1 init for soil og water pins
+    // ADC1 init for soil og batteri
     // Pull-up på float switch og button
-    // PWM init for pump gate
-    // RMT init for WS2812 LED
+    // Pumpe- og sensor-switch: output, starter slukket (D10 LOW, D8 HIGH)
     ESP_LOGI(TAG, "Pin init: TODO (Fase 1)");
 }
 

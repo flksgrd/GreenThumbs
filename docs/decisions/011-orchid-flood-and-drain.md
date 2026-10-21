@@ -1,6 +1,6 @@
 # ADR 011 — Pot-Orchid: to-kammer flood-and-drain med vendbar pumpe
 
-**Status:** Accepted (design v0 — ikke printet)
+**Status:** Superseded af ADR 012 (geometri) og ADR 013 (strøm) — princippet vendbar pumpe + fyld → soak → dræn videreføres
 **Dato:** 2026-10-21
 **Erstatter:** soak-tray-konceptet i pot-orchid/design-notes.md (maj/juni),
 som var skrevet før ADR 009 (zero-penetration) og ADR 010 (scalloped cup)

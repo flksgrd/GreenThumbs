@@ -185,12 +185,12 @@ Bark-medium, soaking-vanding. **Kræver load cell** — soil moisture sensor er 
 | `cooldown_min` | 10080 (7 dage) |
 | `daily_ml_cap` | 100 |
 | Hardware krav | **HX711 + 5kg load cell + load_cell_mount platform** |
-| Vandings-metode | v1: top-drip i 3 bursts (approksimation). **Ægte soak-vanding kommer i [pot-orchid/](../pot-orchid/) v2** |
+| Vandings-metode | v1: top-drip i 3 bursts (approksimation). **Ægte soak-vanding: [pot-orchid/](../pot-orchid/)** — der bruges interval + VPD i stedet for vægt ([ADR 012](decisions/012-orchid-v1-nursery-pot-ring-tank.md)) |
 
 Soak-flow: når vægt-fald > 80g triggers, pump i 10s → pause 30s → pump i 10s → pause 30s → pump i 10s → cooldown 7 dage.
 
 > **v1 begrænsning:** dette er ikke ægte orkide-soaking (nedsænkning af hele potten i vand 10-15 min). Bark suger mindre via drip end ved fuld nedsænkning. Acceptabelt for v1, men forventede resultater er suboptimale. Se [ADR 006](decisions/006-bottom-watering-strategies.md).
-> **Hvis hardware mangler:** firmware detekterer at HX711 ikke svarer → status-LED gul → HomeKit Mode Select rapporterer fejl → pumpe disables. Skift til en `DETECT_MOISTURE`-profil eller installer load cell.
+> **Hvis hardware mangler:** firmware detekterer at HX711 ikke svarer → fejl-bip → HomeKit Mode Select rapporterer fejl → pumpe disables. Skift til en `DETECT_MOISTURE`-profil eller installer load cell.
 
 ### `custom`
 

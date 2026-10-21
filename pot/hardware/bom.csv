@@ -1,37 +1,41 @@
 id,category,component,specification,qty,unit_price_dkk,supplier,part_number,notes
-1,mcu,XIAO ESP32-C6,Thread+WiFi+BLE+Matter USB-C 4MB flash,2,80,"Mouser DK / Digi-Key / Elektor",113991254,"Buy 2x for backup"
-2,actuator,Peristaltic pump 12V,Kamoer KXF-DC-S06 (12V 0.25A ~37 ml/min) or generic 12V DC peristaltic,1,150,"AliExpress / Robu",KXF-DC-S06,"VERIFY flange hole spacing - CAD assumes 46mm c-c (pump_mount_kamoer_spacing in params.scad). See ADR 001"
-3,plumbing,Silicone tubing,4mm ID x 6mm OD food-grade 2m,1,30,"AliExpress / RS Components",,"~1m per set: suction + pressure hose route up the hose channel / over flange / down outside to ebase"
-4,driver,MOSFET N-channel,IRLB8721 logic-level TO-220,5,10,"Mouser / Farnell",IRLB8721PBF,"Pack of 5 for spares"
-5,driver,Schottky diode,1N5819 flyback,10,3,"Mouser / RS",1N5819,"Pack of 10"
-6,passive,Resistor 10k ohm,1/4W carbon film for gate pulldown,10,1,"Conrad / local",,"Mixed pack"
-7,sensor,Capacitive soil moisture v2.0,DFRobot-type corrosion resistant analog,2,40,"AliExpress",,"2x for spare/calibration. Stock cable (~20cm) too short for channel routing - extend with pos 32"
-8,sensor,Seeed Grove Water Level Sensor 10cm,Capacitive graduated coated PCB I2C 0x77+0x78 20x133mm +-5mm 3.3V,1,75,"Berrybase / Eckstein / Botland",101020635,"Shares I2C bus with AHT20 (frees D1). Replaces DFRobot SEN0204 which is a BINARY non-contact switch - not graduated. See calibration.md section 3"
-9,sensor,Float switch mini,Vertical plastic NO 5V,1,25,"AliExpress / Conrad",,"Hardware fail-safe low-water cutoff. Cable must reach ~0.6m (bottom of reservoir to ebase via cable channel) - extend if shorter"
-10,sensor,HX711 ADC module,24-bit ADC for load cell,1,15,"AliExpress / Conrad",HX711,"OPTIONAL - only needed for orchid (DETECT_WEIGHT) profile"
-11,sensor,Bar load cell 5kg,Generic aluminium bar 80x12.7x12.7mm (HX711-kit type),1,50,"AliExpress",,"OPTIONAL - matches load_cell_mount.scad. NOT SparkFun TAL220B 5kg (55mm long). Often M4 one end + M5 other end - drill that plate to 5.3mm. See ADR 004"
-12,power,USB-C PD trigger board,ZY12PDN adjustable 5/9/12/15/20V,1,30,"AliExpress",ZY12PDN,"Set to 12V"
-13,power,Buck converter 12V to 5V,MP1584 adjustable max 3A,1,15,"AliExpress",MP1584,"Set with trimpot"
-14,power,USB-C PD adapter,min 30W 12V capable,1,200,"Existing (Apple/Anker)",,"Reuse existing if available"
-15,led,WS2812 LED,Single RGB 5V,1,5,"AliExpress / Pimoroni",,"Debug only - hidden inside ebase. Refill feedback is the buzzer (pos 28)"
-16,input,Tactile button,6x6mm with cap,1,3,"Conrad",,"Manual pump trigger"
-17,connector,JST-XH connector kit,2/3/4-pin assortment + crimp contacts,1,50,"AliExpress","XH-2.54","Sensor cables - crimp AFTER threading through glands"
-18,proto,Stripboard,7x9cm,1,20,"Conrad",,"For v1 soldered prototype"
-19,wire,Silicone wire 22AWG,Red/black/yellow ~2m each color,1,40,"AliExpress",,"Internal wiring inside ebase"
-20,fastener,M3 brass heat-set inserts,M3x5mm pack 50,1,50,"AliExpress",,"10 per set: 4 lid + 6 pump-mount bosses"
-21,fastener,M3 bolts,8/12/16mm stainless assortment,1,50,"Local hardware store",,"Lid (4x M3x8) + pump mount"
-22,seal,EPDM foam strip or 2mm O-ring cord,Cut to length - 2m,1,40,"Local plumbing / AliExpress",,"Ebase gasket groove: M-set ~0.45m / CUSTOM-set ~0.72m circumference. Cord: cut + cyanoacrylate joint"
-23,seal,M12x1.5 cable gland IP68,Cable range 3-6.5mm,1,10,"Conrad / AliExpress",M12x1.5,"Sensor cables at 90deg (12mm hole in CAD). One gland seals ONE cable - 3 sensor cables need a 3-hole seal insert or silicone-sealed grommet (ebase is above the water line: drip protection suffices)"
-23b,seal,M16x1.5 cable gland IP68,With 2-hole seal insert for 2x 6mm,1,15,"Conrad / AliExpress",M16x1.5,"Hoses at 180deg (16mm hole in CAD). Split rubber grommet also OK. Replaces PG9 (PG9 thread is 15.2mm - wrong fit)"
-24,filament,PETG filament,1kg food-neutral white or natural,2,150,"3djake.dk / Prusa Polymers",,"Water-contact parts. Solid-volume estimate per set: M ~0.94kg / CUSTOM ~1.73kg (cup+reservoir+ebase+lid)"
-25,filament,TPU filament 90A,250g for gaskets,1,120,"3djake.dk",,"Optional - can substitute pos 22"
-26,plumbing,Wick cord cotton/nylon,4mm braided 2m roll,1,20,"AliExpress / craft store",,"OPTIONAL - for wick bottom-watering on African Violet/Peace Lily/Calathea. See ADR 006"
-27,sensor,AHT20 temperature+humidity,I2C breakout module 3.3V addr 0x38,1,25,"Adafruit / AliExpress / DFRobot",AHT20,"Standard v1 component - VPD-aware dosing + HomeKit room climate. Shares I2C bus with pos 8. See ADR 007"
-28,indicator,Passive piezo buzzer,12mm disc PWM-driven 3.3V,1,5,"AliExpress / Conrad",,"Refill indicator + error signals on D2. See ADR 008"
-29,substrate,LECA clay pebbles,2-3L bag,1,50,"Plantorama / OBI",,"2-3cm layer in cup bottom - capillary break against waterlogging. See ADR 009"
-30,plumbing,Hose sinker/weight,Stainless or ceramic small weight,1,10,"Aquarium shop / AliExpress",,"Keeps suction hose end at reservoir bottom"
-31,power,USB-C panel-mount extension,Female panel socket to male plug ~20-30cm IP67 preferred,1,40,"AliExpress / Adafruit",,"USB-C plug cannot pass through a cable gland. Inside: plugs into ZY12PDN. CAD hole at 0deg is a 12mm placeholder - match it to the chosen part"
-32,wire,Shielded multi-core cable,4-core LiYCY 4x0.14mm2 3m,1,30,"Conrad / Elfa",,"Sensor extensions: soil (3w) + Grove I2C (4w) + float (2w) each ~0.5-0.6m via channels. Shielding vs pump PWM noise"
-33,filament,PLA filament,1kg any color,1,120,"3djake.dk / Prusa Polymers",,"PLA-first fit validation prints + load cell plates (OPTIONAL set: M ~0.26kg / CUSTOM ~0.67kg solid volume)"
-34,fastener,M4x16 + M5x16 bolts,2 of each stainless,1,15,"Local hardware store",,"OPTIONAL - load cell mount (bosses act as spacers - no washers needed)"
-35,mechanical,Stick-on rubber feet,Min 5mm high 4 pcs,1,20,"Local hardware store / AliExpress",,"When built WITHOUT load cell: lifts ebase so its drain hole stays above any overflow puddle in the decorative pot"
+1,mcu,XIAO ESP32-C6,Thread+WiFi+BLE+Matter USB-C 4MB flash,2,80,Mouser DK / Digi-Key / Elektor,113991254,Buy 2x for backup
+2,actuator,Peristaltic pump 12V,Kamoer KXF-DC-S06 (12V 0.25A ~37 ml/min) or generic 12V DC peristaltic,1,150,AliExpress / Robu,KXF-DC-S06,VERIFY flange hole spacing - CAD assumes 46mm c-c (pump_mount_kamoer_spacing in params.scad). See ADR 001
+3,plumbing,Silicone tubing,4mm ID x 6mm OD food-grade 2m,1,30,AliExpress / RS Components,,~1m per set: suction + pressure hose route up the hose channel / over flange / down outside to ebase
+5,driver,Schottky diode,1N5819 flyback,10,3,Mouser / RS,1N5819,Flyback across pump terminals (cathode to +12V)
+6,passive,Resistor 10k ohm,1/4W carbon film for gate pulldown,10,1,Conrad / local,,Pulldown on switch A driver gate (D10) - pump stays off during boot
+7,sensor,Capacitive soil moisture v2.0,DFRobot-type corrosion resistant analog,2,40,AliExpress,,2x for spare/calibration. Stock cable (~20cm) too short for channel routing - extend with pos 32
+8,sensor,Seeed Grove Water Level Sensor 10cm,Capacitive graduated coated PCB I2C 0x77+0x78 20x133mm +-5mm 3.3V,1,75,Berrybase / Eckstein / Botland,101020635,Shares I2C bus with AHT20 (frees D1). Replaces DFRobot SEN0204 which is a BINARY non-contact switch - not graduated. See calibration.md section 3
+9,sensor,Float switch mini,Vertical plastic NO 5V,1,25,AliExpress / Conrad,,Hardware fail-safe low-water cutoff. Cable must reach ~0.6m (bottom of reservoir to ebase via cable channel) - extend if shorter
+10,sensor,HX711 ADC module,24-bit ADC for load cell,1,15,AliExpress / Conrad,HX711,OPTIONAL - weight-based detection (ADR 004). Not used in pot-orchid v1 (ADR 012)
+11,sensor,Bar load cell 5kg,Generic aluminium bar 80x12.7x12.7mm (HX711-kit type),1,50,AliExpress,,OPTIONAL - matches load_cell_mount.scad. NOT SparkFun TAL220B 5kg (55mm long). Often M4 one end + M5 other end - drill that plate to 5.3mm. See ADR 004
+14,power,USB-C charger,Any 5V USB-C phone charger >=1A,1,0,Existing,,Charges the battery via XIAO's onboard charger (ADR 013). PD not needed
+16,input,Tactile button,6x6mm with cap,1,3,Conrad,,Manual pump trigger
+17,connector,JST-XH connector kit,2/3/4-pin assortment + crimp contacts,1,50,AliExpress,XH-2.54,Sensor cables - crimp AFTER threading through glands
+18,proto,Stripboard,7x9cm,1,20,Conrad,,For v1 soldered prototype
+19,wire,Silicone wire 22AWG,Red/black/yellow ~2m each color,1,40,AliExpress,,Internal wiring inside ebase
+20,fastener,M3 brass heat-set inserts,M3x5mm pack 50,1,50,AliExpress,,10 per set: 4 lid + 6 pump-mount bosses
+21,fastener,M3 bolts,8/12/16mm stainless assortment,1,50,Local hardware store,,Lid (4x M3x8) + pump mount
+22,seal,EPDM foam strip or 2mm O-ring cord,Cut to length - 2m,1,40,Local plumbing / AliExpress,,Ebase gasket groove: M-set ~0.45m / CUSTOM-set ~0.72m circumference. Cord: cut + cyanoacrylate joint
+23,seal,M12x1.5 cable gland IP68,Cable range 3-6.5mm,1,10,Conrad / AliExpress,M12x1.5,Sensor cables at 90deg (12mm hole in CAD). One gland seals ONE cable - 3 sensor cables need a 3-hole seal insert or silicone-sealed grommet (ebase is above the water line: drip protection suffices)
+23b,seal,M16x1.5 cable gland IP68,With 2-hole seal insert for 2x 6mm,1,15,Conrad / AliExpress,M16x1.5,Hoses at 180deg (16mm hole in CAD). Split rubber grommet also OK. Replaces PG9 (PG9 thread is 15.2mm - wrong fit)
+24,filament,PETG filament,1kg food-neutral white or natural,2,150,3djake.dk / Prusa Polymers,,Water-contact parts. Solid-volume estimate per set: M ~0.94kg / CUSTOM ~1.73kg (cup+reservoir+ebase+lid)
+25,filament,TPU filament 90A,250g for gaskets,1,120,3djake.dk,,Optional - can substitute pos 22
+26,plumbing,Wick cord cotton/nylon,4mm braided 2m roll,1,20,AliExpress / craft store,,OPTIONAL - for wick bottom-watering on African Violet/Peace Lily/Calathea. See ADR 006
+27,sensor,AHT20 temperature+humidity,I2C breakout module 3.3V addr 0x38,1,25,Adafruit / AliExpress / DFRobot,AHT20,Standard v1 component - VPD-aware dosing + HomeKit room climate. Shares I2C bus with pos 8. See ADR 007
+28,indicator,Passive piezo buzzer,12mm disc PWM-driven 3.3V,1,5,AliExpress / Conrad,,Refill indicator + error signals on D2. See ADR 008
+29,substrate,LECA clay pebbles,2-3L bag,1,50,Plantorama / OBI,,2-3cm layer in cup bottom - capillary break against waterlogging. See ADR 009
+30,plumbing,Hose sinker/weight,Stainless or ceramic small weight,1,10,Aquarium shop / AliExpress,,Keeps suction hose end at reservoir bottom
+31,power,USB-C panel-mount extension,Female panel socket to male plug ~20-30cm IP67 preferred,1,40,AliExpress / Adafruit,,OPEN DECISION (ADR 013): charging port placement - USB-C panel-mount vs. pogo-pin charging base (v2). Inside: plugs into the XIAO USB-C
+32,wire,Shielded multi-core cable,4-core LiYCY 4x0.14mm2 3m,1,30,Conrad / Elfa,,Sensor extensions: soil (3w) + Grove I2C (4w) + float (2w) each ~0.5-0.6m via channels. Shielding vs pump PWM noise
+33,filament,PLA filament,1kg any color,1,120,3djake.dk / Prusa Polymers,,PLA-first fit validation prints + load cell plates (OPTIONAL set: M ~0.26kg / CUSTOM ~0.67kg solid volume)
+34,fastener,M4x16 + M5x16 bolts,2 of each stainless,1,15,Local hardware store,,OPTIONAL - load cell mount (bosses act as spacers - no washers needed)
+35,mechanical,Stick-on rubber feet,Min 5mm high 4 pcs,1,20,Local hardware store / AliExpress,,When built WITHOUT load cell: lifts ebase so its drain hole stays above any overflow puddle in the decorative pot
+36,power,Li-ion 18650 cell with solder tabs,3000-3500 mAh unprotected (Samsung INR18650-35E / LG MJ1),2,55,Nkon / 18650batteries.dk,,1S2P - wired in PARALLEL. Solder tabs = no spot welder needed. Cradle in electronics_base lid (M/L/CUSTOM - S is too narrow). See ADR 013
+37,power,1S Li-ion protection board,DW01A + FS8205A 3A,2,5,AliExpress,,Between cells and XIAO BAT pads: over/under-voltage + short circuit. Buy 2 (cheap spare)
+38,power,Boost converter 12V,Pololu U3V40F12 fixed 12V (up to ~3.5A input),1,110,Pololu / Robotshop / The Pi Hut,4016,Powers pump from 1S battery. XL6009 rejected: datasheet min input 3.6-5V. Budget option for pot/ only: MT3608 module (2V min) set to 12V
+39,driver,P-channel MOSFET,AO3401A SOT-23 -30V -4A logic-level,10,1,AliExpress / LCSC,AO3401A,Switch A (battery to boost) + switch B (3V3 to sensor rail). Pack of 10
+40,driver,N-channel MOSFET,2N7002 SOT-23,10,1,AliExpress / LCSC,2N7002,Gate driver for switch A (battery voltage > GPIO 3.3V). Pack of 10
+41,proto,SOT-23 to DIP adapter,Breakout PCB pack of 10,1,15,AliExpress,,For pos 39/40 on stripboard
+42,passive,Resistors 100k + 200k,1/4W metal film,1,10,Conrad / local,,100k: P-FET gate pull-ups x2. 200k x2: battery voltage divider to D1
+43,passive,Capacitors,100uF 16V electrolytic + 10uF + 100nF ceramic,1,15,Conrad / local,,"100uF at boost input (pump inrush), 10uF at XIAO BAT pads, 100nF on battery ADC"

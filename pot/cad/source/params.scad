@@ -184,6 +184,14 @@ pump_mount_boss_d = 9;            // boss-diameter (M3 insert = 4.0mm hul)
 pump_mount_kamoer_spacing = 46;   // 2-huls flange c-c — VERIFICÉR
 pump_mount_bp7_square = 24;       // 4-huls kvadrat side-længde
 
+// Batteri (ADR 013): 2× 18650 i parallel (1S2P) i en vugge på lid'et, ved
+// siden af pumpe-beslaget. Passer i M, L og CUSTOM — IKKE i S (for smal).
+cell_d   = 18.6;
+cell_l   = 65;
+cradle_y = 38;                    // vuggens centerlinje (pumpen sidder i centrum)
+battery_corner_r = norm([cell_l / 2, cradle_y + cell_d + 0.5]);
+battery_fits = battery_corner_r <= ebase_outer_d / 2 - ebase_wall - 1;
+
 
 // ----------------------------------------------------------------------------
 // 4. Load cell mount
@@ -258,5 +266,7 @@ echo("reservoir_outer_d (BEREGNET):", reservoir_outer_d, "mm");
 echo("flange_outer_d (BEREGNET):", flange_outer_d, "mm");
 echo("total_stack_height (ca.):",
      ebase_lid_height + ebase_height + reservoir_height + top_ring_height, "mm");
+if (!battery_fits)
+    echo("ADVARSEL: 2× 18650 passer ikke i denne størrelse — brug 1 celle eller øg ebase_height");
 echo("--- Pyntepotte-krav: indre diameter >=", flange_outer_d + 4,
      "mm, hoejde ca.", ebase_lid_height + ebase_height + reservoir_height, "mm ---");

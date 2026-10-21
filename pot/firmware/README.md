@@ -77,7 +77,7 @@ firmware/
 ├── partitions.csv          # Flash partition layout
 ├── src/
 │   ├── main.cpp                # Entry + task spawning + pin assignments
-│   ├── pump.cpp / .h           # Pump MOSFET drive + dosering (TODO Fase 1)
+│   ├── pump.cpp / .h           # Boost-switch + pumpe-dosering (TODO Fase 1)
 │   ├── sensors.cpp / .h        # Soil ADC + water level + float ISR (TODO Fase 1)
 │   ├── weight.cpp / .h         # HX711 driver, optional hardware (TODO Fase 1)
 │   ├── temp_humidity.cpp / .h  # AHT20 I2C + VPD calc — VPD math virker; I2C TODO

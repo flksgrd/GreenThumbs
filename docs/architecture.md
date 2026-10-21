@@ -18,20 +18,19 @@
 +=================================================================+
 |             SMART PLANTEKRUKKE — BASE STATION                   |
 |                                                                 |
-|   USB-C PD adapter (≥30W)                                       |
-|        ↓                                                         |
-|   ZY12PDN PD trigger (12V)                                      |
-|        ├──→ MOSFET (IRLB8721) ──→ Peristaltisk pumpe 12V        |
-|        └──→ MP1584 buck (12V→5V) ──→ XIAO ESP32-C6              |
+|   2× 18650 (1S2P, ADR 013) ←── lades via XIAO'ens USB-C        |
+|        ├──→ switch A ──→ boost 12V ──→ Peristaltisk pumpe 12V   |
+|        └──→ XIAO ESP32-C6 (BAT-pads) ──→ switch B ──→ sensorer  |
 |                                          │                       |
 |                                          ├── ADC0: soil moisture │
 |                                          ├── I2C: water level    │ (Grove, 0x77/78)
 |                                          ├── GPIO ISR: float     │
 |                                          ├── I2C: AHT20          │ (temp + RH)
 |                                          ├── GPIO: HX711 SCK/DT  │ (optional)
-|                                          ├── GPIO: status LED    │
+|                                          ├── ADC1: batteri       │
+|                                          ├── GPIO: sensor-switch │
 |                                          ├── GPIO: manual btn    │
-|                                          └── GPIO PWM: pump      │
+|                                          └── GPIO: pumpe-switch  │
 +=================================================================+
 ```
 
@@ -53,7 +52,7 @@ STACK VARIANT A (besluttet 2026-06): cup hænger NEDSÆNKET i reservoiret.
 ╞═══════════════════════════════════╡
 │  ELECTRONICS BASE (vandtæt)       │
 │   • XIAO ESP32-C6 + AHT20 + buzzer│
-│   • MOSFET + buck-converter       │
+│   • 2× 18650 + boost + switches   │
 │   • Pumpe på lid (dual footprint: │
 │     Kamoer KXF-DC eller BP7 piezo)   │
 │   • O-ring/EPDM gasket på top     │
@@ -93,7 +92,7 @@ Reservoir vand-zone (under cup)
      ↓ SUGESLANGE (m. sinker-vægt) op gennem ring-gab → flange-åbning 180°
        → ned UDVENDIGT → M16-gland i ebase-siden → pumpe-indgang
      │
-     ↓ Peristaltisk pumpe i electronics base (drevet via MOSFET, 12V)
+     ↓ Peristaltisk pumpe i electronics base (12V fra boost, tændt via switch A)
      │
      ↓ TRYKSLANGE ud af M16 → op UDVENDIGT → flange-åbning 180°
        → ind i cup-toppens side-hul → dripper på jord-overfladen
@@ -185,7 +184,7 @@ Pumpen sidder i electronics base, direkte over load cell platformen. Vibrationer
 
 ### Termisk drift fra elektronik
 
-ESP32-C6 + MP1584 buck-converter genererer ~1-2W varme. Varmen vandrer gennem electronics base bund → ind i load_cell_mount upper plate → påvirker HX711-aflæsning (~50 ppm/°C drift = ~0.5g per grad ved 5kg fuldskala — ikke meget, men akkumuleres over et døgn med vekslende rumtemp).
+Med batteridrift (ADR 013) sover ESP32-C6 det meste af tiden, og boosten kører kun under pumpning — varmen er langt mindre end med den tidligere 12V/buck-forsyning. Under pumpning genererer boost + pumpe dog ~0,5-1W. Varmen vandrer gennem electronics base bund → ind i load_cell_mount upper plate → påvirker HX711-aflæsning (~50 ppm/°C drift = ~0.5g per grad ved 5kg fuldskala — ikke meget, men akkumuleres over et døgn med vekslende rumtemp).
 
 **Mitigation:**
 - Læg en 2-3mm rubber-pad mellem electronics_base_lid og load_cell_mount upper plate som termisk isolation.
