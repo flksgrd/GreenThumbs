@@ -135,6 +135,21 @@ qi_floor_t = 1.2;               // tyndt gulv under spolen (rækkevidde ~2-8mm)
 qi_cell_gap = cradle_y - (cell_d / 2 + 0.5) - cell_d / 2 - qi_l / 2;
 
 // ----------------------------------------------------------------------------
+// 4b. Ladebase (ADR 013) — tårnet løftes ud af pyntepotten og stilles her
+// ----------------------------------------------------------------------------
+// Konisk sæde der passer til bay'ens 45°-fas → Qi-spolen centreres over en
+// Apple MagSafe-lader (25W, A2580), der ligger i en lomme i midten.
+magsafe_d       = 55.5;         // ChargerLab-teardown af A2580 — VERIFICÉR
+magsafe_t       = 4.45;
+magsafe_proud   = 0.1;          // laderen stikker lidt op → tårnet hviler på den
+magsafe_cable_w = 6.5;          // flettet kabel + aflastning — VERIFICÉR
+base_cable_angle = 90;          // kabel-kanalens retning (frit valg)
+base_clear      = 0.5;          // radial frigang mellem bay'ens fas og sædet
+base_wall       = 5;            // væg uden for sædet
+base_puck_floor = 1.6;          // gulv under laderen (med udskubningshul)
+base_round      = 2.2;          // afrunding af synlige kanter
+
+// ----------------------------------------------------------------------------
 // 5. Beregnede størrelser
 // ----------------------------------------------------------------------------
 bark_porosity = 0.55;           // vandfyldt andel af barken (antagelse)

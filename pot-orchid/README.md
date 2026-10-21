@@ -37,7 +37,7 @@ automatisk. Hele tårnet står skjult i en pyntepotte.
 | Lager-ring | ~880 ml (~500 ml reserve ≈ 3-5 uger) |
 | Fyld / dræn | ~5 min hver vej (Kamoer NKP, ~75 ml/min) |
 | Strøm | 2× 18650 (1S2P), ~2,5-4 mdr. pr. opladning (estimat) |
-| Ladning | USB-C i ring-låget, eller stil tårnet på en Qi-lader |
+| Ladning | USB-C i ring-låget, eller stil tårnet på ladebasen (MagSafe/Qi) — ~12-14 t |
 | Filament | ~600g opak PETG |
 
 Påfyldning: gennem hullet i ring-låget, eller løft planten og hæld i
@@ -46,9 +46,10 @@ skålen — det løber over i ringen.
 ## Filer
 
 - [cad/source/](cad/source/) — OpenSCAD: `params.scad`, `tank.scad`
-  (ring + skål + skakt + float-beslag), `lid.scad`, `bay.scad`, `assembly.scad`
+  (ring + skål + skakt + float-beslag), `lid.scad`, `bay.scad`,
+  `charging_base.scad` (ladebase til MagSafe), `assembly.scad`
 - [cad/preview/](cad/preview/) — renders: iso, snit i hvile, snit under soak,
-  top, eksploderet
+  top, eksploderet, Qi i bay'en, ladebase, tårnet på ladebasen
 - [preliminary-bom.md](preliminary-bom.md) — hvad der adskiller BOM'en fra pot/
 - [design-notes.md](design-notes.md) — åbne punkter og næste skridt
 - [references.md](references.md) — kilder og prior art

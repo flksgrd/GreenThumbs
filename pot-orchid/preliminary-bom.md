@@ -45,6 +45,7 @@ switch-kredsløb — se nedenfor), Qi-modtager + lader + støvprop (44-46).
 | Orkide-bark | Fin/medium fyrrebark ~2 L | ~40 DKK | Forbrugsvare; skiftes hvert ~2. år |
 | Sump-si | Rustfrit net / lille akvarie-si til Ø6 slange | ~15 DKK | Holder bark-smuld ude af pumpen |
 | Stænk-hætte | Printes (TPU/PETG) | — | TODO i CAD: skaktens top |
+| Ladebase | Printes (PETG/PLA), ~100g ved 15% infill | — | `charging_base.scad` — passer til Apple MagSafe 25W (pos 45) |
 
 ## Pin-allokering (orkide)
 

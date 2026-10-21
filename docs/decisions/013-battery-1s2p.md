@@ -138,8 +138,12 @@ tårnet på en lader.
 - **Pogo-pins fravalgt:** blottede kontakter under et tårn, der står i en
   pyntepotte, hvor overløbsvand samles. Qi har ingen kontakter og virker med
   eksisterende ladere.
-- TODO: printet ladebase der centrerer tårnet over en Qi-lader (orkidens 45°-
-  fas kan sidde i et konisk sæde).
+- Ladebase til orkiden: `pot-orchid/cad/source/charging_base.scad` — konisk
+  sæde til bay'ens 45°-fas og lomme til brugerens Apple MagSafe-lader (25W).
+  MagSafe lader også almindelige Qi-modtagere, men uden magnetisk hold
+  ([Twelve South](https://www.twelvesouth.com/blogs/twelve-south-blog/do-magsafe-chargers-work-with-non-apple-devices))
+  — derfor centrerer sædet mekanisk. pot/ har ingen ladebase endnu (Qi-
+  spolen sidder off-center → basen skulle have en rotationsnøgle).
 
 ### Ladestrøm: TP4056 ved 580 mA (besluttet 2026-10-21)
 

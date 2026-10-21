@@ -9,6 +9,8 @@
 //   "soaking"   halvsnit under soak: skålen fyldt til kanten, ringen sænket
 //   "top"       oppefra — kun planten i potten + ring-låget ses
 //   "exploded"  dele adskilt lodret
+//   "charging"  halvsnit: tårnet på ladebasen med MagSafe-laderen
+//   "base"      ladebasen alene med MagSafe-laderen
 //
 // Farver: opak PETG = grå, vand = cyan, dyrkningspotte = grøn,
 //         pyntepotte = svag terrakotta-skygge, sensor = orange,
@@ -19,6 +21,7 @@ include <params.scad>
 use <bay.scad>
 use <tank.scad>
 use <lid.scad>
+use <charging_base.scad>
 
 view = "iso";
 
@@ -30,10 +33,12 @@ opaque   = [0.45, 0.47, 0.5];
 water    = [0.2, 0.75, 0.95, 0.55];
 potcol   = [0.55, 0.75, 0.45, 0.6];
 cachecol = [0.75, 0.45, 0.3, 0.18];
+basecol  = [0.82, 0.78, 0.7];
 
-// Snit-kuben må ikke omslutte kameraet (OpenCSG-preview fejler så)
+// Snit-kuben må ikke omslutte kameraet eller ligge tæt på det (near-plane
+// klipper forsiden → OpenCSG trækker ikke fra). y ≥ -150 dækker tårnet (r 95).
 module half() {
-    difference() { children(); translate([-400, -300, -50]) cube([800, 300, 800]); }
+    difference() { children(); translate([-400, -150, -50]) cube([800, 150, 800]); }
 }
 module cut(on) { if (on) half() children(); else children(); }
 
@@ -108,4 +113,23 @@ else if (view == "section")  stack(sec = true, ghost = true);
 else if (view == "soaking")  stack(soaking = true, sec = true, ghost = true);
 else if (view == "top")      stack(ghost = true);
 else if (view == "exploded") stack(explode = 45);
-else echo("Ukendt view — brug iso|section|soaking|top|exploded");
+else if (view == "charging") {
+    zb = base_puck_floor + magsafe_t;            // tårnet hviler på laderen
+    color(basecol) half() charging_base();
+    half() magsafe();
+    translate([0, 0, zb]) stack(sec = true);
+}
+else if (view == "base") { color(basecol) charging_base(); magsafe(); }
+else echo("Ukendt view — brug iso|section|soaking|top|exploded|charging|base");
+
+// MagSafe-lader (hvid flade, aluminium-side) + kabel ud i kanalen
+module magsafe() {
+    translate([0, 0, base_puck_floor]) {
+        color([0.75, 0.76, 0.78]) cylinder(d = magsafe_d, h = magsafe_t - 0.6, $fn = 120);
+        color([0.97, 0.97, 0.97]) translate([0, 0, magsafe_t - 0.6])
+            cylinder(d = magsafe_d, h = 0.6, $fn = 120);
+        color([0.95, 0.95, 0.95]) rotate([0, 0, base_cable_angle])
+            translate([magsafe_d / 2 - 1, 0, magsafe_t / 2])
+                rotate([0, 90, 0]) cylinder(d = 3.5, h = 140, $fn = 24);
+    }
+}

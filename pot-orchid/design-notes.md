@@ -56,8 +56,14 @@ holder de åbne punkter.
 - [x] **Ladning (ADR 013, besluttet 2026-10-21):** USB-C-hun-ende i toppen
       af en tør skakt ved 60° (flugter med ring-låget) + Qi-spole i en lomme
       midt i bay-gulvet. Pogo fravalgt (blottede kontakter i en våd pyntepotte).
-- [ ] **Ladebase:** printet konisk sæde, der centrerer bay'ens 45°-fas over
-      en almindelig Qi-lader.
+- [x] **Ladebase** (`charging_base.scad`, 2026-10-21): Ø189 × 15mm, konisk
+      sæde til bay'ens 45°-fas (±0,5mm), lomme til Apple MagSafe 25W (A2580),
+      laderen stikker 0,1mm op så tårnet hviler på den. Kabel-kanal radialt
+      ud, åben nedad under kanten. ~265g massiv (~100g ved 15% infill, skøn).
+- [ ] **MagSafe-mål:** Ø55,5 × 4,45mm er fra en teardown — mål din egen og
+      kablets aflastning (`magsafe_*` i params.scad) før print.
+- [ ] **Test Qi-modtager på MagSafe:** MagSafe lader Qi-enheder (uden
+      magnetisk hold — basen centrerer i stedet). Vi skal kun bruge ~3W.
 - [ ] **USB-C-forlængerens hun-ende:** mål overmolden (`usbc_body_*`) — slidsen
       i skaktens top er sat til 12,5×6,5mm + tolerance. Limes nedefra.
 - [ ] **Stænk-hætte** på skaktens top: åbning ned til elektronikken

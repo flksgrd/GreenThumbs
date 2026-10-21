@@ -40,6 +40,6 @@ id,category,component,specification,qty,unit_price_dkk,supplier,part_number,note
 42,passive,Resistors 100k + 200k,1/4W metal film,1,10,Conrad / local,,100k: P-FET gate pull-ups x2. 200k x2: battery voltage divider to D1
 43,passive,Capacitors,100uF 16V electrolytic + 10uF + 100nF ceramic,1,15,Conrad / local,,"100uF at boost input (pump inrush), 10uF at XIAO BAT pads, 100nF on battery ADC"
 44,power,Qi wireless receiver module,5V output >=600mA; coil ~46x36mm FPC with ferrite backing,1,70,The Pi Hut / Adafruit / AliExpress,,Coil lies in pocket in ebase lid at -y (1.2mm floor). Output -> Schottky (pos 5) -> TP4056 IN+. M/L/CUSTOM only; not usable with load cell platform.
-45,power,Qi charger pad,Any Qi charger >=5W,1,0,Existing,,Phone charger works. Printed charging base that centres the tower over the pad = TODO
+45,power,Qi charger pad,Apple MagSafe Charger 25W (A2580) - or any Qi charger >=5W,1,0,Existing,,Existing. Orchid charging base pot-orchid/cad/source/charging_base.scad is sized for the MagSafe puck (55.5x4.45mm - VERIFY). MagSafe charges plain Qi receivers without magnetic hold - the conical seat centres the tower instead
 46,power,USB-C dust plug,Silicone anti-dust plug pack of 10,1,20,AliExpress,,Closes the rim socket when not charging (splash protection)
 47,passive,Resistor 2.0k SMD,0603 1% (pack),1,5,Conrad / LCSC,,Replaces R_PROG (R3) on the TP4056 module: 1200/2000 = 0.58 A
