@@ -26,7 +26,7 @@ Total brugbare GPIO: 11
 | XIAO pin | GPIO | Function | Tilslutning | Notes |
 |----------|------|----------|-------------|-------|
 | D0 | GPIO0 | ADC | Soil moisture sensor (AOUT) | Bruges af profil-system, kalibreres dry/wet |
-| D1 | GPIO1 | ADC | **Batteri-spænding** | 2× 200kΩ deler fra BAT+ (ADR 013) |
+| D1 | GPIO1 | ADC | **Batteri-spænding** | 2× 200kΩ deler fra OUT+ på TP4056-modulet (ADR 013) |
 | D2 | GPIO2 | GPIO PWM | **Piezo buzzer** (passiv, LEDC-drevet) | Refill-indikator + fejl-signaler. Se ADR 008 |
 | D3 | GPIO21 | GPIO ISR | Float switch | Internal pull-up; LOW = vand tomt |
 | D4 | GPIO22 | **I2C SDA** | **AHT20 SDA** | Standard I2C bus til environmental sensor |
@@ -47,16 +47,16 @@ Total brugbare GPIO: 11
 ## Power rails (batteri — ADR 013)
 
 ```
-USB-C-forlænger (kanten) ───────────────────→ XIAO USB-C ──┐
-Qi-modtager 5V ──→ 1N5819 (katode mod XIAO) ──→ XIAO 5V-pin ─┤
-                                                            ↓
-              XIAO ESP32-C6 (indbygget Li-ion-lader, 100 mA, BAT+/BAT- pads)
-                 │
-              1S-beskyttelsesprint (DW01A + FS8205A)
-                 │
-              2× 18650 parallelt (1S2P, 3,0-4,2V)
+USB-C-forlænger (kanten) ─────────────────────→ TP4056 USB-C ──┐
+Qi-modtager 5V ──→ 1N5819 (katode mod TP4056) ──→ TP4056 IN+ ───┤
+                                                                ↓
+          TP4056-modul (580 mA: R3 = 2,0kΩ) + DW01A/FS8205A-beskyttelse
+             B+/B- ──→ 2× 18650 parallelt (1S2P, 3,0-4,2V)
+             OUT+/OUT- ──→ systemet (alt herunder; aldrig direkte på cellerne)
 
-BAT+ ──┬──→ switch A (P-FET, D10) ──→ boost 12V (Pololu U3V40F12) ──→ pumpe
+OUT+ ──┬──→ XIAO BAT+ / BAT- pads (XIAO'ens egen 100 mA-lader kun aktiv
+       │    når dens USB-C bruges til programmering inde i boksen)
+       ├──→ switch A (P-FET, D10) ──→ boost 12V (Pololu U3V40F12) ──→ pumpe
        └──→ 200k ─┬─ 200k ──→ GND
                   └──→ D1 (batteri-ADC, 100nF til GND)
 
@@ -79,7 +79,7 @@ Sensorer kører på 3.3V (fra XIAO 3V3-pin), IKKE batterispænding.
 ```
 Switch A — high-side, pumpe (Vbat > 3.3V → kræver N-FET-driver)
 
-  BAT+ ──┬──────────── source ┐
+  OUT+ ──┬──────────── source ┐
          │                    │ AO3401A (P-FET)
        100kΩ          gate ───┤
          │             │      │ drain ──→ U3V40F12 VIN ──→ 12V ──→ pumpe +

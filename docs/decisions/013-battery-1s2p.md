@@ -26,14 +26,15 @@ Fakta:
 
 ## Decision
 
-**1S2P Li-ion: 2× 18650 i parallel (~3,6V, ~6000 mAh, ~22 Wh) med BMS,
-ladet af XIAO'ens indbyggede lader.**
+**1S2P Li-ion: 2× 18650 i parallel (~3,6V, ~6000 mAh, ~22 Wh), ladet af et
+TP4056-modul med beskyttelse ved 580 mA.**
 
 ```
-  USB-C ved kanten ─────────────→ XIAO USB-C ┐
-  Qi-modtager 5V ──→ Schottky ──→ XIAO 5V-pin ┴→ lader ─(BAT)─→ beskyttelsesprint ─→ 2× 18650
-                    │
-     BAT+ ──────────┼─→ switch A (P-FET) ─→ boost 12V ─→ pumpe (pot/)
+  USB-C ved kanten ─────────────→ TP4056 USB-C ┐
+  Qi-modtager 5V ──→ Schottky ──→ TP4056 IN+  ┴→ TP4056 (580 mA) + DW01 ─(B+/B-)─→ 2× 18650
+                                                    │ OUT+/OUT-
+     OUT+ ──────────┬─→ XIAO BAT-pads (XIAO'ens egen lader bruges kun ved USB inde i boksen)
+                    ├─→ switch A (P-FET) ─→ boost 12V ─→ pumpe (pot/)
                     │                                └→ H-bro → pumpe (orkide)
                     │                                └→ XKC-sensor (orkide)
      XIAO 3V3 ──────┴─→ switch B (P-FET) ─→ soil + Grove + AHT20 (kun pot/)
@@ -99,11 +100,13 @@ Antagelser: boost 85% effektivitet, sensorer slukket mellem målinger,
 ### Positive
 - Ingen kabel ved planten i 2,5-6 måneder ad gangen
 - Simplere strømdel end før (ingen 12V-forsyning, ingen buck)
-- Én USB-C-port til både ladning og programmering (XIAO'ens egen)
+- Fuld opladning på én nat (~12-14 t ved 580 mA) i stedet for ~3 døgn
 
 ### Negative
-- Langsom ladning (~100 mA → en 6000 mAh-pakke tager >2 døgn). Hurtigere
-  med separat TP4056-lader, hvis det bliver et problem
+- USB-C ved kanten lader kun — firmware opdateres via Matter OTA, eller
+  via XIAO'ens USB-C inde i boksen
+- TP4056 er lineær: ~0,8-1,2W varme under ladning i den lukkede boks
+  (placér modulet væk fra AHT20)
 - HomeKit-opdateringer bliver forsinkede (sleepy device); manuel pumpe-
   kommando kan tage sekunder at nå frem
 - Refill-bip (ADR 008) kræver at enheden er vågen → refill-tilstand
@@ -117,15 +120,14 @@ Brugeren skal kunne vælge: kabel i toppen (uden at løfte noget) eller sætte
 tårnet på en lader.
 
 - **USB-C ved kanten:** hun-enden af en USB-C-forlænger, lukket med en
-  silikone-støvprop. Han-enden sidder i XIAO'ens USB-C → også programmering
-  fra toppen.
+  silikone-støvprop. Han-enden sidder i TP4056-modulets USB-C (kun ladning).
   - pot/: lomme uden på reservoiret ved 0° under et hak i flangen; kablet
     går udvendigt ned til et Ø14-hul i ebase (split-grommet).
   - Orkide: egen tør skakt i tanken ved 60°, op gennem ring-låget. Et stik
     der hang ned under låget ville nå vandet (kun ~15mm luft over max).
 - **Qi i bunden:** modtager-spole (~46×36mm) i en lomme med 1,2mm gulv;
-  output via Schottky (1N5819) til XIAO'ens 5V-pin, så begge kilder kan
-  sidde samtidig.
+  output via Schottky (1N5819) til TP4056 IN+, så begge kilder kan sidde
+  samtidig.
   - Orkide: midt i bay-gulvet → kan stå på en hvilken som helst Qi-lader.
     Batterivuggen er flyttet ud (cradle_y 52), så der er ~14mm fra spolen
     til cellernes stålkapper.
@@ -139,16 +141,23 @@ tårnet på en lader.
 - TODO: printet ladebase der centrerer tårnet over en Qi-lader (orkidens 45°-
   fas kan sidde i et konisk sæde).
 
-### Hurtigere ladning (option — ikke besluttet)
+### Ladestrøm: TP4056 ved 580 mA (besluttet 2026-10-21)
 
-XIAO'ens lader giver 100 mA
+XIAO'ens lader giver kun 100 mA
 ([Seeed wiki](https://wiki.seeedstudio.com/xiao_esp32c6_getting_started/))
 → ~3 døgn for 2× 3500 mAh. Med et separat TP4056-modul (USB-C, med
 beskyttelse) bestemmes strømmen af R_PROG: I = 1200 / R_PROG → 1,2kΩ = 1A,
 2kΩ = 580 mA. Ved 580 mA: ~12-14 timer. Modulet erstatter beskyttelses-
 printet (pos 37), forlængeren sættes i modulets USB-C i stedet for XIAO'ens,
 og Qi-dioden går til modulets IN+. TP4056 er lineær: (5V − Vbat) × I bliver
-til varme (~0,8W ved 580 mA) i den lukkede bay.
+til varme (~0,8W ved 580 mA) i den lukkede bay — derfor 580 mA og ikke 1A.
+
+- Modulet leveres med R_PROG = 1,2kΩ (R3) → byt til **2,0kΩ** (0603)
+- Alle forbrugere (XIAO BAT-pads, switch A, batteri-ADC-deler) sidder på
+  **OUT+/OUT-** — efter beskyttelses-FET'erne, ikke direkte på cellerne
+- VERIFICÉR at modulet har 5,1kΩ CC-modstande — ellers giver USB-C-ladere
+  (C-til-C) ingen 5V
+- Qi-modtageren skal kunne levere ≥ 600 mA
 
 ## Implementation notes
 - BOM: pot/hardware/bom.csv (batteri-rækker) + pot-orchid/preliminary-bom.md

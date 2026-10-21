@@ -45,6 +45,12 @@ PlatformIO installerer ESP-IDF automatisk når du første gang kører `pio run`
 - `scripts/fix_ot_datetime.py` retter en PlatformIO-fejl, der ellers stopper
   OpenThread-buildet (build-dato med mellemrum i en define)
 - Flash er sat til 4MB (XIAO) i både `platformio.ini` og `sdkconfig.defaults`
+- OTA: `partitions.csv` har to app-slots (ota_0/ota_1, 1920 KB hver) + otadata,
+  og rollback er slået til. Ny firmware skal kalde
+  `esp_ota_mark_app_valid_cancel_rollback()` først når Thread + Matter er oppe
+  igen — ellers vender bootloaderen tilbage til den forrige version.
+  Opdatering sker som Matter OTA (OTA Requestor i esp-matter) fra en
+  `chip-ota-provider-app` på Mac'en; USB-C ved kanten lader kun (ADR 013)
 - Bemærk: esp-matter v1.3 anbefaler ESP-IDF 5.2.x; nyere esp-matter
   anbefaler 5.5.x — afstem versionerne når Matter integreres i Fase 1
 

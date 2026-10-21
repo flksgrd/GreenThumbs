@@ -48,6 +48,10 @@ CONFIG_ESP_TASK_WDT_TIMEOUT_S=15
 # Flash: XIAO ESP32-C6 har 4MB (partitions.csv er lagt ud til præcis 4MB)
 CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
 
+# OTA: rollback hvis ny firmware ikke kalder esp_ota_mark_app_valid_cancel_rollback()
+# (gøres først når Thread + Matter er oppe igen efter opdateringen)
+CONFIG_BOOTLOADER_APP_ROLLBACK_ENABLE=y
+
 # Partition layout
 CONFIG_PARTITION_TABLE_CUSTOM=y
 CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
