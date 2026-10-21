@@ -7,7 +7,7 @@ DIY auto-vandings-system til hjemmeplanter med Apple HomeKit-integration via Mat
 | Komponent | Status | Note |
 |---|---|---|
 | **v1: Smart Plantekrukke** | 🟡 Planlægning færdig, bygges nu | Modulær 3D-printet selvvandende krukke (med valgfri wick til bottom-watering) |
-| **v2a: Pot-Orchid** | ⚪ Designfase only | Dedikeret orkide-krukke med soak-tray |
+| **v2a: Pot-Orchid** | 🟡 Design v0 (CAD + koncept, ADR 011) | Orkide-vase med automatisk soak: fyld → soak → dræn |
 | **v2b: Vægmonteret Tower** | ⚪ Designfase only | Hydroponic til krydderurter/leafy greens |
 
 ## Oversigt
@@ -29,11 +29,11 @@ En modulær 3D-printet krukke der lever inde i en pyntepotte:
 
 → Se [pot/](pot/) for byggeguide, hardware, firmware og CAD.
 
-### 🪻 Pot-Orchid med Soak-Tray (v2a — kun planlægning)
+### 🪻 Pot-Orchid med automatisk soak (v2a — design v0)
 
-Dedikeret orkide-krukke der mimicker manuel orkide-soaking: tray omkring plant cup oversvømmes via pump i 10-15 min, drænes derefter via solenoid eller passiv overflow tilbage til reservoir. Genbruger v1-elektronik 100%.
+Orkide-vase i klar PETG: en vendbar peristaltisk pumpe oversvømmer barken nedefra fra et lager i basen, holder soak-tiden (5-20 min, profil-parameter) og pumper vandet tilbage, så rødderne aldrig står i vand. Tør skakt til slanger/kabler bevarer zero-penetration. Genbruger det meste af v1-elektronikken.
 
-→ Se [pot-orchid/design-notes.md](pot-orchid/design-notes.md) for løbende planlægning.
+→ Se [pot-orchid/README.md](pot-orchid/README.md) og [ADR 011](docs/decisions/011-orchid-flood-and-drain.md).
 
 ### 🌿 Vægmonteret Hydroponic Tower (v2b — kun planlægning)
 
