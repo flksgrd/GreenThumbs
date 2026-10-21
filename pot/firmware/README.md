@@ -6,8 +6,13 @@ PlatformIO + ESP-IDF + ESP-Matter SDK projekt for XIAO ESP32-C6.
 
 ### 1. PlatformIO Core
 
+PlatformIO skal køre på **Python ≤ 3.13**. ESP-IDF 5.5's Python-afhængigheder
+(pydantic-core, cryptography) kan ikke bygges på 3.14 — buildet fejler med
+`No module named 'idf_component_manager'` eller SIGSEGV i esptool-postinstall.
+
 ```bash
-pip install --break-system-packages platformio
+pipx install platformio --python python3.13
+# eller med uv's Python: --python ~/.local/share/uv/python/cpython-3.13.*/bin/python3.13
 ```
 
 Eller via VS Code / Antigravity: install "PlatformIO IDE" extension.
@@ -34,7 +39,14 @@ source $ESP_MATTER_PATH/export.sh
 
 ### 3. ESP-IDF (auto-installeres af PlatformIO)
 
-PlatformIO installerer ESP-IDF 5.1+ automatisk når du første gang kører `pio run`.
+PlatformIO installerer ESP-IDF automatisk når du første gang kører `pio run`
+(verificeret 2026-10-21: espressif32 6.13.0 → ESP-IDF 5.5.3, ~30s build).
+
+- `scripts/fix_ot_datetime.py` retter en PlatformIO-fejl, der ellers stopper
+  OpenThread-buildet (build-dato med mellemrum i en define)
+- Flash er sat til 4MB (XIAO) i både `platformio.ini` og `sdkconfig.defaults`
+- Bemærk: esp-matter v1.3 anbefaler ESP-IDF 5.2.x; nyere esp-matter
+  anbefaler 5.5.x — afstem versionerne når Matter integreres i Fase 1
 
 ## Build & flash
 
