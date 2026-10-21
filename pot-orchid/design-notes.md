@@ -78,7 +78,7 @@ holder de åbne punkter.
 
 ### Elektronik / firmware
 - [ ] H-bro DRV8871: IN1 = D10, IN2 = D1. Batteri-ADC på D0, boost-switch D8
-      (ADR 013). Qi-modtager → 1N5819 → TP4056 IN+.
+      (ADR 013). Qi-modtager → 1N5817 → TP4056 IN+.
 - [ ] `soak_cycle.cpp`: IDLE → FILL (fast tid + margin; overskud løber
       tilbage) → SOAK → DRAIN (til "skål tom" + efterløb) → VERIFY.
       Skålen skal være tom inden timeout, ellers alarm (buzzer + HomeKit) —

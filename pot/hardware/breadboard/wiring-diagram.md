@@ -48,7 +48,7 @@ Total brugbare GPIO: 11
 
 ```
 USB-C-forlænger (kanten) ─────────────────────→ TP4056 USB-C ──┐
-Qi-modtager 5V ──→ 1N5819 (katode mod TP4056) ──→ TP4056 IN+ ───┤
+Qi-modtager 5V ──→ 1N5817 (katode mod TP4056) ──→ TP4056 IN+ ───┤
                                                                 ↓
           TP4056-modul (580 mA: R3 = 2,0kΩ) + DW01A/FS8205A-beskyttelse
              B+/B- ──→ 2× 18650 parallelt (1S2P, 3,0-4,2V)
@@ -77,17 +77,17 @@ Sensorer kører på 3.3V (fra XIAO 3V3-pin), IKKE batterispænding.
 ## Komplet wiring
 
 ```
-Switch A — high-side, pumpe (Vbat > 3.3V → kræver N-FET-driver)
+Switch A — high-side, pumpe (Vbat > 3.3V → kræver N-FET-driver; BS170 TO-92 ben: D-G-S, flad side mod dig)
 
   OUT+ ──┬──────────── source ┐
          │                    │ AO3401A (P-FET)
        100kΩ          gate ───┤
          │             │      │ drain ──→ U3V40F12 VIN ──→ 12V ──→ pumpe +
          └─────────────┘                 U3V40F12 GND ──→ GND     pumpe − ──→ GND
-                       │                 (1N5819 over pumpen: katode mod +)
-                 2N7002 drain
-  D10 ──[10kΩ til GND]── 2N7002 gate
-                 2N7002 source ──→ GND
+                       │                 (1N5817 over pumpen: katode mod +)
+                 BS170 drain
+  D10 ──[10kΩ til GND]── BS170 gate
+                 BS170 source ──→ GND
 
 Switch B — high-side, sensorer (source = 3V3 = GPIO-niveau → direkte drev)
 
@@ -190,7 +190,7 @@ D3 har INTERNAL pull-up enabled in firmware
 
 For v1 breadboard:
 1. XIAO på 0.1" header → breadboard
-2. Switch A + B (AO3401A/2N7002 på SOT-23-adaptere) og boost-modulet på samme breadboard
+2. Switch A + B (AO3401A på SOT-23-adaptere, BS170 i TO-92 direkte) og boost-modulet på samme breadboard
    — test først med laboratorieforsyning 3,7V i stedet for cellerne
 3. AHT20 breakout board direkte på breadboard (lille)
 4. Sensorer via JST-XH connectors (laver pigtail kabel: JST → male jumper pins)

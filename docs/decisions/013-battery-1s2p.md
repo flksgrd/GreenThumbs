@@ -47,7 +47,7 @@ TP4056-modul med beskyttelse ved 580 mA.**
   [U3V40F12](https://www.pololu.com/product/4016/specs)). MT3608-moduler
   (2V min.) er et billigere alternativ til pot/'s 3W-pumpe, men deres lille
   spole er for svag til orkidens 5W.
-- **Switch A** (AO3401A + 2N7002-driver) afbryder boostens input helt: en
+- **Switch A** (AO3401A + BS170-driver) afbryder boostens input helt: en
   boost trækker mA i tomgang og sender Vbat − diodefald videre, selv med
   EN lav — pumpen ville sive.
 - **Switch B** (kun pot/): soil-sensoren trækker ~5 mA konstant. AHT20
@@ -126,7 +126,7 @@ tårnet på en lader.
   - Orkide: egen tør skakt i tanken ved 60°, op gennem ring-låget. Et stik
     der hang ned under låget ville nå vandet (kun ~15mm luft over max).
 - **Qi i bunden:** modtager-spole (~46×36mm) i en lomme med 1,2mm gulv;
-  output via Schottky (1N5819) til TP4056 IN+, så begge kilder kan sidde
+  output via Schottky (1N5817) til TP4056 IN+, så begge kilder kan sidde
   samtidig.
   - Orkide: midt i bay-gulvet → kan stå på en hvilken som helst Qi-lader.
     Batterivuggen er flyttet ud (cradle_y 52), så der er ~14mm fra spolen

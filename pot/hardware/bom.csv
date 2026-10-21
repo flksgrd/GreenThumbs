@@ -2,15 +2,15 @@ id,category,component,specification,qty,unit_price_dkk,supplier,part_number,note
 1,mcu,XIAO ESP32-C6,Thread+WiFi+BLE+Matter USB-C 4MB flash,2,80,Mouser DK / Digi-Key / Elektor,113991254,Buy 2x for backup
 2,actuator,Peristaltic pump 12V,Kamoer KXF-DC-S06 (12V 0.25A ~37 ml/min) or generic 12V DC peristaltic,1,150,AliExpress / Robu,KXF-DC-S06,VERIFY flange hole spacing - CAD assumes 46mm c-c (pump_mount_kamoer_spacing in params.scad). See ADR 001
 3,plumbing,Silicone tubing,4mm ID x 6mm OD food-grade 2m,1,30,AliExpress / RS Components,,~1m per set: suction + pressure hose route up the hose channel / over flange / down outside to ebase
-5,driver,Schottky diode,1N5819 flyback,10,3,Mouser / RS,1N5819,Flyback across pump terminals (cathode to +12V) + 1x OR-ing diode from Qi receiver to TP4056 IN+ (ADR 013)
-6,passive,Resistor 10k ohm,1/4W carbon film for gate pulldown,10,1,Conrad / local,,Pulldown on switch A driver gate (D10) - pump stays off during boot
+5,driver,Schottky diode,"1N5817 (20V 1A, lower Vf than 1N5819)",10,0,DTU komponentshop,1N5817,Flyback across pump terminals (cathode to +12V; 20V rating > 12V) + OR-ing diode Qi -> TP4056 IN+ (~0.4V drop at 0.6A vs ~0.5V for 1N5819). See docs/research/dtu-component-shop.md
+6,passive,Resistor 10k ohm,10k 1/4W THT (E96),10,0,DTU komponentshop,,Pulldown on switch A driver gate (D10) - pump stays off during boot
 7,sensor,Capacitive soil moisture v2.0,DFRobot-type corrosion resistant analog,2,40,AliExpress,,2x for spare/calibration. Stock cable (~20cm) too short for channel routing - extend with pos 32
 8,sensor,Seeed Grove Water Level Sensor 10cm,Capacitive graduated coated PCB I2C 0x77+0x78 20x133mm +-5mm 3.3V,1,75,Berrybase / Eckstein / Botland,101020635,Shares I2C bus with AHT20 (frees D1). Replaces DFRobot SEN0204 which is a BINARY non-contact switch - not graduated. See calibration.md section 3
 9,sensor,Float switch mini,Vertical plastic NO 5V,1,25,AliExpress / Conrad,,Hardware fail-safe low-water cutoff. Cable must reach ~0.6m (bottom of reservoir to ebase via cable channel) - extend if shorter
 10,sensor,HX711 ADC module,24-bit ADC for load cell,1,15,AliExpress / Conrad,HX711,OPTIONAL - weight-based detection (ADR 004). Not used in pot-orchid v1 (ADR 012)
 11,sensor,Bar load cell 5kg,Generic aluminium bar 80x12.7x12.7mm (HX711-kit type),1,50,AliExpress,,OPTIONAL - matches load_cell_mount.scad. NOT SparkFun TAL220B 5kg (55mm long). Often M4 one end + M5 other end - drill that plate to 5.3mm. See ADR 004
 14,power,USB-C charger,Any 5V USB-C phone charger >=1A,1,0,Existing,,Charges the battery via XIAO's onboard charger (ADR 013). PD not needed
-16,input,Tactile button,6x6mm with cap,1,3,Conrad,,Manual pump trigger
+16,input,Tactile button,6x6mm with cap,1,0,DTU komponentshop,,Manual pump trigger / refill mode. DTU 'Momentary Pushbutton' - check it fits the ebase wall
 17,connector,JST-XH connector kit,2/3/4-pin assortment + crimp contacts,1,50,AliExpress,XH-2.54,Sensor cables - crimp AFTER threading through glands
 18,proto,Stripboard,7x9cm,1,20,Conrad,,For v1 soldered prototype
 19,wire,Silicone wire 22AWG,Red/black/yellow ~2m each color,1,40,AliExpress,,Internal wiring inside ebase
@@ -35,11 +35,13 @@ id,category,component,specification,qty,unit_price_dkk,supplier,part_number,note
 37,power,TP4056 charger module USB-C with protection,"TP4056 + DW01A + FS8205A, USB-C input, B+/B-/OUT+/OUT- pads",2,8,AliExpress,,"Charges at 580 mA after swapping R_PROG (R3, stock 1.2k = 1A) for 2.0k (pos 47) - ~12-14h full charge. Loads (XIAO BAT pads, switch A, ADC divider) on OUT+/OUT-. VERIFY 5.1k CC resistors on the USB-C (else C-to-C chargers give no 5V). Buy 2 (spare). See ADR 013"
 38,power,Boost converter 12V,Pololu U3V40F12 fixed 12V (up to ~3.5A input),1,110,Pololu / Robotshop / The Pi Hut,4016,Powers pump from 1S battery. XL6009 rejected: datasheet min input 3.6-5V. Budget option for pot/ only: MT3608 module (2V min) set to 12V
 39,driver,P-channel MOSFET,AO3401A SOT-23 -30V -4A logic-level,10,1,AliExpress / LCSC,AO3401A,Switch A (battery to boost) + switch B (3V3 to sensor rail). Pack of 10
-40,driver,N-channel MOSFET,2N7002 SOT-23,10,1,AliExpress / LCSC,2N7002,Gate driver for switch A (battery voltage > GPIO 3.3V). Pack of 10
-41,proto,SOT-23 to DIP adapter,Breakout PCB pack of 10,1,15,AliExpress,,For pos 39/40 on stripboard
-42,passive,Resistors 100k + 200k,1/4W metal film,1,10,Conrad / local,,100k: P-FET gate pull-ups x2. 200k x2: battery voltage divider to D1
-43,passive,Capacitors,100uF 16V electrolytic + 10uF + 100nF ceramic,1,15,Conrad / local,,"100uF at boost input (pump inrush), 10uF at XIAO BAT pads, 100nF on battery ADC"
+40,driver,N-channel MOSFET,BS170 TO-92 (Vgs(th) 0.8-3.0V),2,0,DTU komponentshop,BS170,Gate driver for switch A (battery voltage > GPIO 3.3V). Only pulls the P-FET gate (~40uA) so a high-Vth part still works. THT - no SOT-23 adapter needed
+41,proto,SOT-23 to DIP adapter,Breakout PCB pack of 10,1,15,AliExpress,,For pos 39 (AO3401A) on stripboard
+42,passive,"Resistors 100k + 200k (+ 4.75k, 5.11k)",1/4W THT (E96),1,0,DTU komponentshop,,100k: P-FET gate pull-ups x2. 200k x2: battery divider to D1. 4.75k: I2C pull-ups if a breakout lacks them. 5.11k x2: USB-C CC pull-downs if the TP4056 module lacks them
+43,passive,Capacitors,220uF 10V electrolytic (or 100uF >=10V) + 10uF + 100nF ceramic,1,0,DTU komponentshop,,"100uF at boost input (pump inrush), 10uF at XIAO BAT pads, 100nF on battery ADC"
 44,power,Qi wireless receiver module,5V output >=600mA; coil ~46x36mm FPC with ferrite backing,1,70,The Pi Hut / Adafruit / AliExpress,,Coil lies in pocket in ebase lid at -y (1.2mm floor). Output -> Schottky (pos 5) -> TP4056 IN+. M/L/CUSTOM only; not usable with load cell platform.
 45,power,Qi charger pad,Apple MagSafe Charger 25W (A2580) - or any Qi charger >=5W,1,0,Existing,,Existing. Orchid charging base pot-orchid/cad/source/charging_base.scad is sized for the MagSafe puck (55.5x4.45mm - VERIFY). MagSafe charges plain Qi receivers without magnetic hold - the conical seat centres the tower instead
 46,power,USB-C dust plug,Silicone anti-dust plug pack of 10,1,20,AliExpress,,Closes the rim socket when not charging (splash protection)
-47,passive,Resistor 2.0k SMD,0603 1% (pack),1,5,Conrad / LCSC,,Replaces R_PROG (R3) on the TP4056 module: 1200/2000 = 0.58 A
+47,passive,Resistor 2.0k SMD,0603 1% (pack),1,5,Conrad / LCSC,,"Replaces R_PROG (R3) on the TP4056 module: 1200/2000 = 0.58 A. Fallback: DTU 2k THT soldered onto the R3 pads (works, but fragile - secure with hot glue)"
+48,connector,Screw terminal block,2-pole + 3-pole 5mm,4,0,DTU komponentshop,,"Pump, battery and boost connections on the stripboard - easy to swap during prototyping"
+49,connector,Female pin header,"2.54mm, cut to length",2,0,DTU komponentshop,,"Socket the XIAO and the modules (TP4056, boost, DRV8871) so they can be replaced without desoldering"
