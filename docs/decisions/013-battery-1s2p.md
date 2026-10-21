@@ -47,7 +47,7 @@ TP4056-modul med beskyttelse ved 580 mA.**
   [U3V40F12](https://www.pololu.com/product/4016/specs)). MT3608-moduler
   (2V min.) er et billigere alternativ til pot/'s 3W-pumpe, men deres lille
   spole er for svag til orkidens 5W.
-- **Switch A** (AO3401A + BS170-driver) afbryder boostens input helt: en
+- **Switch A** (AO3401A + 2N7002-driver) afbryder boostens input helt: en
   boost trækker mA i tomgang og sender Vbat − diodefald videre, selv med
   EN lav — pumpen ville sive.
 - **Switch B** (kun pot/): soil-sensoren trækker ~5 mA konstant. AHT20

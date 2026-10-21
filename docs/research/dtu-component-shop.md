@@ -2,7 +2,10 @@
 
 **Dato:** 2026-10-22
 **Kilde:** `dtu_component_shop.csv` (1465 linjer; må bruges til private projekter)
-**Konklusion:** Shoppen dækker de passive dele og et par diskrete dele 1:1.
+**Status:** Fravalgt af brugeren 2026-10-22 — kun dele der kan sidde på det
+færdige PCB er interessante, og DTU-sortimentet er THT. BOM'en køber alt.
+
+**Konklusion (analysen):** Shoppen dækker de passive dele og et par diskrete dele 1:1.
 Ingen af de aktive moduler (boost, lader, H-bro, Qi, sensorer) kan erstattes
 uden at designet bliver dårligere. Alt er THT → godt til stripboard-
 prototypen, mindre relevant for den runde KiCad-PCB (SMD).

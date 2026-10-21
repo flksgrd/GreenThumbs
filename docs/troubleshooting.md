@@ -7,7 +7,7 @@ Common issues og hvordan du diagnostiserer dem. Opdateres løbende under prototy
 1. **Tjek float switch**: hvis reservoir er tom → safety-interlock blokerer pumpe. Fyld vand op.
 2. **Tjek HomeKit-status**: er manuel-pump-switch ON? Står der "Pump disabled" i log?
 3. **Tjek batteriet**: under ~3,3V kan boosten ikke levere pumpens startstrøm. Se batteriniveau i HomeKit, eller mål ved BAT-pads. Oplad.
-4. **Tjek 12V fra boosten**: mål ved pumpe-terminaler når D10 er HIGH. Skal være 12V ±0.5V. 0V: tjek switch A (D10 HIGH → BS170 leder → P-FET gate trukket lav). Hvis D10 er 0V: software-bug i `pump.cpp`.
+4. **Tjek 12V fra boosten**: mål ved pumpe-terminaler når D10 er HIGH. Skal være 12V ±0.5V. 0V: tjek switch A (D10 HIGH → 2N7002 leder → P-FET gate trukket lav). Hvis D10 er 0V: software-bug i `pump.cpp`.
 5. **Tjek slange**: er der knæk på slangen? Er pumpe-rotoren blokeret?
 
 ## HomeKit viser ikke device
