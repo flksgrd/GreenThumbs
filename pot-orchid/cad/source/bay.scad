@@ -8,8 +8,11 @@
 //
 // Bunden har 45° fas, så tårnet står på pyntepottens buede bund.
 //
-// TODO: pumpe-beslag (NKP-mål ikke verificeret), USB-C / pogo-ladning
-// (beslutning udskudt — se design-notes).
+// Ladning (ADR 013): Qi-spolen ligger i en lomme midt i gulvet (tyndt gulv
+// under den); USB-C-kablet kommer ned fra skakten i tanken (60°).
+//
+// TODO: pumpe-beslag (NKP-mål ikke verificeret) — skal holdes uden for
+// Qi-lommen og ≥10mm fra spolen (metal).
 //
 // PRINT: opak PETG, upright.
 // =============================================================================
@@ -43,6 +46,9 @@ module bay() {
         rotate_extrude()
             polygon([[0, ft], [R - ch - w + ft, ft], [R - w, ch + 1.1],
                      [R - w, H + 1], [0, H + 1]]);
+        // Qi-lomme: tyndt gulv under modtager-spolen
+        translate([-qi_w / 2, -qi_l / 2, qi_floor_t])
+            cube([qi_w, qi_l, ft]);
     }
     battery_cradle();
 }

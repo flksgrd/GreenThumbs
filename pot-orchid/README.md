@@ -34,9 +34,10 @@ automatisk. Hele tårnet står skjult i en pyntepotte.
 | Pyntepotte | indv. Ø210 / maks. potte Ø190 / ~185mm indv. højde |
 | Soak-dybde | 68mm over pottens bund (~62% af potten) |
 | Soak-volumen | ~376 ml |
-| Lager-ring | ~900 ml (~520 ml reserve ≈ 3-5 uger) |
+| Lager-ring | ~880 ml (~500 ml reserve ≈ 3-5 uger) |
 | Fyld / dræn | ~5 min hver vej (Kamoer NKP, ~75 ml/min) |
 | Strøm | 2× 18650 (1S2P), ~2,5-4 mdr. pr. opladning (estimat) |
+| Ladning | USB-C i ring-låget, eller stil tårnet på en Qi-lader |
 | Filament | ~600g opak PETG |
 
 Påfyldning: gennem hullet i ring-låget, eller løft planten og hæld i

@@ -11,7 +11,8 @@
 //   "exploded"  dele adskilt lodret
 //
 // Farver: opak PETG = grå, vand = cyan, dyrkningspotte = grøn,
-//         pyntepotte = svag terrakotta-skygge, sensor = orange
+//         pyntepotte = svag terrakotta-skygge, sensor = orange,
+//         USB-C-stik = sort, Qi-spole = lilla
 // =============================================================================
 
 include <params.scad>
@@ -67,6 +68,8 @@ module ring_water(level) {
                          r2 = bowl_r_in_top + bowl_wall + 0.3, h = bowl_rim_z);
             rotate([0, 0, conduit_angle]) translate([conduit_r, 0, -1])
                 cylinder(d = conduit_od + 0.6, h = level + 2);
+            rotate([0, 0, usbc_angle]) translate([usbc_tube_r, 0, -1])
+                cylinder(d = usbc_tube_od + 0.6, h = level + 2);
         }
 }
 
@@ -88,6 +91,14 @@ module stack(explode = 0, soaking = false, sec = false, ghost = false) {
         // "Skål tom"-sensor limet op under skålens sump
         color([0.95, 0.55, 0.1]) rotate([0, 0, hose_ch_angle])
             translate([bowl_r_in_bottom - 14, -14, z_tank - 12]) cube([28, 28, 12]);
+        // USB-C hun-ende i skaktens top (flugter med låget)
+        color([0.1, 0.1, 0.1]) rotate([0, 0, usbc_angle])
+            translate([usbc_tube_r - usbc_body_t / 2, -usbc_body_w / 2,
+                       z_lid + lid_t - 25])
+                cube([usbc_body_t, usbc_body_w, 25]);
+        // Qi-modtager i bay-gulvets lomme
+        color([0.6, 0.3, 0.8]) translate([-23, -18, qi_floor_t])
+            cube([46, 36, 1.5]);
     }
     if (ghost) color(cachecol) cut(sec) cachepot();
 }

@@ -47,7 +47,10 @@ Total brugbare GPIO: 11
 ## Power rails (batteri — ADR 013)
 
 ```
-USB-C 5V ──→ XIAO ESP32-C6 (indbygget Li-ion-lader, BAT+/BAT- pads)
+USB-C-forlænger (kanten) ───────────────────→ XIAO USB-C ──┐
+Qi-modtager 5V ──→ 1N5819 (katode mod XIAO) ──→ XIAO 5V-pin ─┤
+                                                            ↓
+              XIAO ESP32-C6 (indbygget Li-ion-lader, 100 mA, BAT+/BAT- pads)
                  │
               1S-beskyttelsesprint (DW01A + FS8205A)
                  │

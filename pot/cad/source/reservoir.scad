@@ -8,6 +8,8 @@
 //
 // Features (vinkler jf. params.scad allokering / ADR 010 scalloped cup):
 //   90°: float switch klips-ring i bunden (kabel op ad cup'ens kabel-kanal)
+//    0°: lomme UDEN PÅ væggen til USB-C-forlængerens hun-ende (ADR 013) —
+//        stikket flugter med rimmen, flangen har et hak ovenover
 //  270°: to lodrette guide-ribber til water level strip — de stikker ind i
 //        cup'ens brede REFILL-KANAL og fungerer samtidig som rotations-lås
 //        (ribbe-spændet passer kun i den kanal) — plus overflow-hul i
@@ -77,9 +79,37 @@ module reservoir() {
                         cube([float_switch_d, 6, float_clip_h + 1]);
                 }
 
+        usbc_sleeve();
+
         // (Rim-tapper fjernet — ADR 010: orientering låses af strip-
         //  ribberne i refill-kanalen, centrering af 1mm kant-clearance.)
     }
+}
+
+// USB-C-lomme uden på væggen: åben top (stikket flugter med rimmen), hylde
+// forneden med kabel-slids åben udad. 45° fas under → printes uden support.
+module usbc_sleeve() {
+    ro  = reservoir_outer_d / 2;
+    cw  = usbc_body_t + 2 * print_tolerance;     // hulrum radialt
+    cl  = usbc_body_w + 2 * print_tolerance;     // hulrum tangentielt
+    d   = cw + 2 * usbc_sleeve_wall;             // lommens dybde ud fra væggen
+    w   = cl + 2 * usbc_sleeve_wall;
+    z0  = reservoir_height - usbc_body_l - usbc_sleeve_wall;
+    rotate([0, 0, usbc_angle])
+        difference() {
+            hull() {
+                translate([ro - 0.5, -w / 2, z0])
+                    cube([d + 0.5, w, reservoir_height - z0]);
+                translate([ro - 0.5, -w / 2, z0 - d])
+                    cube([0.5, w, 0.01]);
+            }
+            // Hulrum til stikket
+            translate([ro + usbc_sleeve_wall, -cl / 2, z0 + usbc_sleeve_wall])
+                cube([cw, cl, usbc_body_l + 1]);
+            // Kabel-slids i hylden, åben udad
+            translate([ro + usbc_sleeve_wall + cw / 2 - 2.5, -2.5, z0 - d - 1])
+                cube([d, 5, d + usbc_sleeve_wall + 2]);
+        }
 }
 
 // Render reservoir når filen åbnes direkte

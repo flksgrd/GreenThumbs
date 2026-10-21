@@ -13,7 +13,8 @@
 // har ingen bund-gennemføringer, så selv ved reservoir-lækage ned langs
 // siderne er elektronikken beskyttet af den lukkede top + kant-O-ring.
 // Alt (USB, kabler, slanger) kommer ind via side-glands:
-//    0° M12 = USB-C, 90° M12 = sensor-kabler, 180° M16 = 2× slanger
+//    0° Ø14 = USB-C-forlænger (han-stik igennem), 90° M12 = sensor-kabler,
+//  180° M16 = 2× slanger. Qi-spolen ligger i en lomme i lid'et (ADR 013).
 //
 // Adgang sker via aftageligt låg i BUNDEN (lid skrues på med M3-skruer).
 //
@@ -45,12 +46,13 @@ module electronics_base() {
 
                 // Cable glands gennem side-væg (zero-penetration, ADR 009:
                 // toppen er nu HELT lukket — alt kommer ind fra siden).
-                // M12 ved 0° (USB-C) og 90° (sensor-kabler):
+                // Ø14 ved 0° (USB-C-forlænger) og M12 ved 90° (sensor-kabler):
                 for (a = gland_angles) {
                     rotate([0, 0, a])
                         translate([0, 0, ebase_height / 2])
                             rotate([0, 90, 0])
-                                cylinder(d = gland_hole_d,
+                                cylinder(d = (a == usbc_angle) ? usbc_pass_d
+                                                               : gland_hole_d,
                                          h = ebase_outer_d / 2 + 2);
                 }
                 // M16 ved 180° (2× Ø6 slanger — suge + tryk):
@@ -125,6 +127,11 @@ module electronics_base_lid() {
 
         // M3 insert-huller i pump-mount bosserne (fra toppen)
         pump_mount_insert_holes();
+
+        // Qi-lomme: tyndt gulv under modtager-spolen
+        if (qi_fits)
+            translate([-qi_w / 2, qi_center_y - qi_l / 2, qi_floor_t])
+                cube([qi_w, qi_l, ebase_lid_height]);
     }
 }
 

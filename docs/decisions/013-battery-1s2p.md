@@ -30,7 +30,8 @@ Fakta:
 ladet af XIAO'ens indbyggede lader.**
 
 ```
-  USB-C (5V) ─→ XIAO ESP32-C6 ─(BAT-pads)─→ beskyttelsesprint ─→ 2× 18650
+  USB-C ved kanten ─────────────→ XIAO USB-C ┐
+  Qi-modtager 5V ──→ Schottky ──→ XIAO 5V-pin ┴→ lader ─(BAT)─→ beskyttelsesprint ─→ 2× 18650
                     │
      BAT+ ──────────┼─→ switch A (P-FET) ─→ boost 12V ─→ pumpe (pot/)
                     │                                └→ H-bro → pumpe (orkide)
@@ -110,13 +111,44 @@ Antagelser: boost 85% effektivitet, sensorer slukket mellem målinger,
 - Li-ion i en lukket boks: brug celler med BMS (over-/underspænding,
   kortslutning)
 
-### Åbne beslutninger
-- **Ladestik-placering (brugeren vil tage stilling senere):** USB-C i
-  bunden, forlænger til kanten, eller **pogo-pins + 3D-printet ladebase**
-  (v2-idé): tårnet løftes ud af pyntepotten og sættes på basen. Pogo-
-  pladerne skal kun føre ladespænding (5V via diode), aldrig batteriet
-  direkte, så de er ufarlige hvis de står i en pyt. Magneter til
-  justering. Afklares før bay/ebase-bunden låses.
+### Ladning: USB-C ved kanten + Qi i bunden (besluttet 2026-10-21)
+
+Brugeren skal kunne vælge: kabel i toppen (uden at løfte noget) eller sætte
+tårnet på en lader.
+
+- **USB-C ved kanten:** hun-enden af en USB-C-forlænger, lukket med en
+  silikone-støvprop. Han-enden sidder i XIAO'ens USB-C → også programmering
+  fra toppen.
+  - pot/: lomme uden på reservoiret ved 0° under et hak i flangen; kablet
+    går udvendigt ned til et Ø14-hul i ebase (split-grommet).
+  - Orkide: egen tør skakt i tanken ved 60°, op gennem ring-låget. Et stik
+    der hang ned under låget ville nå vandet (kun ~15mm luft over max).
+- **Qi i bunden:** modtager-spole (~46×36mm) i en lomme med 1,2mm gulv;
+  output via Schottky (1N5819) til XIAO'ens 5V-pin, så begge kilder kan
+  sidde samtidig.
+  - Orkide: midt i bay-gulvet → kan stå på en hvilken som helst Qi-lader.
+    Batterivuggen er flyttet ud (cradle_y 52), så der er ~14mm fra spolen
+    til cellernes stålkapper.
+  - pot/: på -y i ebase-lid'et (pumpen sidder i midten) → laderen skal
+    placeres under den side. Passer i M/L/CUSTOM, ikke S. Kan ikke bruges
+    med load cell-platformen, og en tung Monstera løftes ikke gerne op hvert
+    kvartal → USB-C er den primære i pot/.
+- **Pogo-pins fravalgt:** blottede kontakter under et tårn, der står i en
+  pyntepotte, hvor overløbsvand samles. Qi har ingen kontakter og virker med
+  eksisterende ladere.
+- TODO: printet ladebase der centrerer tårnet over en Qi-lader (orkidens 45°-
+  fas kan sidde i et konisk sæde).
+
+### Hurtigere ladning (option — ikke besluttet)
+
+XIAO'ens lader giver 100 mA
+([Seeed wiki](https://wiki.seeedstudio.com/xiao_esp32c6_getting_started/))
+→ ~3 døgn for 2× 3500 mAh. Med et separat TP4056-modul (USB-C, med
+beskyttelse) bestemmes strømmen af R_PROG: I = 1200 / R_PROG → 1,2kΩ = 1A,
+2kΩ = 580 mA. Ved 580 mA: ~12-14 timer. Modulet erstatter beskyttelses-
+printet (pos 37), forlængeren sættes i modulets USB-C i stedet for XIAO'ens,
+og Qi-dioden går til modulets IN+. TP4056 er lineær: (5V − Vbat) × I bliver
+til varme (~0,8W ved 580 mA) i den lukkede bay.
 
 ## Implementation notes
 - BOM: pot/hardware/bom.csv (batteri-rækker) + pot-orchid/preliminary-bom.md

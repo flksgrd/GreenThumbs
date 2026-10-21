@@ -70,6 +70,10 @@ module plant_cup() {
                             channel_cutouts_2d(extra = 1);
                             circle(d = reservoir_inner_d - 1);
                         }
+                        // Hak over USB-C-lommen (ADR 013): stikket nås fra oven
+                        rotate(usbc_angle)
+                            translate([reservoir_outer_d / 2, -(usbc_body_w + 3) / 2])
+                                square([flange_outer_d, usbc_body_w + 3]);
                     }
         }
 

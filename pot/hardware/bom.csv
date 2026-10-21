@@ -2,7 +2,7 @@ id,category,component,specification,qty,unit_price_dkk,supplier,part_number,note
 1,mcu,XIAO ESP32-C6,Thread+WiFi+BLE+Matter USB-C 4MB flash,2,80,Mouser DK / Digi-Key / Elektor,113991254,Buy 2x for backup
 2,actuator,Peristaltic pump 12V,Kamoer KXF-DC-S06 (12V 0.25A ~37 ml/min) or generic 12V DC peristaltic,1,150,AliExpress / Robu,KXF-DC-S06,VERIFY flange hole spacing - CAD assumes 46mm c-c (pump_mount_kamoer_spacing in params.scad). See ADR 001
 3,plumbing,Silicone tubing,4mm ID x 6mm OD food-grade 2m,1,30,AliExpress / RS Components,,~1m per set: suction + pressure hose route up the hose channel / over flange / down outside to ebase
-5,driver,Schottky diode,1N5819 flyback,10,3,Mouser / RS,1N5819,Flyback across pump terminals (cathode to +12V)
+5,driver,Schottky diode,1N5819 flyback,10,3,Mouser / RS,1N5819,Flyback across pump terminals (cathode to +12V) + 1x OR-ing diode from Qi receiver to XIAO 5V pin (ADR 013)
 6,passive,Resistor 10k ohm,1/4W carbon film for gate pulldown,10,1,Conrad / local,,Pulldown on switch A driver gate (D10) - pump stays off during boot
 7,sensor,Capacitive soil moisture v2.0,DFRobot-type corrosion resistant analog,2,40,AliExpress,,2x for spare/calibration. Stock cable (~20cm) too short for channel routing - extend with pos 32
 8,sensor,Seeed Grove Water Level Sensor 10cm,Capacitive graduated coated PCB I2C 0x77+0x78 20x133mm +-5mm 3.3V,1,75,Berrybase / Eckstein / Botland,101020635,Shares I2C bus with AHT20 (frees D1). Replaces DFRobot SEN0204 which is a BINARY non-contact switch - not graduated. See calibration.md section 3
@@ -26,7 +26,7 @@ id,category,component,specification,qty,unit_price_dkk,supplier,part_number,note
 28,indicator,Passive piezo buzzer,12mm disc PWM-driven 3.3V,1,5,AliExpress / Conrad,,Refill indicator + error signals on D2. See ADR 008
 29,substrate,LECA clay pebbles,2-3L bag,1,50,Plantorama / OBI,,2-3cm layer in cup bottom - capillary break against waterlogging. See ADR 009
 30,plumbing,Hose sinker/weight,Stainless or ceramic small weight,1,10,Aquarium shop / AliExpress,,Keeps suction hose end at reservoir bottom
-31,power,USB-C panel-mount extension,Female panel socket to male plug ~20-30cm IP67 preferred,1,40,AliExpress / Adafruit,,OPEN DECISION (ADR 013): charging port placement - USB-C panel-mount vs. pogo-pin charging base (v2). Inside: plugs into the XIAO USB-C
+31,power,USB-C extension cable male-to-female,0.5m (pot/) / 0.3m (orchid). Female overmold max ~12.5x6.5x25mm,1,40,AliExpress / Adafruit,,Female end sits in sleeve on reservoir outside at 0deg under the flange notch (orchid: top of USB-C shaft at 60deg). Male end through ebase 14mm hole into XIAO USB-C - seal with split grommet/silicone. VERIFY overmold vs usbc_body_* in params.scad
 32,wire,Shielded multi-core cable,4-core LiYCY 4x0.14mm2 3m,1,30,Conrad / Elfa,,Sensor extensions: soil (3w) + Grove I2C (4w) + float (2w) each ~0.5-0.6m via channels. Shielding vs pump PWM noise
 33,filament,PLA filament,1kg any color,1,120,3djake.dk / Prusa Polymers,,PLA-first fit validation prints + load cell plates (OPTIONAL set: M ~0.26kg / CUSTOM ~0.67kg solid volume)
 34,fastener,M4x16 + M5x16 bolts,2 of each stainless,1,15,Local hardware store,,OPTIONAL - load cell mount (bosses act as spacers - no washers needed)
@@ -39,3 +39,6 @@ id,category,component,specification,qty,unit_price_dkk,supplier,part_number,note
 41,proto,SOT-23 to DIP adapter,Breakout PCB pack of 10,1,15,AliExpress,,For pos 39/40 on stripboard
 42,passive,Resistors 100k + 200k,1/4W metal film,1,10,Conrad / local,,100k: P-FET gate pull-ups x2. 200k x2: battery voltage divider to D1
 43,passive,Capacitors,100uF 16V electrolytic + 10uF + 100nF ceramic,1,15,Conrad / local,,"100uF at boost input (pump inrush), 10uF at XIAO BAT pads, 100nF on battery ADC"
+44,power,Qi wireless receiver module,5V output >=500mA; coil ~46x36mm FPC with ferrite backing,1,70,The Pi Hut / Adafruit / AliExpress,,Coil lies in pocket in ebase lid at -y (1.2mm floor). Output -> Schottky (pos 5) -> XIAO 5V pin. M/L/CUSTOM only; not usable with load cell platform. If faster charging later: choose a 1A module
+45,power,Qi charger pad,Any Qi charger >=5W,1,0,Existing,,Phone charger works. Printed charging base that centres the tower over the pad = TODO
+46,power,USB-C dust plug,Silicone anti-dust plug pack of 10,1,20,AliExpress,,Closes the rim socket when not charging (splash protection)

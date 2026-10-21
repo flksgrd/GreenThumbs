@@ -19,11 +19,12 @@ holder de åbne punkter.
 | Potte | Planten bliver i sin 12cm dyrkningspotte |
 | Placering | I pyntepotte (indv. Ø210, maks. potte Ø190) → opak PETG |
 | Soak-dybde | Mekanisk: skålens kant (68mm over pottens bund) |
-| Lager | Ring rundt om skålen (~900 ml) |
+| Lager | Ring rundt om skålen (~880 ml) |
 | Pumpe | Kamoer NKP-DC-S10B, vendbar via H-bro (~5 min hver vej) |
 | Trigger | Interval (7 dage) justeret med VPD |
 | Sensorer | XKC berøringsfri under skålen, 2 mini-floats i ringen, AHT20 |
 | Strøm | 1S2P 18650 (ADR 013) |
+| Ladning | USB-C i toppen (skakt ved 60°) + Qi midt i bunden |
 | Lys til rødderne / grow-light | Nej — vokselys kræver konstant strøm (v2 med kabel, hvis ønsket) |
 
 ## Kildegrundlag
@@ -52,9 +53,13 @@ holder de åbne punkter.
 ### Mekanik
 - [ ] **Pumpe-mount i bay'en:** kræver NKP'ens faktiske mål (forhandler:
       ~67×55×41mm). `bay_h = 47` er sat efter den.
-- [ ] **Ladestik — afventer brugerens beslutning (ADR 013):** USB-C i
-      bay-siden, forlænger til kanten, eller pogo-pins + ladebase (v2).
-      Bay-bunden låses ikke før det er afklaret.
+- [x] **Ladning (ADR 013, besluttet 2026-10-21):** USB-C-hun-ende i toppen
+      af en tør skakt ved 60° (flugter med ring-låget) + Qi-spole i en lomme
+      midt i bay-gulvet. Pogo fravalgt (blottede kontakter i en våd pyntepotte).
+- [ ] **Ladebase:** printet konisk sæde, der centrerer bay'ens 45°-fas over
+      en almindelig Qi-lader.
+- [ ] **USB-C-forlængerens hun-ende:** mål overmolden (`usbc_body_*`) — slidsen
+      i skaktens top er sat til 12,5×6,5mm + tolerance. Limes nedefra.
 - [ ] **Stænk-hætte** på skaktens top: åbning ned til elektronikken
       (under ring-låget, men påfyldning sker 110° derfra).
 - [ ] **Sump-si:** net over slange A's ende, så bark-smuld ikke når pumpen.
@@ -66,8 +71,8 @@ holder de åbne punkter.
       sump (datablad: op til ~20mm ikke-metal). Limes eller klipses op.
 
 ### Elektronik / firmware
-- [ ] H-bro DRV8871: IN1 = D10, IN2 = D1. Batteri-ADC på D0, sensor-strøm D8
-      (ADR 013).
+- [ ] H-bro DRV8871: IN1 = D10, IN2 = D1. Batteri-ADC på D0, boost-switch D8
+      (ADR 013). Qi-modtager → 1N5819 → XIAO 5V-pin.
 - [ ] `soak_cycle.cpp`: IDLE → FILL (fast tid + margin; overskud løber
       tilbage) → SOAK → DRAIN (til "skål tom" + efterløb) → VERIFY.
       Skålen skal være tom inden timeout, ellers alarm (buzzer + HomeKit) —

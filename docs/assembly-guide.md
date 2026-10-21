@@ -19,7 +19,7 @@ og [ADR 010](decisions/010-scalloped-cup-channels.md)). Cuppen har 3
 service-kanaler i kanten; reservoir-væggens strip-ribber passer kun i den
 brede refill-kanal, så cuppen kan kun sænkes ned i én rotation:
 
-- **0°**: USB-C gland i ebase
+- **0°**: USB-C-lomme uden på reservoiret under et hak i flangen; USB-C-gennemføring (Ø14) i ebase
 - **90°**: KABEL-KANAL i cuppen, float-klips i bunden, kabel-gland i ebase
 - **180°**: SLANGE-KANAL i cuppen (dyse-hul øverst i kanal-fladen), M16-gland i ebase
 - **270°**: REFILL-KANAL i cuppen, water-strip mellem guide-ribberne på
@@ -27,14 +27,15 @@ brede refill-kanal, så cuppen kan kun sænkes ned i én rotation:
 
 ## Samling (rækkefølge)
 
-1. **Electronics base**: montér XIAO, switch-board, boost og batteriet (2× 18650 i vuggen på lid'et, ADR 013). Pumpen skrues på lid'ets bosses (Kamoer på 46mm-hullerne / BP7 på 24mm-kvadratet). Skru lid på med 4× M3.
-2. **Glands**: M12 ved 0° (USB-C) og 90° (sensor-kabler), M16 ved 180° (slanger).
+1. **Electronics base**: montér XIAO, switch-board, boost og batteriet (2× 18650 i vuggen på lid'et, ADR 013). Qi-modtagerens spole limes i lommen i lid'et (ferrit-siden opad). Pumpen skrues på lid'ets bosses (Kamoer på 46mm-hullerne / BP7 på 24mm-kvadratet). Skru lid på med 4× M3.
+2. **Glands**: USB-C-forlængerens han-stik ind gennem Ø14-hullet ved 0° (tætnes med split-grommet/silikone), M12 ved 90° (sensor-kabler), M16 ved 180° (slanger).
 3. **Reservoir** placeres oven på ebase med EPDM/O-ring i gasket-grooven.
 4. **Float switch** klipses i ringen ved 90°; kablet føres op ad kabel-kanalen.
 5. **Water-strip** skubbes ned mellem guide-ribberne ved 270° (i refill-kanalen); kabel op ad samme kanal og over i kabel-kanalen via flangen.
 6. **Sugeslange**: én ende med lille vægt/sinker ned i vand-zonen (gennem slange-kanalen), anden ende op ad kanalen → udvendigt ned → M16 → pumpe-indgang.
 7. **Trykslange**: fra pumpe-udgang → M16 → op udvendigt → ned i slange-kanalen → ind i dyse-hullet øverst i kanal-fladen.
 8. **Kabler** (soil, strip, float): op ad kabel-kanalen (90°) → ned udvendigt → M12 ved 90°.
+9. **USB-C hun-ende**: trykkes ned i lommen ved 0° (kablet i slidsen forneden) → stikket flugter med rimmen og nås gennem hakket i flangen. Sæt støvproppen i.
 
 ## LECA-lag (VIGTIGT — beskytter mod vandlogging)
 

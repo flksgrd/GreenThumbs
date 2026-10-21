@@ -102,6 +102,17 @@ lid_inner_r    = pot_r(ring_wall_h + lid_t - z_pot_bottom) + 2;
 refill_hole_d  = 25;
 refill_angle   = 270;
 
+// USB-C-skakt (ADR 013): egen tør skakt fra bay'en op GENNEM ring-låget.
+// Hun-enden af en USB-C-forlænger sidder i toppen (flugter med låget).
+// Et stik under låget ville nå ned i vandet (kun ~15mm luft over max).
+usbc_angle   = 60;
+usbc_body_w  = 12.5;            // hun-endens overmold — VERIFICÉR mod kablet
+usbc_body_t  = 6.5;
+usbc_tube_id = 15;              // > overmoldens diagonal (13.6) → kan trækkes op
+usbc_tube_od = usbc_tube_id + 4;
+usbc_tube_r  = ring_outer_r - usbc_tube_od / 2 - 3;   // fri af lågets læbe
+usbc_cap_t   = 2;               // top med slids der holder stikket
+
 // ----------------------------------------------------------------------------
 // 4. Bay (elektronik + batteri) — åben top, tank-gulvet er loftet
 // ----------------------------------------------------------------------------
@@ -114,7 +125,14 @@ collar_h      = 4;              // krave på bay-rimmen centrerer tanken
 cell_d   = 18.6;                // 18650
 cell_l   = 65;
 cell_count = 2;                 // 1S2P
-cradle_y   = 40;                // batteriet på den ene side, pumpen på den anden
+cradle_y   = 52;                // batteriet på +y, pumpen på -y, Qi i midten
+
+// Qi-modtager (ADR 013): spolen ligger i en lomme midt i bay-gulvet, så
+// tårnet kan stå centreret på en hvilken som helst Qi-lader / ladebase.
+qi_w       = 48;                // keep-out til spole ~46×36mm + 1mm
+qi_l       = 38;
+qi_floor_t = 1.2;               // tyndt gulv under spolen (rækkevidde ~2-8mm)
+qi_cell_gap = cradle_y - (cell_d / 2 + 0.5) - cell_d / 2 - qi_l / 2;
 
 // ----------------------------------------------------------------------------
 // 5. Beregnede størrelser
@@ -137,7 +155,8 @@ bowl_outer_v = frustum_v(bowl_r_in_bottom + bowl_wall,
                          pot_r(ring_overflow_z - z_pot_bottom) + bowl_gap + bowl_wall,
                          ring_h);
 ring_capacity_ml = (PI * pow(ring_outer_r, 2) * ring_h - bowl_outer_v
-                    - PI * pow(conduit_od / 2, 2) * ring_h) / 1000;
+                    - PI * pow(conduit_od / 2, 2) * ring_h
+                    - PI * pow(usbc_tube_od / 2, 2) * ring_h) / 1000;
 
 total_h_to_lid = bay_h + ring_wall_h + lid_t;
 pot_top_z      = bay_h + z_pot_bottom + pot_h;
@@ -150,3 +169,5 @@ echo("fyld/dræn pr. retning:", soak_volume_ml / pump_ml_min, "min");
 echo("højde til ring-låg:", total_h_to_lid, "mm");
 echo("pottens top:", pot_top_z, "mm  (pyntepotte indv. ca.", cachepot_inner_h, "mm)");
 echo("tårn Ø:", tower_d, "mm  (pyntepotte max", cachepot_max_pot_d, "mm)");
+echo("Qi-spole → nærmeste 18650:", qi_cell_gap, "mm (mål: ≥ 10)");
+if (qi_cell_gap < 10) echo("ADVARSEL: Qi-spolen er for tæt på cellernes stålkapper");

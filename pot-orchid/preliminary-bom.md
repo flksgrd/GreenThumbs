@@ -8,9 +8,9 @@ anderledes. Pos-numre henviser til pot/-BOM'en.
 
 XIAO ESP32-C6 (1), silikoneslange (3), flyback-diode (5), USB-C-lader (14),
 knap (16), JST-kit (17), stripboard (18), silikone-ledning (19), M3-inserts/
--bolte (20, 21), PETG (24), AHT20 (27), buzzer (28), USB-C panel-mount (31 —
-afventer ladestik-beslutningen), PLA til testprint (33), hele batteridelen
-(36-43, dog kun ét switch-kredsløb — se nedenfor).
+-bolte (20, 21), PETG (24), AHT20 (27), buzzer (28), USB-C-forlænger (31 —
+0,3m er nok), PLA til testprint (33), hele batteridelen (36-43, dog kun ét
+switch-kredsløb — se nedenfor), Qi-modtager + lader + støvprop (44-46).
 
 ## Ændret
 

@@ -110,7 +110,7 @@ flange_outer_d = reservoir_outer_d + 2 * top_ring_width;
 // (ADR 010) → ned UDVENDIGT langs reservoiret → ind i ebase via side-glands.
 //
 // Vinkel-allokering (set oppefra, konsistent på tværs af alle dele):
-//    0°: USB-C gland (ebase)
+//    0°: USB-C — lomme uden på reservoiret + hak i flangen + Ø14 i ebase
 //   45°: drænhul (ebase, fri af bosses)
 //   90°: KABEL-KANAL (cup) + float-klips (bund) + kabel-gland (ebase)
 //  180°: SLANGE-KANAL (cup) + trykslange-hul i kanal-væg + M16-gland (ebase)
@@ -160,14 +160,13 @@ gasket_groove_offset = 4;           // fra ydre kant
 
 // Gennemføringer i ebase-siden (zero-penetration: alt kommer ind fra siden,
 // ebase-toppen er HELT lukket). Metriske glands — hul-Ø = gevind-Ø:
-//    0° = USB-C PANEL-MOUNT (et USB-C-stik kan ikke trækkes gennem en
-//         M12-gland). 12mm er en placeholder: TILPAS hullet til den
-//         valgte panel-mount-del når den er købt.
+//    0° = USB-C-forlængerens HAN-stik føres igennem (usbc_pass_d) og
+//         tætnes med split-grommet/silikone. Hun-enden sidder ved flangen.
 //   90° = sensor-kabler (M12×1.5 gland, kabel-Ø 3-6.5mm)
 //  180° = slanger (M16×1.5 gland m. 2-huls indsats, eller split-grommet)
 gland_hole_d = 12;                  // M12 = 12mm hul
 hose_gland_d = 16;                  // M16 = 16mm hul (2× Ø6 slanger)
-gland_angles = [0, 90];             // 0° = USB-C panel-mount, 90° = M12
+gland_angles = [0, 90];             // 0° = USB-C-gennemføring, 90° = M12
 hose_gland_angle = 180;
 
 // Drænhul (fail-safe ved lækage). AUDIT-FIX: 3→4mm (hurtigere afløb ved
@@ -191,6 +190,29 @@ cell_l   = 65;
 cradle_y = 38;                    // vuggens centerlinje (pumpen sidder i centrum)
 battery_corner_r = norm([cell_l / 2, cradle_y + cell_d + 0.5]);
 battery_fits = battery_corner_r <= ebase_outer_d / 2 - ebase_wall - 1;
+
+// Ladning (ADR 013): USB-C ved kanten + Qi i bunden.
+// USB-C: hun-enden af en forlænger sidder i en lomme UDEN PÅ reservoiret ved
+// 0° under et hak i flangen (tilgængelig fra oven). Kablet går lodret ned til
+// ebase'ens 0°-hul. Lommen rager ~1.5mm ud over flangen — inden for
+// pyntepotte-kravet (flange + 4mm).
+usbc_angle       = 0;
+usbc_body_w      = 12.5;          // hun-endens overmold — VERIFICÉR mod kablet
+usbc_body_t      = 6.5;
+usbc_body_l      = 25;
+usbc_sleeve_wall = 1.2;
+usbc_pass_d      = 14;            // ebase-hul: han-stikkets overmold skal igennem
+
+// Qi: modtager-spolen ligger i en lomme i lid'et (tyndt gulv under), på -y
+// (pumpen sidder i centrum, batteriet på +y). Kræver at tårnet står direkte
+// på laderen → ikke muligt med load cell-platformen.
+qi_w        = 48;                 // keep-out til spole ~46×36mm + 1mm
+qi_l        = 38;
+qi_floor_t  = 1.2;                // rækkevidde ~2-8mm
+qi_center_y = -40;
+qi_far_y    = -qi_center_y + qi_l / 2;
+qi_fits = norm([qi_w / 2, qi_far_y]) <= ebase_outer_d / 2 - ebase_wall - 1
+          && qi_far_y <= ebase_outer_d / 2 - ebase_wall - 4 - 9 / 2 - 1;  // fri af skrue-boss
 
 
 // ----------------------------------------------------------------------------
@@ -268,5 +290,7 @@ echo("total_stack_height (ca.):",
      ebase_lid_height + ebase_height + reservoir_height + top_ring_height, "mm");
 if (!battery_fits)
     echo("ADVARSEL: 2× 18650 passer ikke i denne størrelse — brug 1 celle eller øg ebase_height");
+if (!qi_fits)
+    echo("ADVARSEL: Qi-spolen passer ikke i denne størrelse — kun USB-C-ladning");
 echo("--- Pyntepotte-krav: indre diameter >=", flange_outer_d + 4,
      "mm, hoejde ca.", ebase_lid_height + ebase_height + reservoir_height, "mm ---");

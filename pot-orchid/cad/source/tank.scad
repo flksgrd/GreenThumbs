@@ -13,6 +13,7 @@
 // Features:
 //   180°: slange-kanal i skålens væg + sump i bunden (slange A)
 //   160°: tør skakt fra bay'en op til over ringens max
+//    60°: USB-C-skakt fra bay'en op gennem låget (ADR 013)
 //   125°: to float-beslag på ydervæggen (lager lavt / lager fuldt)
 //     0°: ring-overløb udad (sidste udvej)
 //   Centreres af en krave på bay'ens rand (ingen lommer i vandbarrieren)
@@ -46,9 +47,25 @@ module tank() {
                 translate([conduit_r, 0, 0])
                     cylinder(d = conduit_od, h = conduit_top_z);
 
+            // USB-C-skakt: op gennem ring-låget, top med slids til stikket
+            rotate([0, 0, usbc_angle])
+                translate([usbc_tube_r, 0, 0])
+                    cylinder(d = usbc_tube_od, h = ring_wall_h + lid_t);
+
             float_brackets();
             feet_ribs();
         }
+
+        // USB-C-skaktens boring (åben ned i bay'en) + slids i toppen
+        rotate([0, 0, usbc_angle])
+            translate([usbc_tube_r, 0, 0]) {
+                translate([0, 0, -1])
+                    cylinder(d = usbc_tube_id, h = ring_wall_h + lid_t - usbc_cap_t + 1);
+                translate([0, 0, ring_wall_h + lid_t - usbc_cap_t - 1])
+                    linear_extrude(height = usbc_cap_t + 2)
+                        offset(r = 0.2)
+                            square([usbc_body_t, usbc_body_w], center = true);
+            }
 
         // Skålens hulrum
         translate([0, 0, tank_floor_t])
