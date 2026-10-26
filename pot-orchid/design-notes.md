@@ -84,8 +84,9 @@ holder de åbne punkter.
       sump (datablad: op til ~20mm ikke-metal). Limes eller klipses op.
 
 ### Elektronik / firmware
-- [ ] H-bro DRV8871: IN1 = D10, IN2 = D1. Batteri-ADC på D0, boost-switch D8
-      (ADR 013). Qi-modtager → 1N5817 → TP4056 IN+.
+- [ ] ESP32-H2-Zero (ADR 014): H-bro IN1/IN2 = GPIO10/11, batteri-ADC GPIO3,
+      boost-switch GPIO22. Qi-modtager → 1N5817 → TP4056 IN+. Board-RGB-
+      LED'en aflodes; mål boardets hvilestrøm på batteri.
 - [ ] `soak_cycle.cpp`: IDLE → FILL (fast tid + margin; overskud løber
       tilbage) → SOAK → DRAIN (til "skål tom" + efterløb) → VERIFY.
       Skålen skal være tom inden timeout, ellers alarm (buzzer + HomeKit) —

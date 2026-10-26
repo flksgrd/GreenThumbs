@@ -12,7 +12,8 @@ udskudt til en senere custom PCB, så der var hverken plads i CAD eller dele i
 BOM'en.
 
 Fakta:
-- XIAO ESP32-C6 har indbygget Li-ion-lader og batteri-pads; ~15 µA i deep
+- (Skrevet for XIAO ESP32-C6 — MCU'en er siden ESP32-H2, ADR 014.)
+  XIAO ESP32-C6 har indbygget Li-ion-lader og batteri-pads; ~15 µA i deep
   sleep; ladestrøm ~100 mA ifølge en sekundær kilde
   ([CNX](https://www.cnx-software.com/2024/05/22/tiny-xiao-esp32c6-wifi-ble-and-802-15-4-iot-board-offers-up-to-16-gpio-pins/),
   [Seeed](https://wiki.seeedstudio.com/pt-br/xiao_esp32c6_getting_started/)).
@@ -33,11 +34,11 @@ TP4056-modul med beskyttelse ved 580 mA.**
   USB-C ved kanten ─────────────→ TP4056 USB-C ┐
   Qi-modtager 5V ──→ Schottky ──→ TP4056 IN+  ┴→ TP4056 (580 mA) + DW01 ─(B+/B-)─→ 2× 18650
                                                     │ OUT+/OUT-
-     OUT+ ──────────┬─→ XIAO BAT-pads (XIAO'ens egen lader bruges kun ved USB inde i boksen)
+     OUT+ ──────────┬─→ 1N5817 ─→ ESP32-H2-Zero 5V-pin → LDO (ADR 014)
                     ├─→ switch A (P-FET) ─→ boost 12V ─→ pumpe (pot/)
                     │                                └→ H-bro → pumpe (orkide)
                     │                                └→ XKC-sensor (orkide)
-     XIAO 3V3 ──────┴─→ switch B (P-FET) ─→ soil + Grove + AHT20 (kun pot/)
+     H2-Zero 3V3 ───┴─→ switch B (P-FET) ─→ soil + Grove + AHT20 (kun pot/)
 ```
 
 - **Boost: Pololu U3V40F12** (12V fast, op til ~3,5A input). XL6009 er
@@ -65,19 +66,10 @@ Detaljeret ledningsdiagram: [wiring-diagram.md](../../pot/hardware/breadboard/wi
 
 ### Pins (ændringer)
 
-| Pin | pot/ | pot-orchid/ |
-|---|---|---|
-| D0 | Soil ADC (uændret) | **Batteri-ADC** (spændingsdeler) |
-| D1 | **Batteri-ADC** (var reserve) | H-bro IN2 |
-| D2 | Buzzer | Buzzer |
-| D3 | Float switch | XKC "skål tom" |
-| D4/D5 | I2C: AHT20 + Grove | I2C: AHT20 |
-| D6/D7 | HX711 (optional) | Float lav / float fuld |
-| D8 | **Switch B — sensorer** (var WS2812) | **Switch A — boost** |
-| D9 | Knap | Knap |
-| D10 | **Switch A — boost/pumpe** (var MOSFET) | H-bro IN1 |
-
-Alle 11 GPIO er i brug i begge versioner.
+Pin-tabellen er flyttet til [ADR 014](014-esp32-h2.md) (ESP32-H2) og
+[wiring-diagram.md](../../pot/hardware/breadboard/wiring-diagram.md).
+Batteri-ADC, switch A (boost) og switch B (sensorer, kun pot/) er de pins,
+denne ADR tilføjede.
 
 ### Driftstid (estimat — MCU-strømmen skal måles)
 
@@ -104,7 +96,7 @@ Antagelser: boost 85% effektivitet, sensorer slukket mellem målinger,
 
 ### Negative
 - USB-C ved kanten lader kun — firmware opdateres via Matter OTA, eller
-  via XIAO'ens USB-C inde i boksen
+  via MCU-boardets USB-C inde i boksen
 - TP4056 er lineær: ~0,8-1,2W varme under ladning i den lukkede boks
   (placér modulet væk fra AHT20)
 - HomeKit-opdateringer bliver forsinkede (sleepy device); manuel pumpe-
@@ -158,7 +150,7 @@ og Qi-dioden går til modulets IN+. TP4056 er lineær: (5V − Vbat) × I bliver
 til varme (~0,8W ved 580 mA) i den lukkede bay — derfor 580 mA og ikke 1A.
 
 - Modulet leveres med R_PROG = 1,2kΩ (R3) → byt til **2,0kΩ** (0603)
-- Alle forbrugere (XIAO BAT-pads, switch A, batteri-ADC-deler) sidder på
+- Alle forbrugere (MCU via diode, switch A, batteri-ADC-deler) sidder på
   **OUT+/OUT-** — efter beskyttelses-FET'erne, ikke direkte på cellerne
 - VERIFICÉR at modulet har 5,1kΩ CC-modstande — ellers giver USB-C-ladere
   (C-til-C) ingen 5V

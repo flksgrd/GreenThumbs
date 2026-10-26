@@ -2,7 +2,7 @@
  * @file buzzer.h
  * @brief Passiv piezo buzzer driver — refill-indikator + fejl-signalering.
  *
- * Buzzer på D2 (GPIO2) drives med PWM via ESP32 LEDC. Bruges KUN i
+ * Buzzer på GPIO0 drives med PWM via ESP32 LEDC. Bruges KUN i
  * refill-mode og ved fejl — aldrig periodisk (ingen irriterende bip).
  *
  * Se ADR 008 for designvalg og beep-mønstre.

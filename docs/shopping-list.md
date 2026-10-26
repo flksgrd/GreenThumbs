@@ -8,9 +8,9 @@ vejledende BOM-estimater i DKK, uden fragt og told. Detaljer:
 
 | | Orkide | pot/ (Monstera) |
 |---|---:|---:|
-| Bestil | **1466** | **1280** |
+| Bestil | **1396** | **1245** |
 | Kun til stripboard-prototypen | 162 | 42 |
-| **I alt** | **1628** | **1322** |
+| **I alt** | **1558** | **1287** |
 | Valgfrit (ikke med) | 40 | 220 |
 
 Haves allerede: 5V USB-C-lader, Apple MagSafe 25W (orkidens ladebase er tegnet til den).
@@ -18,13 +18,14 @@ Haves allerede: 5V USB-C-lader, Apple MagSafe 25W (orkidens ladebase er tegnet t
 **"Kun til stripboard-prototypen"** er de dele, der sidder på printet. På et
 færdigt SMD-PCB loddes de i SMD eller følger med samleordren (fx JLCPCB), så
 sektionen er kun nødvendig, hvis prototypen bygges på stripboard først.
-Modulerne (XIAO, boost, lader, H-bro, Qi) kan sidde på headers på et færdigt PCB.
+Modulerne (boost, lader, H-bro, Qi) kan sidde på headers på et færdigt PCB; MCU'en
+bliver dér et ESP32-H2-MINI-1-H4S-modul (samme chip som Zero-boardet, ADR 014).
 
 ---
 
 ## 1. Orkide (pot-orchid)
 
-**Butikker:** The Pi Hut (XIAO, Pololu, Qi, DRV8871 — tjek lager) ·
+**Butikker:** The Pi Hut (ESP32-H2-Zero, Pololu, Qi, DRV8871 — tjek lager) ·
 Nkon (celler) · 3djake (filament) · AliExpress (resten — 2-3 ugers levering,
 bestil først) · akvariebutik (sump-si) · byggemarked (bolte)
 
@@ -41,14 +42,14 @@ bestil først) · akvariebutik (sump-si) · byggemarked (bolte)
 
 | ✓   | Del                                               | Antal | Stk. |   I alt | Butik                   | Note                                                 |
 | --- | ------------------------------------------------- | ----: | ---: | ------: | ----------------------- | ---------------------------------------------------- |
-| [ ] | Seeed XIAO ESP32-C6 (113991254)                   |     2 |   80 |     160 | The Pi Hut / Mouser     | 1 + 1 reserve                                        |
+| [ ] | Waveshare ESP32-H2-Zero (4 MB, ADR 014)           |     2 |   45 |      90 | Waveshare / The Pi Hut  | 1 + 1 reserve. Pris = skøn. Aflod RGB-LED'en         |
 | [ ] | Pololu U3V40F12 boost 12V (#4016)                 |     1 |  110 |     110 | The Pi Hut / RobotShop  |                                                      |
 | [ ] | TP4056 USB-C-modul m. beskyttelse (DW01A+FS8205A) |     5 |    8 |      40 | AliExpress              | Dækker også pot/ + reserver. Tjek 5,1kΩ CC-modstande |
 | [ ] | Modstand 2,0kΩ SMD 1% (TP4056 R_PROG), pakke      |     1 |    5 |       5 | LCSC / Conrad           | Tjek R3's størrelse (0603/0805)                      |
 | [ ] | Qi-modtager 5V ≥600 mA (spole ~46×36mm)           |     1 |   70 |      70 | The Pi Hut / AliExpress |                                                      |
 | [ ] | DRV8871 H-bro-breakout (Adafruit 3190)            |     1 |   60 |      60 | The Pi Hut / Digi-Key   |                                                      |
 | [ ] | AHT20-breakout (I2C 0x38)                         |     1 |   25 |      25 | AliExpress / Adafruit   |                                                      |
-|     | **Sum**                                           |       |      | **470** |                         |                                                      |
+|     | **Sum**                                           |       |      | **400** |                         |                                                      |
 
 ### Pumpe og sensorer
 
@@ -118,7 +119,7 @@ bestil først) · akvariebutik (sump-si) · byggemarked (bolte)
 
 Forudsætter at orkide-ordren er købt — rækker med "fra orkide-ordren" koster 0.
 
-**Butikker:** The Pi Hut (XIAO, Pololu, Qi) · Nkon (celler) · 3djake (PETG) ·
+**Butikker:** The Pi Hut (ESP32-H2-Zero, Pololu, Qi) · Nkon (celler) · 3djake (PETG) ·
 AliExpress · Berrybase/Eckstein (Grove) · Conrad (glands, kabel) · lokalt
 (EPDM, LECA, gummifødder, slange-lod)
 
@@ -132,12 +133,12 @@ AliExpress · Berrybase/Eckstein (Grove) · Conrad (glands, kabel) · lokalt
 
 | ✓ | Del | Antal | Stk. | I alt | Butik | Note |
 |---|---|---:|---:|---:|---|---|
-| [ ] | Seeed XIAO ESP32-C6 (113991254) | 1 | 80 | 80 | The Pi Hut / Mouser | Eller brug orkide-ordrens reserve |
+| [ ] | Waveshare ESP32-H2-Zero (4 MB) | 1 | 45 | 45 | Waveshare / The Pi Hut | Eller brug orkide-ordrens reserve |
 | [ ] | Pololu U3V40F12 boost 12V (#4016) | 1 | 110 | 110 | The Pi Hut / RobotShop |  |
 | [ ] | TP4056-modul + 2,0kΩ R_PROG | 1 | — | — | — | fra orkide-ordren |
 | [ ] | Qi-modtager 5V ≥600 mA | 1 | 70 | 70 | The Pi Hut / AliExpress | Kun uden load cell — ellers spring over |
 | [ ] | AHT20-breakout | 1 | 25 | 25 | AliExpress / Adafruit |  |
-| | **Sum** | | | **285** | | |
+| | **Sum** | | | **250** | | |
 
 ### Pumpe og sensorer
 

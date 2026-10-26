@@ -2,7 +2,7 @@
 // Electronics Base — Vandtæt kammer for elektronik + pumpe
 // =============================================================================
 // Cylindrisk kammer der sidder under reservoir. Indeholder:
-//   - XIAO ESP32-C6 + AHT20 + buzzer
+//   - ESP32-H2-Zero + AHT20 + buzzer (ADR 014)
 //   - Switches + boost 12V på prototype board
 //   - 2× 18650 (1S2P) i vugge på lid'et (ADR 013)
 //   - Pumpe monteret på lid'ets indvendige side (DUAL FOOTPRINT:

@@ -2,7 +2,7 @@
  * @file temp_humidity.h
  * @brief AHT20 temperatur + fugtigheds-sensor driver + VPD calculation.
  *
- * AHT20 sidder på I2C (D4 SDA / D5 SCL). Sampler hver 60. sek; rum-klima
+ * AHT20 sidder på I2C (GPIO4 SDA / GPIO5 SCL). Sampler hver 60. sek; rum-klima
  * ændres langsomt så høj samplerate er ikke nødvendigt.
  *
  * Hovedformål for projektet:

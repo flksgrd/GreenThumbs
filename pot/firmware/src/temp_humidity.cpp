@@ -42,7 +42,7 @@ int env_sensor_init(void)
     // TODO Fase 1: implementer I2C bus + AHT20 device init
     //
     // Steps:
-    //   1. i2c_new_master_bus() med SDA = GPIO22 (D4), SCL = GPIO23 (D5)
+    //   1. i2c_new_master_bus() med SDA = GPIO4, SCL = GPIO5
     //   2. i2c_master_bus_add_device() med AHT20_I2C_ADDR
     //   3. Send AHT20 calibration command (0xBE 0x08 0x00) + vent 10ms
     //   4. Læs status byte; tjek calibration enabled bit

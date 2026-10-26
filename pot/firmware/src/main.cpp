@@ -34,21 +34,22 @@ static const char *TAG = "greenthumbs";
 // =============================================================================
 // Pin assignments — se pot/hardware/breadboard/wiring-diagram.md
 // =============================================================================
-// NB: D4/D5 er nu reserveret til AHT20 I2C (SDA/SCL). HX711 er flyttet til
-// D6/D7. ESP-IDF console kører på USB-CDC i stedet for UART (se ADR 007).
-constexpr int PIN_SOIL_ADC      = 0;   // D0 / GPIO0 / ADC1_CH0
-constexpr int PIN_BATT_ADC      = 1;   // D1 / GPIO1 / ADC1_CH1 (2× 200k deler, ADR 013)
+// ESP32-H2 (ADR 014). Fælles med orkiden: buzzer 0, batteri 3, I2C 4/5,
+// knap 12, boost 22. Reserveret: 13/14 (32 kHz-krystal på eget PCB),
+// 24 (UART0 TX = ROM-log), 8/9/25 (strapping), 26/27 (USB).
+constexpr int PIN_BUZZER        = 0;   // LEDC PWM
+constexpr int PIN_SOIL_ADC      = 1;   // ADC1_CH0
+constexpr int PIN_FLOAT_SWITCH  = 2;   // intern pull-up; LOW = vand tomt
+constexpr int PIN_BATT_ADC      = 3;   // ADC1_CH2 (2× 200k deler, ADR 013)
+constexpr int PIN_I2C_SDA       = 4;   // I2C: AHT20 + water level
+constexpr int PIN_I2C_SCL       = 5;
 constexpr uint8_t WATER_I2C_LOW   = 0x77; // nederste 8 pads
 constexpr uint8_t WATER_I2C_HIGH  = 0x78; // øverste 12 pads
-constexpr int PIN_BUZZER        = 2;   // D2 / GPIO2 (piezo buzzer, LEDC PWM)
-constexpr int PIN_FLOAT_SWITCH  = 21;  // D3 / GPIO21
-constexpr int PIN_I2C_SDA       = 22;  // D4 / GPIO22 (I2C: AHT20 + water level)
-constexpr int PIN_I2C_SCL       = 23;  // D5 / GPIO23 (I2C: AHT20 + water level)
-constexpr int PIN_HX711_SCK     = 16;  // D6 / GPIO16
-constexpr int PIN_HX711_DOUT    = 17;  // D7 / GPIO17
-constexpr int PIN_SENSOR_PWR    = 19;  // D8 / GPIO19 (switch B, LOW = sensorer tændt)
-constexpr int PIN_MANUAL_BUTTON = 20;  // D9 / GPIO20
-constexpr int PIN_PUMP_EN       = 18;  // D10 / GPIO18 (switch A → boost 12V → pumpe)
+constexpr int PIN_HX711_SCK     = 10;
+constexpr int PIN_HX711_DOUT    = 11;
+constexpr int PIN_MANUAL_BUTTON = 12;  // LP-pin → kan vække fra alle sleep-modes
+constexpr int PIN_PUMP_EN       = 22;  // switch A → boost 12V → pumpe (HIGH = on)
+constexpr int PIN_SENSOR_PWR    = 23;  // switch B (LOW = sensorer tændt; pull-up ved reset)
 
 
 // =============================================================================
@@ -104,7 +105,7 @@ static void init_pins(void)
     // TODO: gpio_config for alle pins
     // ADC1 init for soil og batteri
     // Pull-up på float switch og button
-    // Pumpe- og sensor-switch: output, starter slukket (D10 LOW, D8 HIGH)
+    // Pumpe- og sensor-switch: output, starter slukket (GPIO22 LOW, GPIO23 HIGH)
     ESP_LOGI(TAG, "Pin init: TODO (Fase 1)");
 }
 

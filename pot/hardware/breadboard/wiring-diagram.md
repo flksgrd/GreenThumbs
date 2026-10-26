@@ -1,48 +1,59 @@
-# Wiring Diagram — Plantekrukke v1 Breadboard Prototype
+# Wiring Diagram — Plantekrukke + Orkide (ESP32-H2-Zero prototype)
 
 **Single source of truth** for pin-mapping mellem firmware og hardware. Hvis du ændrer pin-assignment her, opdater også `pot/firmware/src/main.cpp` PIN_* konstanter.
 
-## XIAO ESP32-C6 pinout reference
+## Waveshare ESP32-H2-Zero pinout (ADR 014)
 
 ```
-                ┌─────────────┐
-        TX  D6 ─┤             ├─ D7  RX
-        SDA D4 ─┤             ├─ D5  SCL
-            D8 ─┤             ├─ D3
-            D9 ─┤             ├─ D10
-            5V ─┤             ├─ 3V3
-           GND ─┤             ├─ D2  (ADC2)
-            D0 ─┤             ├─ D1  (ADC1)
-          (ADC0)              
-                │   USB-C     │
-                └─────────────┘
+                    USB-C
+        5V ─┤                ├─ GPIO24  TX  (ROM-log — bruges ikke)
+       GND ─┤                ├─ GPIO23  RX
+       3V3 ─┤  [RST] [BOOT]  ├─ GPIO25  (strapping — bruges ikke)
+     GPIO0 ─┤                ├─ GPIO22
+     GPIO1 ─┤ ADC1_CH0       ├─ GPIO14  (XTAL_32K — reserveret)
+     GPIO2 ─┤ ADC1_CH1       ├─ GPIO13  (XTAL_32K — reserveret)
+     GPIO3 ─┤ ADC1_CH2       ├─ GPIO12  LP
+     GPIO4 ─┤ ADC1_CH3       ├─ GPIO11  LP
+     GPIO5 ─┤ ADC1_CH4       ├─ GPIO10  LP
+            └────────────────┘
+   Pads på bagsiden: GPIO26/27 (USB D−/D+), GPIO9 (BOOT), GPIO8 (LOG)
 ```
 
-ADC-capable: D0 (ADC1_CH0), D1 (ADC1_CH1), D2 (ADC1_CH2)
-Total brugbare GPIO: 11
+Kilde: [Waveshare-pinout](https://docs.waveshare.com/ESP32-H2-Zero) +
+[ESP32-H2-datablad](https://documentation.espressif.com/esp32-h2_datasheet_en.pdf) kap. 2-3.
 
-## Pin allocation (v1 med AHT20)
+- **ADC:** GPIO1-5 (ADC1_CH0-4)
+- **Strapping:** GPIO8, GPIO9, GPIO25 → bruges ikke
+- **LP-pins (GPIO8-14):** virker i alle sleep-modes → knappen sidder her, så
+  den kan vække enheden
+- **GPIO13/14:** 32 kHz-krystal på det færdige PCB (Thread-søvn) → holdes fri,
+  så pin-mappingen er ens på Zero og MINI-1-modulet
+- **GPIO2-5** er JTAG-pins, men rene indgange ved reset (JTAG går via USB)
+- **GPIO23/24 (UART0)** har pull-up ved reset; GPIO24 sender bootloaderens log
+- **Brugbare til os: præcis 11** — GPIO0-5, 10-12, 22, 23
+- **Board-RGB-LED'en (WS2812) skal aflodes** — den trækker strøm, også slukket
 
-| XIAO pin | GPIO | Function | Tilslutning | Notes |
-|----------|------|----------|-------------|-------|
-| D0 | GPIO0 | ADC | Soil moisture sensor (AOUT) | Bruges af profil-system, kalibreres dry/wet |
-| D1 | GPIO1 | ADC | **Batteri-spænding** | 2× 200kΩ deler fra OUT+ på TP4056-modulet (ADR 013) |
-| D2 | GPIO2 | GPIO PWM | **Piezo buzzer** (passiv, LEDC-drevet) | Refill-indikator + fejl-signaler. Se ADR 008 |
-| D3 | GPIO21 | GPIO ISR | Float switch | Internal pull-up; LOW = vand tomt |
-| D4 | GPIO22 | **I2C SDA** | **AHT20 SDA** | Standard I2C bus til environmental sensor |
-| D5 | GPIO23 | **I2C SCL** | **AHT20 SCL** | Standard I2C bus |
-| D6 | GPIO16 | GPIO | **HX711 SCK** (clock) | Flyttet fra UART TX — USB-CDC console nu i brug |
-| D7 | GPIO17 | GPIO | **HX711 DOUT** (data) | Flyttet fra UART RX |
-| D8 | GPIO19 | GPIO | **Sensor-skinne** (switch B) | LOW = sensorer tændt (P-FET gate). Soil + Grove + AHT20 slukkes mellem målinger |
-| D9 | GPIO20 | GPIO | Manuel knap | Internal pull-up; LOW = pressed |
-| D10 | GPIO18 | GPIO | **Pumpe** (switch A → boost) | HIGH = boost + pumpe tændt. 10kΩ pulldown → slukket under boot |
+## Pin allocation
 
-**Ingen frie GPIO** (WS2812 er droppet, D1/D8 bruges til batteri — ADR 013). I2C-bussen (D4/D5) deles af AHT20 (0x38) og Grove water level-sensoren (0x77 + 0x78) — flere I2C-devices kan tilføjes uden at bruge pins.
+Fælles i begge versioner: buzzer 0, batteri 3, I2C 4/5, knap 12, boost 22.
 
-> **Vigtigt ændring fra tidligere wiring:** AHT20 environmental sensor blev tilføjet som standard v1-komponent (se [ADR 007](../../../docs/decisions/007-env-sensor-aht20.md)). Det krævede:
-> - HX711 flyttet fra D4/D5 til D6/D7 (frigør I2C-bussen for AHT20)
-> - UART TX/RX (D6/D7) er ikke længere i brug; ESP-IDF console er routet til **USB-CDC** via `CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y` i `sdkconfig.defaults`
-> - Serial monitor virker stadig — bare via samme USB-C kabel som programmering. På macOS: `/dev/cu.usbmodem*`
+| GPIO | pot/ | pot-orchid/ | Noter |
+|---|---|---|---|
+| 0 | Piezo buzzer (LEDC PWM) | Piezo buzzer | ADR 008 |
+| 1 | Soil moisture AOUT (ADC1_CH0) | XKC "skål tom" (NPN, intern pull-up) | |
+| 2 | Float switch (intern pull-up; LOW = tomt) | Float lav | |
+| 3 | **Batteri-ADC** (ADC1_CH2) | **Batteri-ADC** | 2× 200kΩ fra TP4056 OUT+, 100nF til GND |
+| 4 | I2C SDA (AHT20 + Grove) | I2C SDA (AHT20) | |
+| 5 | I2C SCL | I2C SCL | |
+| 10 | HX711 SCK | H-bro IN1 (fyld) | DRV8871 har pull-downs på IN |
+| 11 | HX711 DOUT | H-bro IN2 (dræn) | |
+| 12 | **Manuel knap** (intern pull-up) | **Manuel knap** | LP-pin → vækker fra sleep |
+| 22 | **Switch A** — boost/pumpe (HIGH = on) | **Switch A** — boost | 10kΩ pulldown → slukket under boot |
+| 23 | **Switch B** — sensorer (LOW = on) | Float fuld | Pull-up ved reset → sensorer slukket under boot |
+
+I2C-bussen deles af AHT20 (0x38) og Grove water level-sensoren (0x77 + 0x78).
+ESP-IDF-konsollen kører på **USB Serial/JTAG** (GPIO26/27) via
+`CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y`; på macOS `/dev/cu.usbmodem*`.
 
 ## Power rails (batteri — ADR 013)
 
@@ -54,13 +65,14 @@ Qi-modtager 5V ──→ 1N5817 (katode mod TP4056) ──→ TP4056 IN+ ──�
              B+/B- ──→ 2× 18650 parallelt (1S2P, 3,0-4,2V)
              OUT+/OUT- ──→ systemet (alt herunder; aldrig direkte på cellerne)
 
-OUT+ ──┬──→ XIAO BAT+ / BAT- pads (XIAO'ens egen 100 mA-lader kun aktiv
-       │    når dens USB-C bruges til programmering inde i boksen)
-       ├──→ switch A (P-FET, D10) ──→ boost 12V (Pololu U3V40F12) ──→ pumpe
+OUT+ ──┬──→ 1N5817 ──→ H2-Zero 5V-pin ──→ boardets LDO (ME6217) ──→ 3V3
+       │    (dioden forhindrer at USB 5V fødes baglæns ind i batteriet,
+       │     hvis Zero'ens USB-C sættes i under programmering)
+       ├──→ switch A (P-FET, GPIO22) ──→ boost 12V (Pololu U3V40F12) ──→ pumpe
        └──→ 200k ─┬─ 200k ──→ GND
-                  └──→ D1 (batteri-ADC, 100nF til GND)
+                  └──→ GPIO3 (batteri-ADC, 100nF til GND)
 
-XIAO 3V3 ──→ switch B (P-FET, D8) ──→ sensor-skinne: soil, Grove, AHT20
+H2-Zero 3V3 ──→ switch B (P-FET, GPIO23) ──→ sensor-skinne: soil, Grove, AHT20
          └──→ HX711 (power-down via SCK), float switch (intern pull-up)
 ```
 
@@ -72,7 +84,12 @@ ville sive. Switch A afbryder den helt.
 ligger på samme skinne som Grove-sensoren, fordi de deler I2C: hvis kun den
 ene var slukket, ville pull-ups'ene føde den gennem SDA/SCL.
 
-Sensorer kører på 3.3V (fra XIAO 3V3-pin), IKKE batterispænding.
+Sensorer kører på 3.3V (fra Zero'ens 3V3-pin), IKKE batterispænding.
+
+**Lav-batteri:** dioden (~0,3V) + LDO'en betyder at 3V3 falder under
+ESP32-H2's minimum (3,0V) ved ~3,3-3,4V batteri. Firmwaren advarer ved 3,5V.
+På det færdige PCB (MINI-1-modul) erstattes dioden af en ideel-diode/
+power-path, så hele cellens kapacitet kan bruges.
 
 ## Komplet wiring
 
@@ -86,7 +103,7 @@ Switch A — high-side, pumpe (Vbat > 3.3V → kræver N-FET-driver)
          └─────────────┘                 U3V40F12 GND ──→ GND     pumpe − ──→ GND
                        │                 (1N5817 over pumpen: katode mod +)
                  2N7002 drain
-  D10 ──[10kΩ til GND]── 2N7002 gate
+  GPIO22 ──[10kΩ til GND]── 2N7002 gate
                  2N7002 source ──→ GND
 
 Switch B — high-side, sensorer (source = 3V3 = GPIO-niveau → direkte drev)
@@ -94,9 +111,9 @@ Switch B — high-side, sensorer (source = 3V3 = GPIO-niveau → direkte drev)
   3V3 ──┬──── source ┐
       100kΩ          │ AO3401A
         │    gate ───┤
-  D8 ───┴────┘       │ drain ──→ sensor-skinne (3V3_SW)
+  GPIO23 ┴────┘       │ drain ──→ sensor-skinne (3V3_SW)
 
-XIAO ESP32-C6
+ESP32-H2-Zero (pot/)
   3V3_SW ──→ Soil sensor VCC
           → Grove water level VCC (3.3V)
           → AHT20 VCC
@@ -105,21 +122,21 @@ XIAO ESP32-C6
 
   GND ──→ All sensor GNDs (shared ground)
 
-  D0 (ADC) ──→ Soil sensor AOUT
-  D1 (ADC) ──→ Batteri-deler (midtpunkt)
-  D2 ──→ Piezo buzzer
-  D3 ──→ Float switch (intern pull-up, switch til GND when wet)
-  D4 (SDA) ──→ AHT20 + Grove SDA  (pull-ups på breakouts → 3V3_SW)
-  D5 (SCL) ──→ AHT20 + Grove SCL
-  D6 ──→ HX711 SCK
-  D7 ──→ HX711 DOUT
-  D8 ──→ Switch B gate (LOW = sensorer on)
-  D9 ──→ Manual button (internal pull-up, switch til GND)
-  D10 ──→ Switch A driver (HIGH = pumpe on)
+  GPIO0 ──→ Piezo buzzer
+  GPIO1 (ADC) ──→ Soil sensor AOUT
+  GPIO2 ──→ Float switch (intern pull-up, switch til GND when wet)
+  GPIO3 (ADC) ──→ Batteri-deler (midtpunkt)
+  GPIO4 (SDA) ──→ AHT20 + Grove SDA  (pull-ups på breakouts → 3V3_SW)
+  GPIO5 (SCL) ──→ AHT20 + Grove SCL
+  GPIO10 ──→ HX711 SCK
+  GPIO11 ──→ HX711 DOUT
+  GPIO12 ──→ Manual button (internal pull-up, switch til GND)
+  GPIO22 ──→ Switch A driver (HIGH = pumpe on)
+  GPIO23 ──→ Switch B gate (LOW = sensorer on)
 ```
 
-**Firmware-rækkefølge ved måling:** D8 LOW → vent ~50 ms (AHT20 opstart) →
-init I2C → mål → sæt SDA/SCL til input → D8 HIGH. Bussen må ikke drives,
+**Firmware-rækkefølge ved måling:** GPIO23 LOW → vent ~50 ms (AHT20 opstart) →
+init I2C → mål → sæt SDA/SCL til input → GPIO23 HIGH. Bussen må ikke drives,
 mens skinnen er slukket.
 
 ## AHT20 (environmental sensor) detaljer
@@ -129,8 +146,8 @@ AHT20 modul (Adafruit 4566 eller AliExpress generic)
   ┌─────────────┐
   │ VCC ──→ 3V3_SW│ (switch B)
   │ GND ──→ GND │
-  │ SDA ──→ D4  │ (med 4.7kΩ pull-up til 3V3_SW)
-  │ SCL ──→ D5  │ (med 4.7kΩ pull-up til 3V3_SW)
+  │ SDA ──→ GPIO4 │ (med 4.7kΩ pull-up til 3V3_SW)
+  │ SCL ──→ GPIO5 │ (med 4.7kΩ pull-up til 3V3_SW)
   └─────────────┘
 ```
 
@@ -147,8 +164,8 @@ Grove Water Level Sensor 10cm (101020635) — 4-pin Grove-stik
   ┌─────────────┐
   │ VCC ──→ 3V3_SW│ (switch B)
   │ GND ──→ GND │
-  │ SDA ──→ D4  │ (samme bus som AHT20)
-  │ SCL ──→ D5  │
+  │ SDA ──→ GPIO4 │ (samme bus som AHT20)
+  │ SCL ──→ GPIO5 │
   └─────────────┘
 ```
 
@@ -162,8 +179,8 @@ HX711 modul
   ┌─────────────┐
   │ VCC ──→ 3.3V│
   │ GND ──→ GND │
-  │ DT  ──→ D7  │ (DOUT — data line, ESP læser herfra)
-  │ SCK ──→ D6  │ (clock — ESP styrer)
+  │ DT  ──→ GPIO11│ (DOUT — data line, ESP læser herfra)
+  │ SCK ──→ GPIO10│ (clock — ESP styrer)
   │             │
   │ E+ ──→ Load cell rød   │
   │ E- ──→ Load cell sort  │
@@ -179,9 +196,9 @@ Hvis load cell-aflæsning er negativ ved positiv vægt: swap A+ og A- ledninger.
 Float switch er normalt NO (Normally Open) når op (vand tilstede), CLOSED når nede (vand tom).
 
 ```
-Float switch wire 1 ──→ GPIO D3
+Float switch wire 1 ──→ GPIO2
 Float switch wire 2 ──→ GND
-D3 har INTERNAL pull-up enabled in firmware
+GPIO2 har INTERNAL pull-up enabled in firmware
 → Switch closed (vand tom) = GPIO LOW = ISR triggered
 → Switch open (vand tilstede) = GPIO HIGH = OK
 ```
@@ -189,7 +206,7 @@ D3 har INTERNAL pull-up enabled in firmware
 ## Til prototype-fase
 
 For v1 breadboard:
-1. XIAO på 0.1" header → breadboard
+1. ESP32-H2-Zero på 0.1" header → breadboard (aflod RGB-LED'en først)
 2. Switch A + B (AO3401A/2N7002 på SOT-23-adaptere) og boost-modulet på samme breadboard
    — test først med laboratorieforsyning 3,7V i stedet for cellerne
 3. AHT20 breakout board direkte på breadboard (lille)
@@ -210,12 +227,12 @@ ls /dev/cu.usbmodem*
 pio device monitor
 ```
 
-Hvis du af en eller anden grund vil bruge UART i stedet (fx ekstern USB-UART konverter): sæt `CONFIG_ESP_CONSOLE_UART_DEFAULT=y` i sdkconfig.defaults og flyt HX711 til andre pins (men D2 og D9 er allerede taget — så det kræver kompromis).
+Hvis du vil bruge UART i stedet (fx ekstern USB-UART-konverter): sæt `CONFIG_ESP_CONSOLE_UART_DEFAULT=y` i sdkconfig.defaults. UART0 sidder på GPIO23/24 — GPIO23 er switch B (pot/) / float fuld (orkide), så det kræver et kompromis.
 
 ## ESD/safety notes
 
 - Ingen 230V AC — USB-C-laderen håndterer alt mains-side.
 - Li-ion: brug altid beskyttelsesprintet (over-/underspænding, kortslutning). Celler med loddefaner — lod aldrig direkte på en celle uden.
-- Pumpe 12V og GPIO 3.3V er på samme GND. Boost-start trækker en strømspids fra batteriet — placér 100µF elko ved boostens input og 10µF tæt på XIAO'ens BAT-pads.
+- Pumpe 12V og GPIO 3.3V er på samme GND. Boost-start trækker en strømspids fra batteriet — placér 100µF elko ved boostens input og 10µF ved Zero'ens 5V-pin.
 - Sensor-kabler op til ~50cm bør være shielded eller twisted pair for at undgå ADC-støj fra pumpe-switching.
 - AHT20 I2C-kabler holdes korte (<20cm); ellers tilføj stærkere pull-ups (2.2kΩ).

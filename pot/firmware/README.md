@@ -1,6 +1,6 @@
 # Plantekrukke Firmware
 
-PlatformIO + ESP-IDF + ESP-Matter SDK projekt for XIAO ESP32-C6.
+PlatformIO + ESP-IDF + ESP-Matter SDK projekt for ESP32-H2 (Waveshare ESP32-H2-Zero; ADR 014).
 
 ## Setup (første gang)
 
@@ -26,7 +26,8 @@ ESP-Matter SDK kommer ikke automatisk med PlatformIO. Den skal klones manuelt:
 cd ~/
 git clone --recursive https://github.com/espressif/esp-matter.git
 cd esp-matter
-git checkout v1.3  # pin til specifik version, ikke main
+git checkout <release>  # pin en release hvis README anbefaler ESP-IDF 5.5.x
+                        # (1.6-serien ifølge Espressifs komponent-register) — ikke main
 ./install.sh
 ```
 
@@ -40,19 +41,21 @@ source $ESP_MATTER_PATH/export.sh
 ### 3. ESP-IDF (auto-installeres af PlatformIO)
 
 PlatformIO installerer ESP-IDF automatisk når du første gang kører `pio run`
-(verificeret 2026-10-21: espressif32 6.13.0 → ESP-IDF 5.5.3, ~30s build).
+(verificeret 2026-10-26: pioarduino 55.03.312-1 → ESP-IDF 5.5.5, target esp32h2;
+RAM 3,3%, flash 9,7% af app-slot; første build ~3 min). Den officielle
+espressif32-platform understøtter ikke ESP32-H2 (ADR 014).
 
 - `scripts/fix_ot_datetime.py` retter en PlatformIO-fejl, der ellers stopper
   OpenThread-buildet (build-dato med mellemrum i en define)
-- Flash er sat til 4MB (XIAO) i både `platformio.ini` og `sdkconfig.defaults`
+- Flash er sat til 4MB (ESP32-H2FH4S) i både `platformio.ini` og `sdkconfig.defaults`
 - OTA: `partitions.csv` har to app-slots (ota_0/ota_1, 1920 KB hver) + otadata,
   og rollback er slået til. Ny firmware skal kalde
   `esp_ota_mark_app_valid_cancel_rollback()` først når Thread + Matter er oppe
   igen — ellers vender bootloaderen tilbage til den forrige version.
   Opdatering sker som Matter OTA (OTA Requestor i esp-matter) fra en
   `chip-ota-provider-app` på Mac'en; USB-C ved kanten lader kun (ADR 013)
-- Bemærk: esp-matter v1.3 anbefaler ESP-IDF 5.2.x; nyere esp-matter
-  anbefaler 5.5.x — afstem versionerne når Matter integreres i Fase 1
+- esp-matter: nyere udgaver anbefaler ESP-IDF 5.5.5 — det vi nu bygger med.
+  Brug en esp-matter-version der matcher (ikke v1.3, som hører til 5.2.x)
 
 ## Build & flash
 

@@ -1,6 +1,6 @@
 # ADR 002 — XIAO ESP32-C6 som MCU
 
-**Status:** Accepted
+**Status:** Superseded af [ADR 014](014-esp32-h2.md) (ESP32-H2) for pot/ og pot-orchid/
 **Dato:** 2026-05-27
 
 ## Context

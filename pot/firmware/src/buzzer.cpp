@@ -23,7 +23,7 @@ int buzzer_init(void)
 #else
     // TODO Fase 1: LEDC setup
     //   1. ledc_timer_config: LEDC_TIMER_0, 10-bit resolution, 2000 Hz default
-    //   2. ledc_channel_config: GPIO2 (D2), duty 0 (off)
+    //   2. ledc_channel_config: GPIO0, duty 0 (off)
     //   3. Frekvens ændres per beep via ledc_set_freq()
     ESP_LOGW(TAG, "buzzer_init: TODO (Fase 1)");
     return 0;

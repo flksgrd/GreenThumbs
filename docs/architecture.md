@@ -18,9 +18,9 @@
 +=================================================================+
 |             SMART PLANTEKRUKKE — BASE STATION                   |
 |                                                                 |
-|   2× 18650 (1S2P, ADR 013) ←── lades via XIAO'ens USB-C        |
+|   2× 18650 (1S2P, ADR 013) ←── TP4056 (USB-C ved kanten / Qi)  |
 |        ├──→ switch A ──→ boost 12V ──→ Peristaltisk pumpe 12V   |
-|        └──→ XIAO ESP32-C6 (BAT-pads) ──→ switch B ──→ sensorer  |
+|        └──→ ESP32-H2 (via diode) ──→ switch B ──→ sensorer      |
 |                                          │                       |
 |                                          ├── ADC0: soil moisture │
 |                                          ├── I2C: water level    │ (Grove, 0x77/78)
@@ -51,7 +51,7 @@ STACK VARIANT A (besluttet 2026-06): cup hænger NEDSÆNKET i reservoiret.
 │   VAND-ZONE (40mm, ~1018 ml)      │ ← float switch i bund, under cup
 ╞═══════════════════════════════════╡
 │  ELECTRONICS BASE (vandtæt)       │
-│   • XIAO ESP32-C6 + AHT20 + buzzer│
+│   • ESP32-H2-Zero + AHT20 + buzzer│
 │   • 2× 18650 + boost + switches   │
 │   • Pumpe på lid (dual footprint: │
 │     Kamoer KXF-DC eller BP7 piezo)   │
@@ -184,7 +184,7 @@ Pumpen sidder i electronics base, direkte over load cell platformen. Vibrationer
 
 ### Termisk drift fra elektronik
 
-Med batteridrift (ADR 013) sover ESP32-C6 det meste af tiden, og boosten kører kun under pumpning — varmen er langt mindre end med den tidligere 12V/buck-forsyning. Under pumpning genererer boost + pumpe dog ~0,5-1W. Varmen vandrer gennem electronics base bund → ind i load_cell_mount upper plate → påvirker HX711-aflæsning (~50 ppm/°C drift = ~0.5g per grad ved 5kg fuldskala — ikke meget, men akkumuleres over et døgn med vekslende rumtemp).
+Med batteridrift (ADR 013) sover ESP32-H2 det meste af tiden, og boosten kører kun under pumpning — varmen er langt mindre end med den tidligere 12V/buck-forsyning. Under pumpning genererer boost + pumpe dog ~0,5-1W. Varmen vandrer gennem electronics base bund → ind i load_cell_mount upper plate → påvirker HX711-aflæsning (~50 ppm/°C drift = ~0.5g per grad ved 5kg fuldskala — ikke meget, men akkumuleres over et døgn med vekslende rumtemp).
 
 **Mitigation:**
 - Læg en 2-3mm rubber-pad mellem electronics_base_lid og load_cell_mount upper plate som termisk isolation.

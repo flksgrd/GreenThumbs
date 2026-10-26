@@ -31,7 +31,7 @@ potten til både lager og elektronik.
    │  RING     │ ~~│~~ skål-kant ~~~~ │~~ │          │  ← soak-loft
    │ ~~~~~~~~  │  S K Å L (konisk)    │   │ ~~~~~~~~ │
    ╞═══════════╧══════════════════════╧═══╧══════════╡  ← tank-gulv (4mm massivt)
-   │  BAY: 2× 18650, pumpe, XIAO, H-bro, boost       │
+   │  BAY: 2× 18650, pumpe, ESP32-H2, H-bro, boost   │
    └──╲                                           ╱──┘  ← 45° skulder (fri af afsatsen)
        │   FOD Ø152 i pyntepottens udhulede bund  │
        └──────────────────────────────────────────┘

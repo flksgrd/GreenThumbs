@@ -1,4 +1,4 @@
-# Partition table for GreenThumbs — XIAO ESP32-C6 (4MB flash)
+# Partition table for GreenThumbs — ESP32-H2 4MB (H2FH4S / MINI-1-H4S)
 #
 # OTA-FIX 2026-10-21: det tidligere layout (factory + ota_0, ingen otadata)
 # kunne ikke opdatere: ESP-IDF's OTA kræver mindst TO OTA-slots + en otadata-

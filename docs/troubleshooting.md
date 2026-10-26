@@ -7,13 +7,13 @@ Common issues og hvordan du diagnostiserer dem. Opdateres løbende under prototy
 1. **Tjek float switch**: hvis reservoir er tom → safety-interlock blokerer pumpe. Fyld vand op.
 2. **Tjek HomeKit-status**: er manuel-pump-switch ON? Står der "Pump disabled" i log?
 3. **Tjek batteriet**: under ~3,3V kan boosten ikke levere pumpens startstrøm. Se batteriniveau i HomeKit, eller mål ved BAT-pads. Oplad.
-4. **Tjek 12V fra boosten**: mål ved pumpe-terminaler når D10 er HIGH. Skal være 12V ±0.5V. 0V: tjek switch A (D10 HIGH → 2N7002 leder → P-FET gate trukket lav). Hvis D10 er 0V: software-bug i `pump.cpp`.
+4. **Tjek 12V fra boosten**: mål ved pumpe-terminaler når GPIO22 er HIGH. Skal være 12V ±0.5V. 0V: tjek switch A (GPIO22 HIGH → 2N7002 leder → P-FET gate trukket lav). Hvis GPIO22 er 0V: software-bug i `pump.cpp`.
 5. **Tjek slange**: er der knæk på slangen? Er pumpe-rotoren blokeret?
 
 ## HomeKit viser ikke device
 
 1. **Thread Border Router aktiv?**: HomePod mini / Apple TV 4K / iPad Pro M-serie. Tjek i Home-app → Settings → "Thread Network".
-2. **Distance til border router**: ESP32-C6 Thread radio rækker ~10m gennem vægge. Flyt tættere ved første pairing.
+2. **Distance til border router**: ESP32-H2's Thread-radio rækker ~10m gennem vægge. Flyt tættere ved første pairing.
 3. **Reset device**: hold manuel-knap nede i 10 sek ved boot → factory reset, åbner pairing-mode igen.
 4. **Tjek log**: serial monitor skal vise `Matter device ready, QR code: ...`. Hvis ingen QR: ESP-Matter SDK init fejler.
 

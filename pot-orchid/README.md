@@ -17,7 +17,7 @@ automatisk. Hele tårnet står skjult i en pyntepotte.
    │  RING     │ ~~│~~ skål-kant ~~~~ │~~ │          │  ← soak-loft
    │ ~~~~~~~~  │  S K Å L (konisk)    │   │ ~~~~~~~~ │
    ╞═══════════╧══════════════════════╧═══╧══════════╡  ← tank-gulv (massivt)
-   │  BAY: 2× 18650, pumpe, XIAO, H-bro, boost       │
+   │  BAY: 2× 18650, pumpe, ESP32-H2, H-bro, boost   │
    └─────────────────────────────────────────────────┘
 ```
 

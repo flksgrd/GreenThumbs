@@ -6,7 +6,7 @@ anderledes. Pos-numre henviser til pot/-BOM'en.
 
 ## Samme som pot/
 
-XIAO ESP32-C6 (1), silikoneslange (3), flyback-diode (5), USB-C-lader (14),
+ESP32-H2-Zero (1), silikoneslange (3), flyback-diode (5), USB-C-lader (14),
 knap (16), JST-kit (17), stripboard (18), silikone-ledning (19), M3-inserts/
 -bolte (20, 21), PETG (24), AHT20 (27), buzzer (28), USB-C-forlænger (31 —
 0,3m er nok), PLA til testprint (33), hele batteridelen (36-43 + 47 — TP4056 ved 580 mA, dog kun ét
@@ -17,7 +17,7 @@ switch-kredsløb — se nedenfor), Qi-modtager + lader + støvprop (44-46).
 | pot/-pos | pot/ | Orkide | Hvorfor |
 |---|---|---|---|
 | 2 | Kamoer KXF-DC (37 ml/min) | **Kamoer NKP-DC-S10B** — børstet DC, 12V 0,3A, ≥70 ml/min, 67,5×54,5×41mm (forhandler-spec 2026-10-26) | Fyld/dræn ~5,4 min. Børstet DC → vendbar via H-bro ✓ |
-| 6 | 10kΩ pulldown | Samme, på D8 (switch A) | Boost-switchen sidder på D8 i orkiden; D10 er H-bro IN1 |
+| 6 | 10kΩ pulldown | Samme (switch A, GPIO22) | Begge versioner har boost-switchen på GPIO22 |
 | 9 | 1 float switch | **2 mini-floats** (lodret, M8-stamme) | Lager lavt + lager fuldt (refill-bip). Beslag i tank.scad: Ø8,5 hul |
 | 3 | Silikoneslange 4×6mm | **3×5mm** + lige 3mm-slangesamlere | NKP har ingen studs — pumpeslangen (ID 3 × OD 5) forlænges |
 | 24 | PETG 2 kg | **1 kg opak PETG** | Tank ~373g + låg ~58g + bay ~155g + ladebase ~158g ≈ 750g (massiv volumen) |
@@ -41,7 +41,7 @@ switch-kredsløb — se nedenfor), Qi-modtager + lader + støvprop (44-46).
 
 | Del | Spec | Est. pris | Note |
 |---|---|---|---|
-| H-bro | DRV8871-breakout (Adafruit 3190 el. lign., 6,5-45V, 3,6A) | ~60 DKK | Pumpen skal kunne køre baglæns (dræn). IN1 = D10, IN2 = D1 |
+| H-bro | DRV8871-breakout (Adafruit 3190 el. lign., 6,5-45V, 3,6A) | ~60 DKK | Pumpen skal kunne køre baglæns (dræn). IN1 = GPIO10, IN2 = GPIO11 |
 | Berøringsfri niveausensor | XKC-Y25-NPN (5-24V, NPN-udgang) | ~40 DKK | "Skål tom": limes op under skålens sump i bay'en, måler gennem tank-gulvet. Fødes fra boostens 12V. VERIFICÉR: udgangens polaritet og at den ser gennem 4mm PETG |
 | Orkide-bark | Fin/medium fyrrebark ~2 L | ~40 DKK | Forbrugsvare; skiftes hvert ~2. år |
 | Sump-si | Rustfrit net / lille akvarie-si til 3×5mm-slange | ~15 DKK | Holder bark-smuld ude af pumpen |
@@ -50,18 +50,20 @@ switch-kredsløb — se nedenfor), Qi-modtager + lader + støvprop (44-46).
 
 ## Pin-allokering (orkide)
 
-| Pin | Funktion |
+ESP32-H2 (ADR 014) — samme på ESP32-H2-Zero og MINI-1-modulet:
+
+| GPIO | Funktion |
 |---|---|
-| D0 | Batteri-ADC (2× 200kΩ) |
-| D1 | H-bro IN2 (dræn) |
-| D2 | Buzzer |
-| D3 | XKC "skål tom" (NPN, intern pull-up) |
-| D4 / D5 | I2C — AHT20 |
-| D6 | Float lav |
-| D7 | Float fuld |
-| D8 | Switch A — boost 12V |
-| D9 | Knap |
-| D10 | H-bro IN1 (fyld) |
+| 0 | Buzzer |
+| 1 | XKC "skål tom" (NPN, intern pull-up) |
+| 2 | Float lav |
+| 3 | Batteri-ADC (2× 200kΩ, ADC1_CH2) |
+| 4 / 5 | I2C — AHT20 |
+| 10 | H-bro IN1 (fyld) |
+| 11 | H-bro IN2 (dræn) |
+| 12 | Knap (LP-pin, vækker fra sleep) |
+| 22 | Switch A — boost 12V |
+| 23 | Float fuld |
 
 ## Åbne punkter før bestilling
 - NKP-DC-S10B: bekræft børstet DC-variant, strømforbrug og fysiske mål

@@ -16,7 +16,7 @@
 //          │pumpe │          liggende; plast-hovedet mod spolen, motoren mod -y
 //          └──────┘
 //          -y   (nøgle-ribbe på ydersiden ved 270°)
-// Elektronik (XIAO, TP4056, boost, DRV8871) på en hylde ≥10mm over spolen.
+// Elektronik (ESP32-H2-Zero, TP4056, boost, DRV8871) på en hylde ≥10mm over spolen.
 // XKC-sensoren hænger under skålens sump ved 180°.
 //
 // TODO: pumpe-vugge (NKP-flangens huller ukendte → spændebånd om motoren)

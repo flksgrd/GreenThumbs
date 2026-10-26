@@ -63,11 +63,11 @@ Vi har adgang til `circuit-synth` (Python → KiCad skematik/netlist/PCB). Det m
 |---|---|
 | Form | Rund, Ø ≈ 170mm minus clearance (passer ebase indvendigt) |
 | Lag | 2-lags (rigeligt til vores lavfrekvente design) |
-| MCU | XIAO ESP32-C6 castellated direct-mount (lodde-pads på PCB) |
+| MCU | ESP32-H2-MINI-1-H4S-modul (ADR 014) + 32 kHz-krystal på GPIO13/14, USB-C til GPIO26/27 |
 | Konnektorer | JST-XH langs kanten (soil, water strip, float, HX711, AHT20, buzzer, pumpe) |
 | Power | 1S Li-ion (ADR 013): beskyttelses-IC, boost 12V og to P-FET-switches on-board; Qi-modtager-input + USB-C via Schottky-OR |
 | Mounting | 4× M3-huller matchende electronics_base bosses |
-| Antenne-hensyn | XIAO's antenne skal vende mod kammerets kant, fri for kobber-plane under |
+| Antenne-hensyn | Modulets PCB-antenne ved printets kant mod tårnets væg, keep-out uden kobber, væk fra pumpe og batteri |
 
 ## Produktion
 

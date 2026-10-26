@@ -55,7 +55,7 @@ Deler MCU + firmware-platform med plantekrukken.
 
 ## Tech stack
 
-- **MCU**: Seeed Studio XIAO ESP32-C6 (Thread + WiFi + BLE + Matter)
+- **MCU**: ESP32-H2 (Thread + BLE + Matter, lavt strømforbrug) — Waveshare ESP32-H2-Zero til prototypen, ESP32-H2-MINI-1-modul på eget PCB ([ADR 014](docs/decisions/014-esp32-h2.md))
 - **Firmware**: PlatformIO + ESP-IDF + ESP-Matter SDK (C/C++)
 - **CAD**: OpenSCAD (parametrisk, git-friendly)
 - **3D print**: PETG til vand-kontakt dele, Prusa XL

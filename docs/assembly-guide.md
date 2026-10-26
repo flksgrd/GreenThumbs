@@ -27,7 +27,7 @@ brede refill-kanal, så cuppen kan kun sænkes ned i én rotation:
 
 ## Samling (rækkefølge)
 
-1. **Electronics base**: montér XIAO, switch-board, boost og batteriet (2× 18650 i vuggen på lid'et, ADR 013). Qi-modtagerens spole limes i lommen i lid'et (ferrit-siden opad). Pumpen skrues på lid'ets bosses (Kamoer på 46mm-hullerne / BP7 på 24mm-kvadratet). Skru lid på med 4× M3.
+1. **Electronics base**: montér ESP32-H2-Zero (RGB-LED aflodet), switch-board, boost og batteriet (2× 18650 i vuggen på lid'et, ADR 013). Qi-modtagerens spole limes i lommen i lid'et (ferrit-siden opad). Pumpen skrues på lid'ets bosses (Kamoer på 46mm-hullerne / BP7 på 24mm-kvadratet). Skru lid på med 4× M3.
 2. **Glands**: USB-C-forlængerens han-stik ind gennem Ø14-hullet ved 0° (tætnes med split-grommet/silikone), M12 ved 90° (sensor-kabler), M16 ved 180° (slanger).
 3. **Reservoir** placeres oven på ebase med EPDM/O-ring i gasket-grooven.
 4. **Float switch** klipses i ringen ved 90°; kablet føres op ad kabel-kanalen.

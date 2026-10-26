@@ -10,7 +10,7 @@
 //   │  RING     │ ~~│~~ soak-niveau ~~~│~~ │          │  ← skålens kant =
 //   │ ~~~~~~~~  │ S K Å L (konisk)     │   │ ~~~~~~~~ │    fysisk soak-loft
 //   ╞═══════════╧══════════════════════╧═══╧══════════╡  ← tank-gulv
-//   │  BAY: 2× 18650, pumpe, XIAO, H-bro, boost       │
+//   │  BAY: 2× 18650, pumpe, ESP32-H2, H-bro, boost   │
 //   └─────────────────────────────────────────────────┘
 //
 // Soak: pumpen fylder skålen fra ringen, til vandet løber over skålens kant
