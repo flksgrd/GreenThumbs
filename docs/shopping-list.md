@@ -8,10 +8,12 @@ vejledende BOM-estimater i DKK, uden fragt og told. Detaljer:
 
 | | Orkide | pot/ (Monstera) |
 |---|---:|---:|
-| Bestil | **1396** | **1245** |
+| Bestil | **1456** | **1200** |
 | Kun til stripboard-prototypen | 162 | 42 |
-| **I alt** | **1558** | **1287** |
+| **I alt** | **1618** | **1242** |
 | Valgfrit (ikke med) | 40 | 220 |
+
+Plus én gang til begge: **HomePod mini ~800 DKK** (afsnit 0).
 
 Haves allerede: 5V USB-C-lader, Apple MagSafe 25W (orkidens ladebase er tegnet til den).
 Forudsat i skuffen: kabelstrips ≤3,6mm (2 til pumpe-vuggen), lim / tynd dobbeltklæbende tape.
@@ -21,6 +23,19 @@ færdigt SMD-PCB loddes de i SMD eller følger med samleordren (fx JLCPCB), så
 sektionen er kun nødvendig, hvis prototypen bygges på stripboard først.
 Modulerne (boost, lader, H-bro, Qi) kan sidde på headers på et færdigt PCB; MCU'en
 bliver dér et ESP32-H2-MINI-1-H4S-modul (samme chip som Zero-boardet, ADR 014).
+
+---
+
+## 0. Fælles — Apple home hub (én gang)
+
+Apple Home kræver en home hub (HomePod mini, HomePod eller Apple TV) for
+at tilføje Matter-enheder; HomePod mini er også Thread border router
+([Apple](https://support.apple.com/102557)). Tredjeparts border routere
+(fx GL.iNet GL-S20) kan ikke være home hub.
+
+| ✓ | Del | Antal | Stk. | I alt | Butik | Note |
+|---|---|---:|---:|---:|---|---|
+| [ ] | Apple HomePod mini | 1 | 800 | 800 | apple.com/dk / forhandlere | Pris = skøn. En "HomePod mini 2" er rygtet til oktober 2026 — tjek før køb |
 
 ---
 
@@ -41,16 +56,16 @@ bestil først) · akvariebutik (sump-si) · byggemarked (bolte)
 
 ### Moduler og MCU
 
-| ✓   | Del                                               | Antal | Stk. |   I alt | Butik                   | Note                                                 |
-| --- | ------------------------------------------------- | ----: | ---: | ------: | ----------------------- | ---------------------------------------------------- |
-| [ ] | Waveshare ESP32-H2-Zero (4 MB, ADR 014)           |     2 |   45 |      90 | Waveshare / The Pi Hut  | 1 + 1 reserve. Pris = skøn. Aflod RGB-LED'en         |
-| [ ] | Pololu U3V40F12 boost 12V (#4016)                 |     1 |  110 |     110 | The Pi Hut / RobotShop  |                                                      |
-| [ ] | TP4056 USB-C-modul m. beskyttelse (DW01A+FS8205A) |     5 |    8 |      40 | AliExpress              | Dækker også pot/ + reserver. Tjek 5,1kΩ CC-modstande |
-| [ ] | Modstand 2,0kΩ SMD 1% (TP4056 R_PROG), pakke      |     1 |    5 |       5 | LCSC / Conrad           | Tjek R3's størrelse (0603/0805)                      |
-| [ ] | Qi-modtager 5V ≥600 mA (spole ~46×36mm)           |     1 |   70 |      70 | The Pi Hut / AliExpress |                                                      |
-| [ ] | DRV8871 H-bro-breakout (Adafruit 3190)            |     1 |   60 |      60 | The Pi Hut / Digi-Key   |                                                      |
-| [ ] | AHT20-breakout (I2C 0x38)                         |     1 |   25 |      25 | AliExpress / Adafruit   |                                                      |
-|     | **Sum**                                           |       |      | **400** |                         |                                                      |
+| ✓   | Del                                               | Antal | Stk. |   I alt | Butik                   | Note                                                 | **Fra Bruger**                                                                                                                                       |
+| --- | ------------------------------------------------- | ----: | ---: | ------: | ----------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [ ] | ESP32-H2-Zero 3-pak (Ulegqin — Waveshare-kopi) | 1 | 150 | 150 | AliExpress / Amazon | ≈ €20; dækker pot/ + reserve. Tjek ESP32-H2FH4S (4 MB) + Waveshare-pinout. Aflod RGB-LED | Fundet, brand Ulegqin? 3 for 20 Euro |
+| [ ] | Pololu U3V40F12 boost 12V (#4016) | 1 | 110 | 110 | Eckstein / Botland / TME / EXP-Tech | Pololus EU-forhandlere; ~$10 hos Pololu | Ikke fundet endnu |
+| [ ] | TP4056 USB-C-modul m. beskyttelse (DW01A+FS8205A) | 5 | 8 | 40 | AliExpress | Dækker pot/ + reserver. CC: se efter to modstande mærket 512/5K1 ved USB-C | Kan ikke finde hvor jeg skal tjekke CC-modstande, giver det mening at opgradere til BQ2606 (4.5-12V, 3A) eller en opgraderet TC4056 med (4-8V, 1.2A) |
+| [ ] | SMD-modstandssæt (skal indeholde 2,0kΩ til R_PROG) | 1 | 5 | 5 | AliExpress / LCSC | Tjek at 2,0k (202/2001) er med og pad-størrelsen på R3 | Fundet, et sæt med 1500 SMD-res med 60 forskellige værdier, klart overkill men så har jeg til fremtidige projekter også |
+| [ ] | Qi-modtager 5V 1A (spole 40×29mm) | 1 | 70 | 70 | AliExpress | Spolen i bay-lommen (nu 41×30); modul-printet på elektronik-hylden | Fundet, 5V 1A, chip er 33x16x1.1mm og spole er 40x29x0.3mm |
+| [ ] | DRV8871 H-bro-breakout, ÉN kanal, 6,5-45V | 1 | 60 | 60 | AliExpress / Adafruit | OBS: "1,5A 2-kanal" er typisk DRV8833/MX1508 (max ~10V) — virker ikke ved 12V | Fundet, 1.5A 2 Channel H-Bridge PWM |
+| [ ] | AHT20-breakout (I2C 0x38) | 1 | 25 | 25 | AliExpress / Adafruit | Evt. SHT41 i stedet — se svar | Fundet, 15.11x10.41mm, Hvad er forskellen på denne og så f.eks. SHT45/SHT41? |
+|     | **Sum**                                           |       |      | **460** |                         |                                                      |                                                                                                                                                      |
 
 ### Pumpe og sensorer
 
@@ -134,12 +149,12 @@ AliExpress · Berrybase/Eckstein (Grove) · Conrad (glands, kabel) · lokalt
 
 | ✓ | Del | Antal | Stk. | I alt | Butik | Note |
 |---|---|---:|---:|---:|---|---|
-| [ ] | Waveshare ESP32-H2-Zero (4 MB) | 1 | 45 | 45 | Waveshare / The Pi Hut | Eller brug orkide-ordrens reserve |
+| [ ] | ESP32-H2-Zero | 1 | — | — | — | fra orkide-ordren (3-pak) |
 | [ ] | Pololu U3V40F12 boost 12V (#4016) | 1 | 110 | 110 | The Pi Hut / RobotShop |  |
 | [ ] | TP4056-modul + 2,0kΩ R_PROG | 1 | — | — | — | fra orkide-ordren |
 | [ ] | Qi-modtager 5V ≥600 mA | 1 | 70 | 70 | The Pi Hut / AliExpress | Kun uden load cell — ellers spring over |
 | [ ] | AHT20-breakout | 1 | 25 | 25 | AliExpress / Adafruit |  |
-| | **Sum** | | | **250** | | |
+| | **Sum** | | | **205** | | |
 
 ### Pumpe og sensorer
 

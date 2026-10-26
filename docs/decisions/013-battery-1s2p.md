@@ -117,11 +117,11 @@ tårnet på en lader.
     går udvendigt ned til et Ø14-hul i ebase (split-grommet).
   - Orkide: egen tør skakt i tanken ved 60°, op gennem ring-låget. Et stik
     der hang ned under låget ville nå vandet (kun ~15mm luft over max).
-- **Qi i bunden:** modtager-spole (~46×36mm) i en lomme med 1,2mm gulv;
+- **Qi i bunden:** modtager-spole (40×29mm, fundet modul 5V 1A) i en lomme med 1,2mm gulv;
   output via Schottky (1N5817) til TP4056 IN+, så begge kilder kan sidde
   samtidig.
   - Orkide: i bay-fodens gulv, off-center mod +y (pumpen fylder midten af
-    den Ø152 fod, ADR 012) — ≥13mm til pumpe og celler. Ladebasen har en
+    den Ø152 fod, ADR 012) — ≥17mm til pumpe og celler. Ladebasen har en
     nøgle, så spolen altid står over laderen.
   - pot/: på -y i ebase-lid'et (pumpen sidder i midten) → laderen skal
     placeres under den side. Passer i M/L/CUSTOM, ikke S. Kan ikke bruges

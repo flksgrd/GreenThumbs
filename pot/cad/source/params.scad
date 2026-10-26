@@ -206,8 +206,8 @@ usbc_pass_d      = 14;            // ebase-hul: han-stikkets overmold skal igenn
 // Qi: modtager-spolen ligger i en lomme i lid'et (tyndt gulv under), på -y
 // (pumpen sidder i centrum, batteriet på +y). Kræver at tårnet står direkte
 // på laderen → ikke muligt med load cell-platformen.
-qi_w        = 48;                 // keep-out til spole ~46×36mm + 1mm
-qi_l        = 38;
+qi_w        = 41;                 // lomme til spolen 40×29mm (fundet modul) + 1mm
+qi_l        = 30;
 qi_floor_t  = 1.2;                // rækkevidde ~2-8mm
 qi_center_y = -40;
 qi_far_y    = -qi_center_y + qi_l / 2;

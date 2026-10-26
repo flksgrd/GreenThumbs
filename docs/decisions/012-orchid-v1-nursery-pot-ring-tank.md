@@ -44,7 +44,7 @@ potten til både lager og elektronik.
   bund; en 45°-skulder går fri af afsatsen. Stod tårnet på afsatsen, ville
   pottens top stikke 3mm op over kanten. Foden centrerer også tårnet.
 - **Layout i foden:** pumpen i midten, en 18650 på hver side, Qi-spolen
-  off-center mod +y (≥13mm til metal). Med spolen i midten ville pumpen
+  off-center mod +y (≥17mm til metal). Med spolen i midten ville pumpen
   række til r≈100mm — foden har 73,5 indvendigt. Derfor har ladebasen en
   nøgle, der låser tårnets rotation.
 - **Selvnivellerende soak:** skålens kant (68mm over pottens bund ≈ 62% af

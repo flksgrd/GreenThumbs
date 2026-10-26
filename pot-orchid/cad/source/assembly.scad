@@ -107,8 +107,8 @@ module stack(explode = 0, soaking = false, sec = false, ghost = false) {
                        z_lid + lid_t - 25])
                 cube([usbc_body_t, usbc_body_w, 25]);
         // Qi-modtager i bay-gulvets lomme
-        color([0.6, 0.3, 0.8]) translate([-23, qi_cy - 18, qi_floor_t])
-            cube([46, 36, 1.5]);
+        color([0.6, 0.3, 0.8]) translate([-20, qi_cy - 14.5, qi_floor_t])
+            cube([40, 29, 0.5]);
         cut(sec) bay_contents();
     }
     if (ghost) color(cachecol) cut(sec) cachepot();

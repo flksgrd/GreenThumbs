@@ -169,8 +169,8 @@ cell_x   = pump_w / 2 + 2.5 + cell_d / 2 + 0.3;
 cell_y0  = -52;                 // cellernes nederste ende
 
 // Qi-modtager (ADR 013): lomme i gulvet, off-center → ladebasen har en nøgle
-qi_w       = 48;                // keep-out til spole ~46×36mm + 1mm
-qi_l       = 38;
+qi_w       = 41;                // lomme til spolen 40×29mm (fundet modul) + 1mm
+qi_l       = 30;
 qi_cy      = 46;
 qi_floor_t = 1.2;               // tyndt gulv under spolen (rækkevidde ~2-8mm)
 key_angle  = 270;               // nøgle-ribbe på foden (passer i ladebasen)
