@@ -16,10 +16,11 @@ switch-kredsløb — se nedenfor), Qi-modtager + lader + støvprop (44-46).
 
 | pot/-pos | pot/ | Orkide | Hvorfor |
 |---|---|---|---|
-| 2 | Kamoer KXF-DC (37 ml/min) | **Kamoer NKP-DC-S10B** (12V, 70-80 ml/min, ~5W — forhandler-spec) | Fyld/dræn ~5 min i stedet for ~10. VERIFICÉR: børstet DC (vendbar), mål (~67×55×41mm) til pumpe-mount |
+| 2 | Kamoer KXF-DC (37 ml/min) | **Kamoer NKP-DC-S10B** — børstet DC, 12V 0,3A, ≥70 ml/min, 67,5×54,5×41mm (forhandler-spec 2026-10-26) | Fyld/dræn ~5,4 min. Børstet DC → vendbar via H-bro ✓ |
 | 6 | 10kΩ pulldown | Samme, på D8 (switch A) | Boost-switchen sidder på D8 i orkiden; D10 er H-bro IN1 |
 | 9 | 1 float switch | **2 mini-floats** (lodret, M8-stamme) | Lager lavt + lager fuldt (refill-bip). Beslag i tank.scad: Ø8,5 hul |
-| 24 | PETG 2 kg | **1 kg opak PETG** | Tank ~373g + låg ~58g + bay ~171g ≈ 600g (massiv volumen) |
+| 3 | Silikoneslange 4×6mm | **3×5mm** + lige 3mm-slangesamlere | NKP har ingen studs — pumpeslangen (ID 3 × OD 5) forlænges |
+| 24 | PETG 2 kg | **1 kg opak PETG** | Tank ~373g + låg ~58g + bay ~155g + ladebase ~158g ≈ 750g (massiv volumen) |
 | 39-42 | 2 switches (pumpe + sensorer) | **1 switch** (boost) | Ingen sensor-skinne: AHT20 er eneste I2C-enhed (µA i hvile), XKC fødes fra boostens 12V |
 
 ## Udgår
@@ -43,7 +44,7 @@ switch-kredsløb — se nedenfor), Qi-modtager + lader + støvprop (44-46).
 | H-bro | DRV8871-breakout (Adafruit 3190 el. lign., 6,5-45V, 3,6A) | ~60 DKK | Pumpen skal kunne køre baglæns (dræn). IN1 = D10, IN2 = D1 |
 | Berøringsfri niveausensor | XKC-Y25-NPN (5-24V, NPN-udgang) | ~40 DKK | "Skål tom": limes op under skålens sump i bay'en, måler gennem tank-gulvet. Fødes fra boostens 12V. VERIFICÉR: udgangens polaritet og at den ser gennem 4mm PETG |
 | Orkide-bark | Fin/medium fyrrebark ~2 L | ~40 DKK | Forbrugsvare; skiftes hvert ~2. år |
-| Sump-si | Rustfrit net / lille akvarie-si til Ø6 slange | ~15 DKK | Holder bark-smuld ude af pumpen |
+| Sump-si | Rustfrit net / lille akvarie-si til 3×5mm-slange | ~15 DKK | Holder bark-smuld ude af pumpen |
 | Stænk-hætte | Printes (TPU/PETG) | — | TODO i CAD: skaktens top |
 | Ladebase | Printes (PETG/PLA), ~100g ved 15% infill | — | `charging_base.scad` — passer til Apple MagSafe 25W (pos 45) |
 

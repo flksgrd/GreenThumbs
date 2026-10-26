@@ -14,7 +14,7 @@
 //
 // Farver: opak PETG = grå, vand = cyan, dyrkningspotte = grøn,
 //         pyntepotte = svag terrakotta-skygge, sensor = orange,
-//         USB-C-stik = sort, Qi-spole = lilla
+//         USB-C-stik = sort, Qi-spole = lilla, pumpe = blå/grå, celler = grøn
 // =============================================================================
 
 include <params.scad>
@@ -50,14 +50,18 @@ module nursery_pot() {
     }
 }
 
-// Pyntepotte: vandret bund, indvendig Ø210, ydre højde 200 (anslået)
+// Pyntepotte (målt): udhulet bund Ø160×28, afsats, Ø200 → Ø210 ved kanten.
+// z = 0 er bunden af fordybningen = tårnets fod.
 module cachepot() {
-    translate([0, 0, -(200 - cachepot_inner_h)])
-        difference() {
-            cylinder(d = cachepot_inner_d + 10, h = 200);
-            translate([0, 0, 200 - cachepot_inner_h])
-                cylinder(d = cachepot_inner_d, h = 201);
-        }
+    difference() {
+        translate([0, 0, -6]) cylinder(d = cachepot_inner_d + 12, h = cachepot_inner_h + 6);
+        cachepot_inside();
+    }
+}
+module cachepot_inside() {
+    translate([0, 0, -0.01]) cylinder(d = cachepot_recess_d, h = cachepot_recess_h + 0.02);
+    translate([0, 0, cachepot_recess_h])
+        cylinder(d1 = cachepot_ledge_d, d2 = cachepot_inner_d, h = cachepot_ledge_z + 1);
 }
 
 ring_area          = ring_capacity_ml * 1000 / (ring_overflow_z - tank_floor_t);
@@ -102,8 +106,9 @@ module stack(explode = 0, soaking = false, sec = false, ghost = false) {
                        z_lid + lid_t - 25])
                 cube([usbc_body_t, usbc_body_w, 25]);
         // Qi-modtager i bay-gulvets lomme
-        color([0.6, 0.3, 0.8]) translate([-23, -18, qi_floor_t])
+        color([0.6, 0.3, 0.8]) translate([-23, qi_cy - 18, qi_floor_t])
             cube([46, 36, 1.5]);
+        cut(sec) bay_contents();
     }
     if (ghost) color(cachecol) cut(sec) cachepot();
 }
@@ -122,9 +127,23 @@ else if (view == "charging") {
 else if (view == "base") { color(basecol) charging_base(); magsafe(); }
 else echo("Ukendt view — brug iso|section|soaking|top|exploded|charging|base");
 
+// Pumpe (hoved blå, motor grå) og 18650-celler — som keep-out
+module bay_contents() {
+    // Plast-hovedet mod Qi-spolen (+y), motoren (metal + magneter) væk fra den
+    translate([0, pump_cy, bay_floor_t]) {
+        color([0.2, 0.4, 0.85]) translate([-pump_w / 2, pump_l / 2 - 27, 0])
+            cube([pump_w, 27, pump_h]);
+        color([0.7, 0.7, 0.72]) translate([0, -pump_l / 2, pump_h / 2])
+            rotate([-90, 0, 0]) cylinder(d = 28, h = pump_l - 27);
+    }
+    for (sx = [-1, 1])
+        color([0.2, 0.6, 0.35]) translate([sx * cell_x, cell_y0, bay_floor_t + cell_d / 2 + 0.5])
+            rotate([-90, 0, 0]) cylinder(d = cell_d, h = cell_l);
+}
+
 // MagSafe-lader (hvid flade, aluminium-side) + kabel ud i kanalen
 module magsafe() {
-    translate([0, 0, base_puck_floor]) {
+    translate([0, qi_cy, base_puck_floor]) {
         color([0.75, 0.76, 0.78]) cylinder(d = magsafe_d, h = magsafe_t - 0.6, $fn = 120);
         color([0.97, 0.97, 0.97]) translate([0, 0, magsafe_t - 0.6])
             cylinder(d = magsafe_d, h = 0.6, $fn = 120);

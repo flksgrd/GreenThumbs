@@ -17,14 +17,14 @@ holder de åbne punkter.
 | Spørgsmål | Valg |
 |---|---|
 | Potte | Planten bliver i sin 12cm dyrkningspotte |
-| Placering | I pyntepotte (indv. Ø210, maks. potte Ø190) → opak PETG |
+| Placering | I pyntepotte (målt: Ø210, afsats 160mm nede, udhulet bund Ø160×28) → opak PETG; tårnets fod står i den udhulede bund |
 | Soak-dybde | Mekanisk: skålens kant (68mm over pottens bund) |
 | Lager | Ring rundt om skålen (~880 ml) |
-| Pumpe | Kamoer NKP-DC-S10B, vendbar via H-bro (~5 min hver vej) |
+| Pumpe | Kamoer NKP-DC-S10B: børstet DC (vendbar via H-bro), 12V 0,3A, ≥70 ml/min (~5,4 min hver vej), slange 3×5mm |
 | Trigger | Interval (7 dage) justeret med VPD |
 | Sensorer | XKC berøringsfri under skålen, 2 mini-floats i ringen, AHT20 |
 | Strøm | 1S2P 18650 (ADR 013) |
-| Ladning | USB-C i toppen (skakt ved 60°) + Qi midt i bunden |
+| Ladning | USB-C i toppen (skakt ved 60°) + Qi i fodens gulv (off-center, nøgle i ladebasen) |
 | Lys til rødderne / grow-light | Nej — vokselys kræver konstant strøm (v2 med kabel, hvis ønsket) |
 
 ## Kildegrundlag
@@ -33,7 +33,7 @@ holder de åbne punkter.
   ([AOS novice](https://secure.aos.org/media/Content-Images/PDFs/Phalaenopsis_novice.pdf)).
 - Soak-tid: kilderne spænder fra max 5 min til ~20 min → `soak_hold_s` er en
   profil-parameter (default 300s). Rødderne er også våde under fyld og dræn
-  (~5 min hver vej), så samlet ~15 min.
+  (~5,4 min hver vej), så samlet ~16 min.
 - Fuld drænage er afgørende; nedbrudt bark holder for meget vand →
   rodråd ([AOS](https://secure.aos.org/media/Content-Images/PDFs/GrowingtheBestPhalaenopsisPart_2.pdf)).
   Skift bark ca. hvert 2. år.
@@ -47,19 +47,26 @@ holder de åbne punkter.
 ### Mål før print
 - [ ] **Dyrkningspotten:** top-Ø, bund-Ø, højde (`pot_*` i params.scad —
       nu antaget 120/90/110). Skålen følger pottens taper med 4mm spalte.
-- [ ] **Pyntepotten:** indvendig højde og bundens bue (nu anslået 185mm og
-      r15). Bay'ens 45°-fas skal gå fri af buen.
+- [x] **Pyntepotten** (2026-10-26, målebånd ±~3mm): 160mm til afsatsen,
+      afsats 20mm, udhulet bund Ø160 × 28mm. Foden (Ø152 × 30) har 4mm
+      frigang pr. side; skulderen går ≥2mm fri af afsatsen.
 
 ### Mekanik
-- [ ] **Pumpe-mount i bay'en:** kræver NKP'ens faktiske mål (forhandler:
-      ~67×55×41mm). `bay_h = 47` er sat efter den.
+- [ ] **Pumpe-vugge i bay'en:** NKP-mål bekræftet (67,5×54,5×41mm), men
+      flangens huller er ukendte → vugge med spændebånd om motoren. Plast-
+      hovedet vender mod Qi-spolen, motoren (metal/magneter) væk fra den.
+- [x] **Pumpeslanger:** NKP har ingen studs — pumpeslangen (silikone ID 3 ×
+      OD 5mm) forlænges med lige 3mm-slangesamlere til 3×5-slanger.
 - [x] **Ladning (ADR 013, besluttet 2026-10-21):** USB-C-hun-ende i toppen
       af en tør skakt ved 60° (flugter med ring-låget) + Qi-spole i en lomme
       midt i bay-gulvet. Pogo fravalgt (blottede kontakter i en våd pyntepotte).
-- [x] **Ladebase** (`charging_base.scad`, 2026-10-21): Ø189 × 15mm, konisk
-      sæde til bay'ens 45°-fas (±0,5mm), lomme til Apple MagSafe 25W (A2580),
-      laderen stikker 0,1mm op så tårnet hviler på den. Kabel-kanal radialt
-      ud, åben nedad under kanten. ~265g massiv (~100g ved 15% infill, skøn).
+- [x] **Ladebase** (`charging_base.scad`, opdateret 2026-10-26): bakke
+      Ø161 × 14mm, der centrerer foden (±0,5mm); slids til nøgle-ribben ved
+      270° låser rotationen, så Qi-spolen (off-center) står over MagSafe-
+      laderen. Laderen stikker 0,1mm op. ~158g massiv.
+- [ ] **Pyt i den udhulede bund:** ring-overløb løber ned omkring foden.
+      Foden har ingen huller, men Qi-gulvet er kun 1,2mm — print tæt
+      (PETG, nok perimetre) og test med vand.
 - [ ] **MagSafe-mål:** Ø55,5 × 4,45mm er fra en teardown — mål din egen og
       kablets aflastning (`magsafe_*` i params.scad) før print.
 - [ ] **Test Qi-modtager på MagSafe:** MagSafe lader Qi-enheder (uden
@@ -72,7 +79,7 @@ holder de åbne punkter.
 - [ ] **Bark der flyder:** frisk bark kan løfte sig ved fyld nedefra.
       Dyrkningspotten holder barken; overvej et let net i toppen hvis det sker.
 - [ ] **Overløb fra ringen** drypper ned i pyntepotten (kun ved over-
-      fyldning). Porte i bay'en skal sidde over en evt. pyt.
+      fyldning) og samles i den udhulede bund (~560 ml før afsatsen).
 - [ ] **XKC-sensoren:** test at den kan se vand gennem 4mm PETG + 1,5mm
       sump (datablad: op til ~20mm ikke-metal). Limes eller klipses op.
 

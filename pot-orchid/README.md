@@ -30,15 +30,15 @@ automatisk. Hele tårnet står skjult i en pyntepotte.
 
 | Beregnet (12cm Phalaenopsis) | |
 |---|---|
-| Tårn | Ø180 × 133mm (+ potten → top i 163mm) |
-| Pyntepotte | indv. Ø210 / maks. potte Ø190 / ~185mm indv. højde |
+| Tårn | Ø180 × 133mm med fod Ø152 forneden (+ potten → top i 163mm) |
+| Pyntepotte (målt) | Ø210, afsats 160mm nede, udhulet bund Ø160×28 → pottens top 25mm under kanten |
 | Soak-dybde | 68mm over pottens bund (~62% af potten) |
 | Soak-volumen | ~376 ml |
 | Lager-ring | ~880 ml (~500 ml reserve ≈ 3-5 uger) |
-| Fyld / dræn | ~5 min hver vej (Kamoer NKP, ~75 ml/min) |
-| Strøm | 2× 18650 (1S2P), ~2,5-4 mdr. pr. opladning (estimat) |
+| Fyld / dræn | ~5,4 min hver vej (Kamoer NKP, ≥70 ml/min, 3,6W) |
+| Strøm | 2× 18650 (1S2P), ~3-5 mdr. pr. opladning (estimat) |
 | Ladning | USB-C i ring-låget, eller stil tårnet på ladebasen (MagSafe/Qi) — ~12-14 t |
-| Filament | ~600g opak PETG |
+| Filament | ~750g opak PETG massiv inkl. ladebase (mindre med infill) |
 
 Påfyldning: gennem hullet i ring-låget, eller løft planten og hæld i
 skålen — det løber over i ringen.

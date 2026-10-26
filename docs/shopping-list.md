@@ -8,9 +8,9 @@ vejledende BOM-estimater i DKK, uden fragt og told. Detaljer:
 
 | | Orkide | pot/ (Monstera) |
 |---|---:|---:|
-| Bestil | **1451** | **1250** |
+| Bestil | **1466** | **1280** |
 | Kun til stripboard-prototypen | 162 | 42 |
-| **I alt** | **1613** | **1292** |
+| **I alt** | **1628** | **1322** |
 | Valgfrit (ikke med) | 40 | 220 |
 
 Haves allerede: 5V USB-C-lader, Apple MagSafe 25W (orkidens ladebase er tegnet til den).
@@ -29,7 +29,8 @@ Nkon (celler) · 3djake (filament) · AliExpress (resten — 2-3 ugers levering,
 bestil først) · akvariebutik (sump-si) · byggemarked (bolte)
 
 **Før du bestiller:**
-- [ ] NKP-DC-S10B: børstet DC (kan vendes), mål ~67×55×41mm, slangestuds
+- [x] NKP-DC-S10B (bekræftet 2026-10-26): børstet DC → kan vendes, 67,5×54,5×41mm,
+      ingen studs → 3×5mm-slange + 3mm-samlere
 - [ ] TP4056-modulet: 5,1kΩ CC-modstande på USB-C
 - [ ] USB-C-forlængerens hun-ende ≤ 12,5×6,5×25mm (skaktens slids)
 - [ ] Floats: M8-gevind
@@ -38,26 +39,26 @@ bestil først) · akvariebutik (sump-si) · byggemarked (bolte)
 
 ### Moduler og MCU
 
-| ✓ | Del | Antal | Stk. | I alt | Butik | Note |
-|---|---|---:|---:|---:|---|---|
-| [ ] | Seeed XIAO ESP32-C6 (113991254) | 2 | 80 | 160 | The Pi Hut / Mouser | 1 + 1 reserve |
-| [ ] | Pololu U3V40F12 boost 12V (#4016) | 1 | 110 | 110 | The Pi Hut / RobotShop |  |
-| [ ] | TP4056 USB-C-modul m. beskyttelse (DW01A+FS8205A) | 5 | 8 | 40 | AliExpress | Dækker også pot/ + reserver. Tjek 5,1kΩ CC-modstande |
-| [ ] | Modstand 2,0kΩ SMD 1% (TP4056 R_PROG), pakke | 1 | 5 | 5 | LCSC / Conrad | Tjek R3's størrelse (0603/0805) |
-| [ ] | Qi-modtager 5V ≥600 mA (spole ~46×36mm) | 1 | 70 | 70 | The Pi Hut / AliExpress |  |
-| [ ] | DRV8871 H-bro-breakout (Adafruit 3190) | 1 | 60 | 60 | The Pi Hut / Digi-Key |  |
-| [ ] | AHT20-breakout (I2C 0x38) | 1 | 25 | 25 | AliExpress / Adafruit |  |
-| | **Sum** | | | **470** | | |
+| ✓   | Del                                               | Antal | Stk. |   I alt | Butik                   | Note                                                 |
+| --- | ------------------------------------------------- | ----: | ---: | ------: | ----------------------- | ---------------------------------------------------- |
+| [ ] | Seeed XIAO ESP32-C6 (113991254)                   |     2 |   80 |     160 | The Pi Hut / Mouser     | 1 + 1 reserve                                        |
+| [ ] | Pololu U3V40F12 boost 12V (#4016)                 |     1 |  110 |     110 | The Pi Hut / RobotShop  |                                                      |
+| [ ] | TP4056 USB-C-modul m. beskyttelse (DW01A+FS8205A) |     5 |    8 |      40 | AliExpress              | Dækker også pot/ + reserver. Tjek 5,1kΩ CC-modstande |
+| [ ] | Modstand 2,0kΩ SMD 1% (TP4056 R_PROG), pakke      |     1 |    5 |       5 | LCSC / Conrad           | Tjek R3's størrelse (0603/0805)                      |
+| [ ] | Qi-modtager 5V ≥600 mA (spole ~46×36mm)           |     1 |   70 |      70 | The Pi Hut / AliExpress |                                                      |
+| [ ] | DRV8871 H-bro-breakout (Adafruit 3190)            |     1 |   60 |      60 | The Pi Hut / Digi-Key   |                                                      |
+| [ ] | AHT20-breakout (I2C 0x38)                         |     1 |   25 |      25 | AliExpress / Adafruit   |                                                      |
+|     | **Sum**                                           |       |      | **470** |                         |                                                      |
 
 ### Pumpe og sensorer
 
-| ✓ | Del | Antal | Stk. | I alt | Butik | Note |
-|---|---|---:|---:|---:|---|---|
-| [ ] | Kamoer NKP-DC-S10B 12V peristaltisk, børstet DC | 1 | 200 | 200 | AliExpress / Kamoer | Pris = skøn. Tjek vendbar DC, mål og slangestuds |
-| [ ] | Mini-float switch, lodret, M8-gevind | 2 | 25 | 50 | AliExpress / Conrad | Beslagene har Ø8,5 hul |
-| [ ] | XKC-Y25-NPN berøringsfri niveausensor | 1 | 40 | 40 | AliExpress | Tjek udgangens polaritet |
-| [ ] | Passiv piezo-buzzer 12mm | 2 | 5 | 10 | AliExpress | 1 til pot/ |
-| | **Sum** | | | **300** | | |
+| ✓   | Del                                             | Antal | Stk. |   I alt | Butik               | Note                                             |
+| --- | ----------------------------------------------- | ----: | ---: | ------: | ------------------- | ------------------------------------------------ |
+| [ ] | Kamoer NKP-DC-S10B 12V peristaltisk, børstet DC |     1 |  200 |     200 | AliExpress / Kamoer | Pris = skøn. 12V 0,3A, ≥70 ml/min                |
+| [ ] | Mini-float switch, lodret, M8-gevind            |     2 |   25 |      50 | AliExpress / Conrad | Beslagene har Ø8,5 hul                           |
+| [ ] | XKC-Y25-NPN berøringsfri niveausensor           |     1 |   40 |      40 | AliExpress          | Tjek udgangens polaritet                         |
+| [ ] | Passiv piezo-buzzer 12mm                        |     2 |    5 |      10 | AliExpress          | 1 til pot/                                       |
+|     | **Sum**                                         |       |      | **300** |                     |                                                  |
 
 ### Strøm og ladning
 
@@ -72,14 +73,15 @@ bestil først) · akvariebutik (sump-si) · byggemarked (bolte)
 
 | ✓ | Del | Antal | Stk. | I alt | Butik | Note |
 |---|---|---:|---:|---:|---|---|
-| [ ] | Silikoneslange 4×6mm, fødevaregodkendt, 2 m | 1 | 30 | 30 | AliExpress / RS | Dækker også pot/. Tjek NKP'ens studs-Ø |
+| [ ] | Silikoneslange 3×5mm (ID 3 / OD 5), fødevaregodkendt, 2 m | 1 | 30 | 30 | AliExpress / RS | NKP'ens slangestørrelse |
+| [ ] | Lige slangesamler 3mm (barbed), 10-pak | 1 | 15 | 15 | AliExpress | Forlænger pumpeslangen |
 | [ ] | JST-XH-kit m. crimp-kontakter | 1 | 50 | 50 | AliExpress | Dækker også pot/ |
 | [ ] | Silikonekabel 22AWG rød/sort/gul | 1 | 40 | 40 | AliExpress | Dækker også pot/ |
 | [ ] | Trykknap 6×6mm m. hætte | 2 | 3 | 6 | AliExpress / Conrad | 1 til pot/ |
 | [ ] | M3 heat-set inserts, 50 stk | 1 | 50 | 50 | AliExpress | Pumpe-beslag; dækker også pot/ |
 | [ ] | M3-bolte rustfri, assortiment | 1 | 50 | 50 | Byggemarked | Dækker også pot/ |
-| [ ] | Sump-si (rustfrit net til Ø6 slange) | 1 | 15 | 15 | Akvariebutik |  |
-| | **Sum** | | | **241** | | |
+| [ ] | Sump-si (rustfrit net til 3×5 slange) | 1 | 15 | 15 | Akvariebutik |  |
+| | **Sum** | | | **256** | | |
 
 ### Filament
 
@@ -161,7 +163,8 @@ AliExpress · Berrybase/Eckstein (Grove) · Conrad (glands, kabel) · lokalt
 
 | ✓ | Del | Antal | Stk. | I alt | Butik | Note |
 |---|---|---:|---:|---:|---|---|
-| [ ] | Silikoneslange, JST-kit, silikonekabel, knap, M3-inserts/-bolte | 1 | — | — | — | fra orkide-ordren |
+| [ ] | JST-kit, silikonekabel, knap, M3-inserts/-bolte | 1 | — | — | — | fra orkide-ordren |
+| [ ] | Silikoneslange 4×6mm, fødevaregodkendt, 2 m | 1 | 30 | 30 | AliExpress / RS | KXF-pumpen (orkiden bruger 3×5) |
 | [ ] | Skærmet 4-leder LiYCY 4×0,14mm², 3 m | 1 | 30 | 30 | Conrad / Elfa | Sensor-forlængere |
 | [ ] | EPDM-strip / 2mm O-ring-snor, 2 m | 1 | 40 | 40 | VVS / AliExpress | CUSTOM: ~0,72 m |
 | [ ] | Kabelforskruning M12×1,5 IP68 | 1 | 10 | 10 | Conrad / AliExpress |  |
@@ -169,7 +172,7 @@ AliExpress · Berrybase/Eckstein (Grove) · Conrad (glands, kabel) · lokalt
 | [ ] | Split-grommet til Ø14 (USB-C-gennemføring) | 1 | 10 | 10 | Conrad | Eller silikone |
 | [ ] | Slange-lod (rustfrit/keramik) | 1 | 10 | 10 | Akvariebutik |  |
 | [ ] | Gummifødder ≥5mm, 4 stk | 1 | 20 | 20 | Byggemarked | Kun uden load cell |
-| | **Sum** | | | **135** | | |
+| | **Sum** | | | **165** | | |
 
 ### Filament og substrat
 

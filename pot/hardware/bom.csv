@@ -1,7 +1,7 @@
 id,category,component,specification,qty,unit_price_dkk,supplier,part_number,notes
 1,mcu,XIAO ESP32-C6,Thread+WiFi+BLE+Matter USB-C 4MB flash,2,80,Mouser DK / Digi-Key / Elektor,113991254,Buy 2x for backup
 2,actuator,Peristaltic pump 12V,Kamoer KXF-DC-S06 (12V 0.25A ~37 ml/min) or generic 12V DC peristaltic,1,150,AliExpress / Robu,KXF-DC-S06,VERIFY flange hole spacing - CAD assumes 46mm c-c (pump_mount_kamoer_spacing in params.scad). See ADR 001
-3,plumbing,Silicone tubing,4mm ID x 6mm OD food-grade 2m,1,30,AliExpress / RS Components,,~1m per set: suction + pressure hose route up the hose channel / over flange / down outside to ebase
+3,plumbing,Silicone tubing,4mm ID x 6mm OD food-grade 2m,1,30,AliExpress / RS Components,,~1m per set: suction + pressure hose route up the hose channel / over flange / down outside to ebase. Orchid (Kamoer NKP): 3mm ID x 5mm OD instead + 3mm straight barbed connectors - the pump tube has no stud
 5,driver,Schottky diode,"1N5817 (20V 1A, lower Vf than 1N5819)",10,1,AliExpress / Mouser,1N5817,Flyback across pump terminals (cathode to +12V; 20V rating > 12V) + OR-ing diode Qi -> TP4056 IN+ (~0.4V drop at 0.6A). SMD equivalent on a custom PCB: SS14. Pack of 10
 6,passive,Resistor 10k ohm,1/4W metal film (in pos 42 E24 kit),10,0,see pos 42,,Pulldown on switch A driver gate (D10) - pump stays off during boot
 7,sensor,Capacitive soil moisture v2.0,DFRobot-type corrosion resistant analog,2,40,AliExpress,,2x for spare/calibration. Stock cable (~20cm) too short for channel routing - extend with pos 32

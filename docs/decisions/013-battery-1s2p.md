@@ -87,7 +87,7 @@ Antagelser: boost 85% effektivitet, sensorer slukket mellem målinger,
 | | MCU 0,1 mA | MCU 0,3 mA | MCU 1 mA |
 |---|---|---|---|
 | pot/ (Monstera, ~50 ml/dag, KXF 3W) | ~6,5 mdr. | ~5,5 mdr. | ~3,5 mdr. |
-| orkide (ugentlig soak, NKP 5W, 2×5 min) | ~4 mdr. | ~3,5 mdr. | ~2,5 mdr. |
+| orkide (ugentlig soak, NKP 3,6W, 2×5,4 min) | ~5 mdr. | ~4,5 mdr. | ~3 mdr. |
 
 ### Plads
 - pot/: vugge til 2 celler på electronics_base-låget ved siden af pumpe-
@@ -128,9 +128,9 @@ tårnet på en lader.
 - **Qi i bunden:** modtager-spole (~46×36mm) i en lomme med 1,2mm gulv;
   output via Schottky (1N5817) til TP4056 IN+, så begge kilder kan sidde
   samtidig.
-  - Orkide: midt i bay-gulvet → kan stå på en hvilken som helst Qi-lader.
-    Batterivuggen er flyttet ud (cradle_y 52), så der er ~14mm fra spolen
-    til cellernes stålkapper.
+  - Orkide: i bay-fodens gulv, off-center mod +y (pumpen fylder midten af
+    den Ø152 fod, ADR 012) — ≥13mm til pumpe og celler. Ladebasen har en
+    nøgle, så spolen altid står over laderen.
   - pot/: på -y i ebase-lid'et (pumpen sidder i midten) → laderen skal
     placeres under den side. Passer i M/L/CUSTOM, ikke S. Kan ikke bruges
     med load cell-platformen, og en tung Monstera løftes ikke gerne op hvert
@@ -138,11 +138,12 @@ tårnet på en lader.
 - **Pogo-pins fravalgt:** blottede kontakter under et tårn, der står i en
   pyntepotte, hvor overløbsvand samles. Qi har ingen kontakter og virker med
   eksisterende ladere.
-- Ladebase til orkiden: `pot-orchid/cad/source/charging_base.scad` — konisk
-  sæde til bay'ens 45°-fas og lomme til brugerens Apple MagSafe-lader (25W).
+- Ladebase til orkiden: `pot-orchid/cad/source/charging_base.scad` — bakke
+  til bay'ens fod (±0,5mm) med slids til nøgle-ribben og lomme til brugerens
+  Apple MagSafe-lader (25W) under spolen.
   MagSafe lader også almindelige Qi-modtagere, men uden magnetisk hold
   ([Twelve South](https://www.twelvesouth.com/blogs/twelve-south-blog/do-magsafe-chargers-work-with-non-apple-devices))
-  — derfor centrerer sædet mekanisk. pot/ har ingen ladebase endnu (Qi-
+  — derfor centrerer bakken mekanisk. pot/ har ingen ladebase endnu (Qi-
   spolen sidder off-center → basen skulle have en rotationsnøgle).
 
 ### Ladestrøm: TP4056 ved 580 mA (besluttet 2026-10-21)

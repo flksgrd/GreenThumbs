@@ -24,12 +24,21 @@ $fn = 96;
 print_tolerance = 0.3;
 
 // ----------------------------------------------------------------------------
-// 1. Pyntepotte (konvolut) — fra produktside, IKKE målt (bruger, 2026-10-21)
+// 1. Pyntepotte — målt med målebånd 2026-10-26 (±~3mm)
 // ----------------------------------------------------------------------------
-cachepot_inner_d    = 210;      // indvendig diameter ved åbningen
-cachepot_max_pot_d  = 190;      // "maks. diameter urtepotte" ifølge produktsiden
-cachepot_inner_h    = 185;      // anslået: ydre 200mm minus bund
-cachepot_bottom_r   = 15;       // anslået radius på den buede bund-kant
+//   Ø210 ┐                 ┌      Øverste del: 160mm ned til en afsats,
+//        │                 │      der går 20mm ind mod midten. Derunder en
+//        │   160mm         │      udhulet bund: Ø160 × 28mm.
+//   Ø200 └──┐           ┌──┘ ← afsats
+//           │ Ø160 ×28  │       Tårnets FOD står i fordybningen; resten af
+//           └───────────┘       tårnet går fri af afsatsen.
+cachepot_inner_d    = 210;      // ved åbningen (produktside)
+cachepot_max_pot_d  = 190;      // "maks. diameter urtepotte" (produktside)
+cachepot_ledge_z    = 160;      // fra kanten ned til afsatsen
+cachepot_ledge_d    = 200;      // indv. Ø lige over afsatsen (160 + 2×20)
+cachepot_recess_d   = 160;      // den udhulede bund
+cachepot_recess_h   = 28;
+cachepot_inner_h    = cachepot_ledge_z + cachepot_recess_h;   // 188
 
 // ----------------------------------------------------------------------------
 // 2. Dyrkningspotte (12cm Phalaenopsis) — MÅL DIN POTTE og ret her
@@ -61,7 +70,7 @@ bowl_r_in_bottom = pot_r(0) + bowl_gap;
 bowl_r_in_top    = pot_r(soak_depth) + bowl_gap;
 
 // Slange-kanal: lodret udbuling i skålens væg ved 180° — slange A går ned
-// her til sumpen (spalten på 4mm er for smal til en Ø6-slange)
+// her til sumpen (spalten på 4mm er for smal til NKP'ens Ø5-slange)
 hose_ch_angle = 180;
 hose_ch_w     = 10;             // tangentielt
 hose_ch_depth = 8;              // radialt ud over skålens indervæg
@@ -116,44 +125,71 @@ usbc_cap_t   = 2;               // top med slids der holder stikket
 // ----------------------------------------------------------------------------
 // 4. Bay (elektronik + batteri) — åben top, tank-gulvet er loftet
 // ----------------------------------------------------------------------------
+// Bay'ens nederste del er en FOD, der står i pyntepottens udhulede bund;
+// en 45°-skulder fører ud til tårnets fulde Ø og går fri af afsatsen.
 bay_wall      = 2.5;
 bay_floor_t   = 3;
-bay_h         = 47;             // NKP-pumpe ~41mm høj liggende (forhandler-mål)
-bay_chamfer   = 10;             // 45° fas forneden mod pyntepottens buede bund
+bay_h         = 47;             // NKP ligger 41mm høj + gulv + frigang
 collar_h      = 4;              // krave på bay-rimmen centrerer tanken
+foot_clear    = 4;              // radial frigang i fordybningen (målene er ca.)
+foot_d        = cachepot_recess_d - 2 * foot_clear;   // 152
+foot_h        = cachepot_recess_h + 2;                 // skulderen starter 2mm over afsatsen
+foot_r_in     = foot_d / 2 - bay_wall;                 // indvendig radius i foden
+shoulder_top  = foot_h + (tower_d - foot_d) / 2;      // 45° → fuld Ø her
 
-cell_d   = 18.6;                // 18650
+// Layout i foden (set oppefra): pumpen i midten mod -y, en 18650 på hver
+// side af den, Qi-spolen mod +y. Spolen kan ikke ligge i midten: med ≥10mm
+// til metal ville pumpen nå r≈100 — foden har 73,5.
+pump_w   = 54.5;                // Kamoer NKP-DC-S10B (forhandler-mål), langs x
+pump_l   = 67.5;                // langs y (hoved + motor)
+pump_h   = 41;                  // liggende, slangerne ud foroven
+pump_cy  = -20;                 // centrum på y
+
+cell_d   = 18.6;                // 18650, akse langs y
 cell_l   = 65;
-cell_count = 2;                 // 1S2P
-cradle_y   = 52;                // batteriet på +y, pumpen på -y, Qi i midten
+cell_count = 2;                 // 1S2P — én på hver side af pumpen
+cell_x   = pump_w / 2 + 2.5 + cell_d / 2 + 0.3;
+cell_y0  = -52;                 // cellernes nederste ende
 
-// Qi-modtager (ADR 013): spolen ligger i en lomme midt i bay-gulvet, så
-// tårnet kan stå centreret på en hvilken som helst Qi-lader / ladebase.
+// Qi-modtager (ADR 013): lomme i gulvet, off-center → ladebasen har en nøgle
 qi_w       = 48;                // keep-out til spole ~46×36mm + 1mm
 qi_l       = 38;
+qi_cy      = 46;
 qi_floor_t = 1.2;               // tyndt gulv under spolen (rækkevidde ~2-8mm)
-qi_cell_gap = cradle_y - (cell_d / 2 + 0.5) - cell_d / 2 - qi_l / 2;
+key_angle  = 270;               // nøgle-ribbe på foden (passer i ladebasen)
+key_w      = 8;
+key_t      = 2;
+key_h      = 8;
+
+// Pasnings-tjek (radius i foden, afstand fra spole til metal)
+pump_corner_r = norm([pump_w / 2, -pump_cy + pump_l / 2]);
+cell_corner_r = norm([cell_x + cell_d / 2, -cell_y0]);
+qi_corner_r   = norm([qi_w / 2, qi_cy + qi_l / 2]);
+qi_pump_gap   = (qi_cy - qi_l / 2) - (pump_cy + pump_l / 2);
+qi_cell_gap   = norm([(cell_x - cell_d / 2) - qi_w / 2,
+                      (qi_cy - qi_l / 2) - (cell_y0 + cell_l)]);
 
 // ----------------------------------------------------------------------------
 // 4b. Ladebase (ADR 013) — tårnet løftes ud af pyntepotten og stilles her
 // ----------------------------------------------------------------------------
-// Konisk sæde der passer til bay'ens 45°-fas → Qi-spolen centreres over en
-// Apple MagSafe-lader (25W, A2580), der ligger i en lomme i midten.
+// Bakke der centrerer tårnets fod (±0,5mm); en slids låser nøgle-ribben, så
+// Qi-spolen (off-center) står over Apple MagSafe-laderen (25W, A2580).
 magsafe_d       = 55.5;         // ChargerLab-teardown af A2580 — VERIFICÉR
 magsafe_t       = 4.45;
 magsafe_proud   = 0.1;          // laderen stikker lidt op → tårnet hviler på den
 magsafe_cable_w = 6.5;          // flettet kabel + aflastning — VERIFICÉR
-base_cable_angle = 90;          // kabel-kanalens retning (frit valg)
-base_clear      = 0.5;          // radial frigang mellem bay'ens fas og sædet
-base_wall       = 5;            // væg uden for sædet
+base_cable_angle = 90;          // kabel-kanalens retning fra laderen
+base_clear      = 0.5;          // radial frigang mellem foden og bakken
+base_wall       = 4;            // bakkens væg
+base_wall_h     = 8;            // væggens højde over sædet
 base_puck_floor = 1.6;          // gulv under laderen (med udskubningshul)
-base_round      = 2.2;          // afrunding af synlige kanter
+base_round      = 1.5;          // afrunding af synlige kanter
 
 // ----------------------------------------------------------------------------
 // 5. Beregnede størrelser
 // ----------------------------------------------------------------------------
 bark_porosity = 0.55;           // vandfyldt andel af barken (antagelse)
-pump_ml_min   = 75;             // Kamoer NKP-DC-S10B: 70-80 ml/min (forhandlere)
+pump_ml_min   = 70;             // NKP-DC-S10B: ≥70 ml/min, 12V 0,3A, børstet DC
 
 // Soak-volumen: vand i potten (bark) + spalten + under potten
 function frustum_v(r1, r2, h) = PI * h / 3 * (r1*r1 + r1*r2 + r2*r2);
@@ -182,7 +218,11 @@ echo("lager-ring (BEREGNET):", ring_capacity_ml, "ml");
 echo("reserve efter én soak:", ring_capacity_ml - soak_volume_ml, "ml");
 echo("fyld/dræn pr. retning:", soak_volume_ml / pump_ml_min, "min");
 echo("højde til ring-låg:", total_h_to_lid, "mm");
-echo("pottens top:", pot_top_z, "mm  (pyntepotte indv. ca.", cachepot_inner_h, "mm)");
+echo("pottens top under pyntepottens kant:", cachepot_inner_h - pot_top_z, "mm");
 echo("tårn Ø:", tower_d, "mm  (pyntepotte max", cachepot_max_pot_d, "mm)");
-echo("Qi-spole → nærmeste 18650:", qi_cell_gap, "mm (mål: ≥ 10)");
-if (qi_cell_gap < 10) echo("ADVARSEL: Qi-spolen er for tæt på cellernes stålkapper");
+echo("fod: indv. r", foot_r_in, "| pumpe", pump_corner_r, "| celler", cell_corner_r, "| Qi", qi_corner_r);
+echo("Qi → pumpe:", qi_pump_gap, "mm, Qi → celle:", qi_cell_gap, "mm (mål: ≥ 10)");
+if (max(pump_corner_r, cell_corner_r, qi_corner_r) > foot_r_in - 1)
+    echo("ADVARSEL: noget i foden rammer væggen");
+if (min(qi_pump_gap, qi_cell_gap) < 10)
+    echo("ADVARSEL: Qi-spolen er for tæt på metal (pumpe/celler)");
