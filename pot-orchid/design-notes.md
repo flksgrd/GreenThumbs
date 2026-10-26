@@ -52,9 +52,15 @@ holder de åbne punkter.
       frigang pr. side; skulderen går ≥2mm fri af afsatsen.
 
 ### Mekanik
-- [ ] **Pumpe-vugge i bay'en:** NKP-mål bekræftet (67,5×54,5×41mm), men
-      flangens huller er ukendte → vugge med spændebånd om motoren. Plast-
-      hovedet vender mod Qi-spolen, motoren (metal/magneter) væk fra den.
+- [x] **Pumpe-vugge** (`pump_cradle.scad`, 2026-10-26): separat print (~6g)
+      med to 90°-V-sadler under motoren + strip-tunneler; sættes ned over to
+      pinde på bay-gulvet (ingen huller i fodens gulv). Hovedet står på gulvet,
+      plast-hovedet mod Qi-spolen.
+- [ ] **Mål NKP-pumpen før vuggen printes** (skøn fra produktfoto):
+      motor-Ø (`nkp_motor_d` = 27), motorakse over hovedets bund
+      (`nkp_axis_h` = 20,5) og hovedets dybde inkl. sort beslag
+      (`nkp_head_d` = 27). ±3mm motor-Ø flytter aksen ~2mm → pumpen hælder.
+      Printes vuggen i TPU, dæmper den også vibrationsstøj.
 - [x] **Pumpeslanger:** NKP har ingen studs — pumpeslangen (silikone ID 3 ×
       OD 5mm) forlænges med lige 3mm-slangesamlere til 3×5-slanger.
 - [x] **Ladning (ADR 013, besluttet 2026-10-21):** USB-C-hun-ende i toppen

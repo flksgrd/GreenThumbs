@@ -22,6 +22,7 @@ use <bay.scad>
 use <tank.scad>
 use <lid.scad>
 use <charging_base.scad>
+use <pump_cradle.scad>
 
 view = "iso";
 
@@ -131,11 +132,12 @@ else echo("Ukendt view — brug iso|section|soaking|top|exploded|charging|base")
 module bay_contents() {
     // Plast-hovedet mod Qi-spolen (+y), motoren (metal + magneter) væk fra den
     translate([0, pump_cy, bay_floor_t]) {
-        color([0.2, 0.4, 0.85]) translate([-pump_w / 2, pump_l / 2 - 27, 0])
-            cube([pump_w, 27, pump_h]);
-        color([0.7, 0.7, 0.72]) translate([0, -pump_l / 2, pump_h / 2])
-            rotate([-90, 0, 0]) cylinder(d = 28, h = pump_l - 27);
+        color([0.2, 0.4, 0.85]) translate([-pump_w / 2, pump_l / 2 - nkp_head_d, 0])
+            cube([pump_w, nkp_head_d, pump_h]);
+        color([0.7, 0.7, 0.72]) translate([0, -pump_l / 2, nkp_axis_h])
+            rotate([-90, 0, 0]) cylinder(d = nkp_motor_d, h = pump_l - nkp_head_d);
     }
+    color([0.85, 0.85, 0.3]) translate([0, 0, bay_floor_t]) pump_cradle();
     for (sx = [-1, 1])
         color([0.2, 0.6, 0.35]) translate([sx * cell_x, cell_y0, bay_floor_t + cell_d / 2 + 0.5])
             rotate([-90, 0, 0]) cylinder(d = cell_d, h = cell_l);

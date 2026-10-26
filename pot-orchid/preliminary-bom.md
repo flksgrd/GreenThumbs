@@ -47,6 +47,7 @@ switch-kredsløb — se nedenfor), Qi-modtager + lader + støvprop (44-46).
 | Sump-si | Rustfrit net / lille akvarie-si til 3×5mm-slange | ~15 DKK | Holder bark-smuld ude af pumpen |
 | Stænk-hætte | Printes (TPU/PETG) | — | TODO i CAD: skaktens top |
 | Ladebase | Printes (PETG/PLA), ~100g ved 15% infill | — | `charging_base.scad` — passer til Apple MagSafe 25W (pos 45) |
+| Pumpe-vugge | Printes (PETG eller TPU), ~6g + 2 kabelstrips | — | `pump_cradle.scad` — mål motor-Ø og aksehøjde først |
 
 ## Pin-allokering (orkide)
 

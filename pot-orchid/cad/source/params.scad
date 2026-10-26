@@ -145,6 +145,23 @@ pump_l   = 67.5;                // langs y (hoved + motor)
 pump_h   = 41;                  // liggende, slangerne ud foroven
 pump_cy  = -20;                 // centrum på y
 
+// Pumpe-vugge (pump_cradle.scad): separat print over to pinde i bay-gulvet.
+// Motoren ligger i to V-sadler (tager Ø20-30) og holdes af kabelstrips;
+// hovedet står på gulvet. MÅL PUMPEN — de tre første er skøn fra produktfoto:
+nkp_motor_d   = 27;             // motorens Ø
+nkp_axis_h    = 20.5;           // motorakse over hovedets bund (≈ midt i hovedet)
+nkp_head_d    = 27;             // hovedets dybde langs aksen inkl. sort beslag
+cradle_w      = 30;             // sadlernes bredde (x)
+cradle_t      = 2;              // bundplade
+cradle_pin_d  = 3.5;            // pinde på bay-gulvet (op i vuggens huller)
+cradle_pin_h  = 1.6;
+tie_w         = 4;              // kabelstrips op til 3,6mm brede
+cradle_s1     = pump_cy - pump_l / 2 + 8;   // sadlernes y-position (under motoren)
+cradle_s2     = cradle_s1 + 21;
+cradle_y0     = cradle_s1 - 6;
+cradle_y1     = cradle_s2 + 6;
+cradle_pin_y  = (cradle_y0 + cradle_y1) / 2;
+
 cell_d   = 18.6;                // 18650, akse langs y
 cell_l   = 65;
 cell_count = 2;                 // 1S2P — én på hver side af pumpen

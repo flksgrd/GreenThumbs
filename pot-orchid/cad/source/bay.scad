@@ -19,7 +19,7 @@
 // Elektronik (ESP32-H2-Zero, TP4056, boost, DRV8871) på en hylde ≥10mm over spolen.
 // XKC-sensoren hænger under skålens sump ved 180°.
 //
-// TODO: pumpe-vugge (NKP-flangens huller ukendte → spændebånd om motoren)
+// Pumpen holdes af pump_cradle.scad, der sættes ned over to pinde på gulvet.
 //
 // PRINT: opak PETG, upright. Skulderen er 45° → ingen support.
 // =============================================================================
@@ -64,6 +64,10 @@ module bay() {
             cube([qi_w, qi_l, ft]);
     }
     battery_cradles();
+    // Pinde til pumpe-vuggen (op fra gulvet — ingen huller i fodens gulv)
+    for (px = [-9, 9])
+        translate([px, cradle_pin_y, ft - 0.01])
+            cylinder(d = cradle_pin_d, h = cradle_pin_h + 0.01, $fn = 32);
 }
 
 // Tårnets ydre tværsnit (r, z): fod → 45° skulder → fuld Ø

@@ -117,7 +117,7 @@ luft, længere i kølig/fugtig. Intervallet kan ændres i HomeKit.
 ## Implementation notes
 
 - CAD: `pot-orchid/cad/source/` — `params.scad`, `tank.scad`, `lid.scad`,
-  `bay.scad`, `charging_base.scad`, `assembly.scad` (views iso | section |
+  `bay.scad`, `pump_cradle.scad`, `charging_base.scad`, `assembly.scad` (views iso | section |
   soaking | top | exploded | base | charging)
 - Beregnet: soak ~376 ml, lager ~880 ml efter USB-C-skakten (ADR 013)
   (reserve ~500 ml ≈ 3-5 uger), fyld/dræn ~5,4 min, højde til låg 133mm,

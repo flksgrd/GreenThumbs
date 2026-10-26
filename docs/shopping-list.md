@@ -14,6 +14,7 @@ vejledende BOM-estimater i DKK, uden fragt og told. Detaljer:
 | Valgfrit (ikke med) | 40 | 220 |
 
 Haves allerede: 5V USB-C-lader, Apple MagSafe 25W (orkidens ladebase er tegnet til den).
+Forudsat i skuffen: kabelstrips ≤3,6mm (2 til pumpe-vuggen), lim / tynd dobbeltklæbende tape.
 
 **"Kun til stripboard-prototypen"** er de dele, der sidder på printet. På et
 færdigt SMD-PCB loddes de i SMD eller følger med samleordren (fx JLCPCB), så
@@ -53,13 +54,13 @@ bestil først) · akvariebutik (sump-si) · byggemarked (bolte)
 
 ### Pumpe og sensorer
 
-| ✓   | Del                                             | Antal | Stk. |   I alt | Butik               | Note                                             |
-| --- | ----------------------------------------------- | ----: | ---: | ------: | ------------------- | ------------------------------------------------ |
-| [ ] | Kamoer NKP-DC-S10B 12V peristaltisk, børstet DC |     1 |  200 |     200 | AliExpress / Kamoer | Pris = skøn. 12V 0,3A, ≥70 ml/min                |
-| [ ] | Mini-float switch, lodret, M8-gevind            |     2 |   25 |      50 | AliExpress / Conrad | Beslagene har Ø8,5 hul                           |
-| [ ] | XKC-Y25-NPN berøringsfri niveausensor           |     1 |   40 |      40 | AliExpress          | Tjek udgangens polaritet                         |
-| [ ] | Passiv piezo-buzzer 12mm                        |     2 |    5 |      10 | AliExpress          | 1 til pot/                                       |
-|     | **Sum**                                         |       |      | **300** |                     |                                                  |
+| ✓   | Del                                             | Antal | Stk. |   I alt | Butik               | Note                              |
+| --- | ----------------------------------------------- | ----: | ---: | ------: | ------------------- | --------------------------------- |
+| [ ] | Kamoer NKP-DC-S10B 12V peristaltisk, børstet DC |     1 |  200 |     200 | AliExpress / Kamoer | Pris = skøn. 12V 0,3A, ≥70 ml/min |
+| [ ] | Mini-float switch, lodret, M8-gevind            |     2 |   25 |      50 | AliExpress / Conrad | Beslagene har Ø8,5 hul            |
+| [ ] | XKC-Y25-NPN berøringsfri niveausensor           |     1 |   40 |      40 | AliExpress          | Tjek udgangens polaritet          |
+| [ ] | Passiv piezo-buzzer 12mm                        |     2 |    5 |      10 | AliExpress          | 1 til pot/                        |
+|     | **Sum**                                         |       |      | **300** |                     |                                   |
 
 ### Strøm og ladning
 

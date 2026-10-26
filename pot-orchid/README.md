@@ -47,9 +47,10 @@ skålen — det løber over i ringen.
 
 - [cad/source/](cad/source/) — OpenSCAD: `params.scad`, `tank.scad`
   (ring + skål + skakt + float-beslag), `lid.scad`, `bay.scad`,
-  `charging_base.scad` (ladebase til MagSafe), `assembly.scad`
+  `charging_base.scad` (ladebase til MagSafe), `pump_cradle.scad` (vugge til
+  NKP-pumpen), `assembly.scad`
 - [cad/preview/](cad/preview/) — renders: iso, snit i hvile, snit under soak,
-  top, eksploderet, Qi i bay'en, ladebase, tårnet på ladebasen
+  top, eksploderet, layout i bay'en, ladebase, tårnet på ladebasen, pumpe-vugge
 - [preliminary-bom.md](preliminary-bom.md) — hvad der adskiller BOM'en fra pot/
 - [design-notes.md](design-notes.md) — åbne punkter og næste skridt
 - [references.md](references.md) — kilder og prior art
