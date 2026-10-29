@@ -90,7 +90,7 @@ holder de åbne punkter.
       sump (datablad: op til ~20mm ikke-metal). Limes eller klipses op.
 
 ### Elektronik / firmware
-- [ ] ESP32-H2-Zero (ADR 014): H-bro IN1/IN2 = GPIO10/11, batteri-ADC GPIO3,
+- [ ] ESP32-H2-Zero (ADR 014): H-bro IN1/IN2 = GPIO10/11, batteri via MAX17048 (I2C, ADR 016),
       boost-switch GPIO22. Qi-modtager → 1N5817 → TP4056 IN+. Board-RGB-
       LED'en aflodes; mål boardets hvilestrøm på batteri.
 - [ ] `soak_cycle.cpp`: IDLE → FILL (fast tid + margin; overskud løber

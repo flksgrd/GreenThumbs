@@ -27,6 +27,7 @@
 #include "profiles.h"
 #include "temp_humidity.h"
 #include "buzzer.h"
+#include "battery_gauge.h"
 
 static const char *TAG = "greenthumbs";
 
@@ -34,14 +35,14 @@ static const char *TAG = "greenthumbs";
 // =============================================================================
 // Pin assignments — se pot/hardware/breadboard/wiring-diagram.md
 // =============================================================================
-// ESP32-H2 (ADR 014). Fælles med orkiden: buzzer 0, batteri 3, I2C 4/5,
-// knap 12, boost 22. Reserveret: 13/14 (32 kHz-krystal på eget PCB),
+// ESP32-H2 (ADR 014). Fælles med orkiden: buzzer 0, I2C 4/5 (SHT41 +
+// MAX17048), knap 12, boost 22. Reserveret: 13/14 (32 kHz-krystal på eget PCB),
 // 24 (UART0 TX = ROM-log), 8/9/25 (strapping), 26/27 (USB).
 constexpr int PIN_BUZZER        = 0;   // LEDC PWM
 constexpr int PIN_SOIL_ADC      = 1;   // ADC1_CH0
 constexpr int PIN_FLOAT_SWITCH  = 2;   // intern pull-up; LOW = vand tomt
-constexpr int PIN_BATT_ADC      = 3;   // ADC1_CH2 (2× 200k deler, ADR 013)
-constexpr int PIN_I2C_SDA       = 4;   // I2C: SHT41 + water level
+// GPIO3 (ADC1_CH2) er fri — batteriet måles af MAX17048 på I2C (ADR 016)
+constexpr int PIN_I2C_SDA       = 4;   // I2C: SHT41 + MAX17048 + water level
 constexpr int PIN_I2C_SCL       = 5;
 constexpr uint8_t WATER_I2C_LOW   = 0x77; // nederste 8 pads
 constexpr uint8_t WATER_I2C_HIGH  = 0x78; // øverste 12 pads

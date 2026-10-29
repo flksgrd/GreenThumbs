@@ -42,8 +42,8 @@ Fælles i begge versioner: buzzer 0, batteri 3, I2C 4/5, knap 12, boost 22.
 | 0 | Piezo buzzer (LEDC PWM) | Piezo buzzer | ADR 008 |
 | 1 | Soil moisture AOUT (ADC1_CH0) | XKC "skål tom" (NPN, intern pull-up) | |
 | 2 | Float switch (intern pull-up; LOW = tomt) | Float lav | |
-| 3 | **Batteri-ADC** (ADC1_CH2) | **Batteri-ADC** | 2× 200kΩ fra TP4056 OUT+, 100nF til GND |
-| 4 | I2C SDA (SHT41 + Grove) | I2C SDA (SHT41) | |
+| 3 | fri (ADC1_CH2) | fri | Batteriet måles af MAX17048 på I2C (ADR 016) |
+| 4 | I2C SDA (SHT41 + MAX17048 + Grove) | I2C SDA (SHT41 + MAX17048) | |
 | 5 | I2C SCL | I2C SCL | |
 | 10 | HX711 SCK | H-bro IN1 (fyld) | DRV8871 har pull-downs på IN |
 | 11 | HX711 DOUT | H-bro IN2 (dræn) | |
@@ -51,7 +51,7 @@ Fælles i begge versioner: buzzer 0, batteri 3, I2C 4/5, knap 12, boost 22.
 | 22 | **Switch A** — boost/pumpe (HIGH = on) | **Switch A** — boost | 10kΩ pulldown → slukket under boot |
 | 23 | **Switch B** — sensorer (LOW = on) | Float fuld | Pull-up ved reset → sensorer slukket under boot |
 
-I2C-bussen deles af SHT41 (0x44) og Grove water level-sensoren (0x77 + 0x78).
+I2C-bussen deles af SHT41 (0x44), MAX17048 (0x36) og Grove water level-sensoren (0x77 + 0x78).
 ESP-IDF-konsollen kører på **USB Serial/JTAG** (GPIO26/27) via
 `CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y`; på macOS `/dev/cu.usbmodem*`.
 
@@ -69,8 +69,7 @@ OUT+ ──┬──→ 1N5817 ──→ H2-Zero 5V-pin ──→ boardets LDO (
        │    (dioden forhindrer at USB 5V fødes baglæns ind i batteriet,
        │     hvis Zero'ens USB-C sættes i under programmering)
        ├──→ switch A (P-FET, GPIO22) ──→ boost 12V (Pololu U3V40F12) ──→ pumpe
-       └──→ 200k ─┬─ 200k ──→ GND
-                  └──→ GPIO3 (batteri-ADC, 100nF til GND)
+       └──→ MAX17048 VDD (fuel gauge, 3 µA i hibernate; SDA/SCL på I2C-bussen)
 
 H2-Zero 3V3 ──→ switch B (P-FET, GPIO23) ──→ sensor-skinne: soil, Grove, SHT41
          └──→ HX711 (power-down via SCK), float switch (intern pull-up)
@@ -125,7 +124,7 @@ ESP32-H2-Zero (pot/)
   GPIO0 ──→ Piezo buzzer
   GPIO1 (ADC) ──→ Soil sensor AOUT
   GPIO2 ──→ Float switch (intern pull-up, switch til GND when wet)
-  GPIO3 (ADC) ──→ Batteri-deler (midtpunkt)
+  GPIO3 ──→ (fri)
   GPIO4 (SDA) ──→ SHT41 + Grove SDA  (pull-ups på breakouts → 3V3_SW)
   GPIO5 (SCL) ──→ SHT41 + Grove SCL
   GPIO10 ──→ HX711 SCK
@@ -159,6 +158,24 @@ efter lang tid ved høj luftfugtighed — max 5% duty cycle.
 **Pull-ups:** De fleste breakouts har 10kΩ. Mangler de, tilføj 4.7kΩ.
 **Placering:** et sted i bay/ebase hvor luften kan cirkulere — IKKE over
 boost-converteren eller TP4056 (varme under pumpning/ladning).
+
+## MAX17048 (batteriniveau) detaljer — ADR 016
+
+```
+MAX17048-breakout (fx Adafruit 5580)
+  ┌────────────────┐
+  │ VDD/BAT+ ──→ TP4056 OUT+ │ (forsynes og måler direkte fra cellen)
+  │ GND      ──→ GND         │
+  │ SDA      ──→ GPIO4       │ (fælles bus)
+  │ SCL      ──→ GPIO5       │
+  └────────────────┘
+```
+
+**I2C-adresse:** 0x36. **Registre:** VCELL 0x02 (78,125 µV/LSB), SOC 0x04
+(1/256 %/LSB). **Skriv aldrig MODE.EnSleep = 1:** i pot/ slukkes bussens
+pull-ups sammen med sensor-skinnen, og med EnSleep sat ville lave SDA/SCL
+(> 2,5 s) stoppe målingen. Breakoutets egne pull-ups (hvis det har dem)
+skal gå til 3V3_SW, ikke til batteriet.
 
 ## Water level-sensor (Seeed Grove 10cm) detaljer
 
@@ -228,7 +245,7 @@ passive komponenter på printet) — langtidstesten i potten sker med det.
 - [ ] XKC: ser den vand gennem 4mm PETG, og hvilken polaritet har udgangen?
 - [ ] Qi-ladning gennem 1,2mm gulv på MagSafe-laderen (strøm, varme)
 - [ ] Støj på batteri-/soil-ADC og I2C, mens pumpen kører
-- [ ] Batteri-ADC kalibreret mod multimeter
+- [ ] MAX17048: VCELL mod multimeter (datablad: ±7,5 mV ved 3,6 V) og SOC plausibel
 
 For v2 custom PCB (senere): KiCad schematic baseret på dette diagram. Allerede planlagt i `pot/hardware/schematic/`.
 

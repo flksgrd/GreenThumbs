@@ -17,7 +17,8 @@ Fakta:
   sleep; ladestrøm ~100 mA ifølge en sekundær kilde
   ([CNX](https://www.cnx-software.com/2024/05/22/tiny-xiao-esp32c6-wifi-ble-and-802-15-4-iot-board-offers-up-to-16-gpio-pins/),
   [Seeed](https://wiki.seeedstudio.com/pt-br/xiao_esp32c6_getting_started/)).
-  Batterispænding måles via 2× 200k spændingsdeler.
+  Batterispænding måles via 2× 200k spændingsdeler (siden erstattet af
+  MAX17048 fuel gauge, ADR 016).
 - Kun GPIO0-2 kan vække fra deep sleep. Matter over Thread som sleepy device
   (ICD) bruger light sleep, hvor alle GPIO kan vække.
 - Der findes ingen publicerede gennemsnitsstrømme for ESP32-C6 som Matter-ICD
@@ -68,7 +69,8 @@ Detaljeret ledningsdiagram: [wiring-diagram.md](../../pot/hardware/breadboard/wi
 
 Pin-tabellen er flyttet til [ADR 014](014-esp32-h2.md) (ESP32-H2) og
 [wiring-diagram.md](../../pot/hardware/breadboard/wiring-diagram.md).
-Batteri-ADC, switch A (boost) og switch B (sensorer, kun pot/) er de pins,
+Batterimålingen (nu MAX17048 på I2C, ADR 016), switch A (boost) og switch B
+(sensorer, kun pot/) er de pins,
 denne ADR tilføjede.
 
 ### Driftstid (estimat — MCU-strømmen skal måles)
@@ -150,7 +152,7 @@ og Qi-dioden går til modulets IN+. TP4056 er lineær: (5V − Vbat) × I bliver
 til varme (~0,8W ved 580 mA) i den lukkede bay — derfor 580 mA og ikke 1A.
 
 - Modulet leveres med R_PROG = 1,2kΩ (R3) → byt til **2,0kΩ** (0603)
-- Alle forbrugere (MCU via diode, switch A, batteri-ADC-deler) sidder på
+- Alle forbrugere (MCU via diode, switch A, MAX17048) sidder på
   **OUT+/OUT-** — efter beskyttelses-FET'erne, ikke direkte på cellerne
 - VERIFICÉR at modulet har 5,1kΩ CC-modstande — ellers giver USB-C-ladere
   (C-til-C) ingen 5V

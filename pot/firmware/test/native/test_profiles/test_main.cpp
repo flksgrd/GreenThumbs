@@ -10,6 +10,7 @@
 
 #include "profiles.h"
 #include "temp_humidity.h"
+#include "battery_gauge.h"
 
 void setUp(void) {}
 void tearDown(void) {}
@@ -139,6 +140,21 @@ static void test_sht4x_parse_clamps_and_crc(void)
 }
 
 
+// ─── MAX17048 (registerformater fra databladet) ──────────────────────────────
+
+static void test_max17048_vcell(void)
+{
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f, 3.7f, max17048_vcell_v(47360));   // 47360·78,125 µV
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, max17048_vcell_v(0));
+}
+
+static void test_max17048_soc(void)
+{
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 50.5f, max17048_soc_pct(0x3280));  // 0x32 = 50 %, 0x80 = ½
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 100.0f, max17048_soc_pct(0x6500)); // 101 % → 100
+}
+
+
 int main(int, char **)
 {
     UNITY_BEGIN();
@@ -154,5 +170,7 @@ int main(int, char **)
     RUN_TEST(test_sht4x_crc_datasheet_example);
     RUN_TEST(test_sht4x_parse_known_values);
     RUN_TEST(test_sht4x_parse_clamps_and_crc);
+    RUN_TEST(test_max17048_vcell);
+    RUN_TEST(test_max17048_soc);
     return UNITY_END();
 }

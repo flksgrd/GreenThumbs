@@ -10,7 +10,7 @@ ESP32-H2-Zero (1), silikoneslange (3), flyback-diode (5), USB-C-lader (14),
 knap (16), JST-kit (17), breadboard (18), silikone-ledning (19), M3-inserts/
 -bolte (20, 21), PETG (24), SHT41 (27), buzzer (28), USB-C-forlænger (31 —
 0,3m er nok), PLA til testprint (33), hele batteridelen (36-43 + 47 — TP4056 ved 580 mA, dog kun ét
-switch-kredsløb — se nedenfor), Qi-modtager + lader + støvprop (44-46).
+switch-kredsløb — se nedenfor), Qi-modtager + lader + støvprop (44-46), MAX17048 (50).
 
 ## Ændret
 
@@ -58,8 +58,8 @@ ESP32-H2 (ADR 014) — samme på ESP32-H2-Zero og MINI-1-modulet:
 | 0 | Buzzer |
 | 1 | XKC "skål tom" (NPN, intern pull-up) |
 | 2 | Float lav |
-| 3 | Batteri-ADC (2× 200kΩ, ADC1_CH2) |
-| 4 / 5 | I2C — SHT41 |
+| 3 | fri (batteriet måles af MAX17048 på I2C, ADR 016) |
+| 4 / 5 | I2C — SHT41 + MAX17048 |
 | 10 | H-bro IN1 (fyld) |
 | 11 | H-bro IN2 (dræn) |
 | 12 | Knap (LP-pin, vækker fra sleep) |

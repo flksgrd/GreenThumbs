@@ -8,9 +8,9 @@ vejledende BOM-estimater i DKK, uden fragt og told. Detaljer:
 
 | | Orkide | pot/ (Monstera) |
 |---|---:|---:|
-| Bestil | **1466** | **1210** |
+| Bestil | **1506** | **1250** |
 | Kun til breadboard-test (før PCB) | 180 | 0 |
-| **I alt** | **1646** | **1210** |
+| **I alt** | **1686** | **1250** |
 | Valgfrit (ikke med) | 40 | 220 |
 
 Plus én gang til begge: **HomePod mini ~800 DKK** (afsnit 0).
@@ -66,7 +66,8 @@ bestil først) · akvariebutik (sump-si) · byggemarked (bolte)
 | [ ] | Qi-modtager 5V 1A (spole 40×29mm)                  |     1 |   70 |      70 | AliExpress                          | Spolen i bay-lommen (nu 41×30); modul-printet på elektronik-hylden                       | Fundet, 5V 1A, chip er 33x16x1.1mm og spole er 40x29x0.3mm                                                                                           |
 | [ ] | DRV8871 H-bro-breakout, ÉN kanal, 6,5-45V          |     1 |   60 |      60 | AliExpress / Adafruit               | OBS: "1,5A 2-kanal" er typisk DRV8833/MX1508 (max ~10V) — virker ikke ved 12V            | Fundet, 1.5A 2 Channel H-Bridge PWM                                                                                                                  |
 | [ ] | SHT41-breakout (I2C 0x44, ADR 015) | 1 | 35 | 35 | AliExpress / Adafruit | Afløser AHT20: ±1,8 %RH / ±0,2 °C + varmer. Pris = skøn | Fundet, 15.11x10.41mm, Hvad er forskellen på denne og så f.eks. SHT45/SHT41? |
-|     | **Sum**                                            |       |      | **460** |                                     |                                                                                          |                                                                                                                                                      |
+| [ ] | MAX17048 fuel gauge (I2C 0x36, ADR 016) | 1 | 40 | 40 | Adafruit / AliExpress | Batteri-% i HomeKit; afløser spændingsdeleren. Pris = skøn | |
+|     | **Sum**                                            |       |      | **510** |                                     |                                                                                          |                                                                                                                                                      |
 
 ### Pumpe og sensorer
 
@@ -119,7 +120,7 @@ bestil først) · akvariebutik (sump-si) · byggemarked (bolte)
 | [ ] | 2N7002 N-MOSFET SOT-23, 10-pak | 1 | 10 | 10 | AliExpress / LCSC | Orkide 1, pot/ 1 |
 | [ ] | SOT-23→DIP-adaptere, 10-pak | 1 | 15 | 15 | AliExpress | Så MOSFET'erne kan sidde i breadboardet |
 | [ ] | 1N5817 Schottky, 10-pak | 1 | 10 | 10 | AliExpress / Mouser | Dækker også pot/ |
-| [ ] | Modstandssortiment E24 THT 1/4W 1% | 1 | 60 | 60 | AliExpress / Conrad | THT — SMD-sættet passer ikke i et breadboard |
+| [ ] | Modstandssortiment E24 THT 1/4W 1% | 1 | 60 | 60 | AliExpress / Conrad | 4,7k / 5,1k / 10k / 100k. THT — SMD-sættet passer ikke i et breadboard |
 | [ ] | Kondensatorer: 100-220µF ≥10V, 10µF, 100nF | 1 | 15 | 15 | AliExpress / Conrad | Dækker også pot/ |
 | | **Sum** | | | **180** | | |
 
@@ -141,6 +142,9 @@ AliExpress · Berrybase/Eckstein (Grove) · Conrad (glands, kabel) · lokalt
 
 **Før du bestiller:**
 - [ ] KXF-DC-S06: flangens hulafstand (CAD antager 46mm)
+- [ ] Jordfugtsensoren: 555-chippen på produktbilledet skal være mærket **TLC555**
+      (eller LMC555). NE555 kræver ~5V og virker ikke på vores 3,3V-skinne
+      ([atomic14](https://www.atomic14.com/esp32/sensors/capacitive-soil/))
 - [ ] USB-C-forlængerens hun-ende ≤ 12,5×6,5×25mm (lommen ved flangen)
 - [ ] Load cell eller ej (Qi virker ikke oven på platformen; en Monstera
       kan overstige 5 kg)
@@ -154,14 +158,15 @@ AliExpress · Berrybase/Eckstein (Grove) · Conrad (glands, kabel) · lokalt
 | [ ] | TP4056-modul + 2,0kΩ R_PROG | 1 | — | — | — | fra orkide-ordren |
 | [ ] | Qi-modtager 5V ≥600 mA | 1 | 70 | 70 | The Pi Hut / AliExpress | Kun uden load cell — ellers spring over |
 | [ ] | SHT41-breakout (I2C 0x44) | 1 | 35 | 35 | AliExpress / Adafruit | ADR 015 |
-| | **Sum** | | | **215** | | |
+| [ ] | MAX17048 fuel gauge (I2C 0x36) | 1 | 40 | 40 | Adafruit / AliExpress | ADR 016 |
+| | **Sum** | | | **255** | | |
 
 ### Pumpe og sensorer
 
 | ✓ | Del | Antal | Stk. | I alt | Butik | Note |
 |---|---|---:|---:|---:|---|---|
 | [ ] | Kamoer KXF-DC-S06 12V peristaltisk | 1 | 150 | 150 | AliExpress / Robu | Tjek flange 46mm c-c |
-| [ ] | Kapacitiv soil moisture v2.0 | 2 | 40 | 80 | AliExpress | 1 + reserve |
+| [ ] | Kapacitiv soil moisture v2.0 med **TLC555** | 2 | 40 | 80 | AliExpress | 1 + reserve. NE555-kopier virker ikke ved 3,3 V |
 | [ ] | Seeed Grove Water Level 10cm (101020635) | 1 | 75 | 75 | Berrybase / Eckstein |  |
 | [ ] | Mini-float switch, lodret, NO | 1 | 25 | 25 | AliExpress / Conrad | Klipses i reservoirets bund |
 | [ ] | Passiv piezo-buzzer | 1 | — | — | — | fra orkide-ordren |
