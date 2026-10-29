@@ -57,7 +57,7 @@ skålen — det løber over i ringen.
 
 ## Genbrug fra pot/
 
-MCU, batteri/strømdel, AHT20, buzzer, knap, firmware-skelet og Matter-
+MCU, batteri/strømdel, SHT41, buzzer, knap, firmware-skelet og Matter-
 opsætning. Nyt: vendbar pumpe (Kamoer NKP) med H-bro (DRV8871),
 berøringsfri niveausensor under skålen, to mini-floats i ringen. Ingen
 load cell, ingen soil- eller Grove-sensor. Se [preliminary-bom.md](preliminary-bom.md).

@@ -25,7 +25,7 @@
 |                                          ├── ADC0: soil moisture │
 |                                          ├── I2C: water level    │ (Grove, 0x77/78)
 |                                          ├── GPIO ISR: float     │
-|                                          ├── I2C: AHT20          │ (temp + RH)
+|                                          ├── I2C: SHT41          │ (temp + RH)
 |                                          ├── GPIO: HX711 SCK/DT  │ (optional)
 |                                          ├── ADC1: batteri       │
 |                                          ├── GPIO: sensor-switch │
@@ -51,7 +51,7 @@ STACK VARIANT A (besluttet 2026-06): cup hænger NEDSÆNKET i reservoiret.
 │   VAND-ZONE (40mm, ~1018 ml)      │ ← float switch i bund, under cup
 ╞═══════════════════════════════════╡
 │  ELECTRONICS BASE (vandtæt)       │
-│   • ESP32-H2-Zero + AHT20 + buzzer│
+│   • ESP32-H2-Zero + SHT41 + buzzer│
 │   • 2× 18650 + boost + switches   │
 │   • Pumpe på lid (dual footprint: │
 │     Kamoer KXF-DC eller BP7 piezo)   │
@@ -157,11 +157,11 @@ kabel-slids (90°) → ned udvendigt → M12-gland i ebase-siden.
 | Float low (binær) | Leak Detector | "Vandalarm: OK" / "Tom" |
 | Manuel pump | On/Off Switch | Knap der auto-slukker efter 3 sek |
 | Profile-vælger | Mode Select | Dropdown: Monstera / Pothos / Peace Lily / African Violet / Succulent / Orkide / Custom |
-| Rumtemperatur (AHT20) | Temperature Sensor (endpoint 3) | "Stuetemperatur: 22.4°C" |
-| Luftfugtighed (AHT20) | Humidity Sensor (endpoint 3) | "Luftfugtighed: 47%" |
+| Rumtemperatur (SHT41) | Temperature Sensor (endpoint 3) | "Stuetemperatur: 22.4°C" |
+| Luftfugtighed (SHT41) | Humidity Sensor (endpoint 3) | "Luftfugtighed: 47%" |
 | Weight (gram, hvis HX711 tilstede) | Custom cluster (v2) | "Plante-vægt: 1248g" |
 
-**VPD-aware dose-modifikator:** Når AHT20 er tilstede, justerer firmware automatisk `dose_ml` baseret på Vapor Pressure Deficit (rum-tørhed × temperatur). Ved tørt indeklima (vinter med radiator) får planten mere vand per cyklus; ved fugtigt klima reduceres dosen. Se [ADR 007](decisions/007-env-sensor-aht20.md).
+**VPD-aware dose-modifikator:** Når SHT41 er tilstede, justerer firmware automatisk `dose_ml` baseret på Vapor Pressure Deficit (rum-tørhed × temperatur). Ved tørt indeklima (vinter med radiator) får planten mere vand per cyklus; ved fugtigt klima reduceres dosen. Se [ADR 007](decisions/007-env-sensor-aht20.md).
 
 ## Load cell-placering: bivirkninger
 

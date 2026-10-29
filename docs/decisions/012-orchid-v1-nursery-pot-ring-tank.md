@@ -74,7 +74,7 @@ potten til både lager og elektronik.
 | XKC-Y25 berøringsfri (NPN) | Limet op under skålens sump, inde i bay'en; måler gennem tank-gulvet | **Skål tom** efter dræn — den sikkerhedskritiske sensor |
 | Mini-float | Beslag på ringens ydervæg, lavt | Lager lavt → HomeKit-varsel |
 | Mini-float | Beslag på ringens ydervæg, højt | Lager fuldt → refill-bip (ADR 008) |
-| AHT20 | Bay | VPD → soak-interval + rumklima i HomeKit |
+| SHT41 (ADR 015) | Bay | VPD → soak-interval + rumklima i HomeKit |
 
 Ingen sensor i barken, ingen load cell, ingen Grove-sensor (den graduerede
 måling er unødvendig, når skålens kant styrer dybden).

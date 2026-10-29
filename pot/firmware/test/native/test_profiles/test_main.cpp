@@ -1,6 +1,6 @@
 /**
  * @file test_main.cpp
- * @brief Native unit tests for profiles.cpp + temp_humidity.cpp (pure math).
+ * @brief Native unit tests for profiles.cpp + temp_humidity.cpp (pure math + SHT4x).
  *
  * Kør: pio test -e native_test
  */
@@ -100,6 +100,45 @@ static void test_effective_dose(void)
 }
 
 
+// ─── SHT4x (CRC + konvertering, Sensirion-datablad) ──────────────────────────
+
+static void test_sht4x_crc_datasheet_example(void)
+{
+    const uint8_t d[2] = {0xBE, 0xEF};
+    TEST_ASSERT_EQUAL_HEX8(0x92, sht4x_crc8(d, 2));
+}
+
+static void make_frame(uint16_t t, uint16_t rh, uint8_t out[6])
+{
+    out[0] = t >> 8;  out[1] = t & 0xFF;  out[2] = sht4x_crc8(&out[0], 2);
+    out[3] = rh >> 8; out[4] = rh & 0xFF; out[5] = sht4x_crc8(&out[3], 2);
+}
+
+static void test_sht4x_parse_known_values(void)
+{
+    uint8_t f[6];
+    float t, rh;
+    make_frame(26214, 29360, f);        // 0,4·65535 → 25 °C; → ~50 %RH
+    TEST_ASSERT_EQUAL_INT(0, sht4x_parse(f, &t, &rh));
+    TEST_ASSERT_FLOAT_WITHIN(0.01f, 25.0f, t);
+    TEST_ASSERT_FLOAT_WITHIN(0.01f, 50.0f, rh);
+}
+
+static void test_sht4x_parse_clamps_and_crc(void)
+{
+    uint8_t f[6];
+    float t = 0, rh = 0;
+    make_frame(26214, 0xFFFF, f);       // RH-formlen giver 119 % → 100
+    TEST_ASSERT_EQUAL_INT(0, sht4x_parse(f, &t, &rh));
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 100.0f, rh);
+    make_frame(26214, 0, f);            // -6 % → 0
+    sht4x_parse(f, &t, &rh);
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.0f, rh);
+    f[5] ^= 0x01;                       // ødelagt CRC → fejl
+    TEST_ASSERT_EQUAL_INT(-1, sht4x_parse(f, &t, &rh));
+}
+
+
 int main(int, char **)
 {
     UNITY_BEGIN();
@@ -112,5 +151,8 @@ int main(int, char **)
     RUN_TEST(test_tetens_known_values);
     RUN_TEST(test_vpd_dose_scale_reference_and_clamps);
     RUN_TEST(test_effective_dose);
+    RUN_TEST(test_sht4x_crc_datasheet_example);
+    RUN_TEST(test_sht4x_parse_known_values);
+    RUN_TEST(test_sht4x_parse_clamps_and_crc);
     return UNITY_END();
 }

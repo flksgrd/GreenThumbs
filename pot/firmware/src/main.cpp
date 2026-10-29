@@ -41,7 +41,7 @@ constexpr int PIN_BUZZER        = 0;   // LEDC PWM
 constexpr int PIN_SOIL_ADC      = 1;   // ADC1_CH0
 constexpr int PIN_FLOAT_SWITCH  = 2;   // intern pull-up; LOW = vand tomt
 constexpr int PIN_BATT_ADC      = 3;   // ADC1_CH2 (2× 200k deler, ADR 013)
-constexpr int PIN_I2C_SDA       = 4;   // I2C: AHT20 + water level
+constexpr int PIN_I2C_SDA       = 4;   // I2C: SHT41 + water level
 constexpr int PIN_I2C_SCL       = 5;
 constexpr uint8_t WATER_I2C_LOW   = 0x77; // nederste 8 pads
 constexpr uint8_t WATER_I2C_HIGH  = 0x78; // øverste 12 pads
@@ -60,8 +60,8 @@ struct sensor_state_t {
     uint8_t water_level_pct;
     bool float_low;          // true hvis float-switch siger vand tom
     int32_t weight_g;
-    float temp_c;            // fra AHT20
-    float humidity_pct;      // fra AHT20
+    float temp_c;            // fra SHT41
+    float humidity_pct;      // fra SHT41
     float vpd_kpa;           // beregnet VPD
     uint32_t last_update_ms;
 };
@@ -145,9 +145,9 @@ extern "C" void app_main(void)
     // 4. Hardware init
     init_pins();
 
-    // 5. Environmental sensor (AHT20 over I2C)
+    // 5. Environmental sensor (SHT41 over I2C)
     if (env_sensor_init() != 0) {
-        ESP_LOGW(TAG, "AHT20 init failed — VPD-aware dosing disabled");
+        ESP_LOGW(TAG, "SHT41 init failed — VPD-aware dosing disabled");
         // Fortsætter med graceful degradation (se ADR 007)
     }
 
@@ -183,7 +183,7 @@ static void sensor_task(void * /*pvParameters*/)
         //     pads over tærskel → pct af water_full_pads (calibration.md §3)
         //   - Læs float switch
         //   - Læs HX711 (DETECT_WEIGHT/HYBRID modes, hvis available)
-        //   - Læs AHT20 hver 60s (env_sensor_read), beregn VPD
+        //   - Læs SHT41 hver 60s (env_sensor_read), beregn VPD
         //   - Lås mutex, opdater g_sensors (inkl. temp/humidity/vpd), frigør mutex
         //   - REFILL-DETECTION (ADR 008): hvis water level steg >5 procentpoint
         //     på 10 sek → refill-mode → buzzer_pattern(BUZZ_REFILL_PROGRESS)

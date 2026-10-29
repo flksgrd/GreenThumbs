@@ -38,7 +38,7 @@ TP4056-modul med beskyttelse ved 580 mA.**
                     ├─→ switch A (P-FET) ─→ boost 12V ─→ pumpe (pot/)
                     │                                └→ H-bro → pumpe (orkide)
                     │                                └→ XKC-sensor (orkide)
-     H2-Zero 3V3 ───┴─→ switch B (P-FET) ─→ soil + Grove + AHT20 (kun pot/)
+     H2-Zero 3V3 ───┴─→ switch B (P-FET) ─→ soil + Grove + SHT41 (kun pot/)
 ```
 
 - **Boost: Pololu U3V40F12** (12V fast, op til ~3,5A input). XL6009 er
@@ -51,9 +51,9 @@ TP4056-modul med beskyttelse ved 580 mA.**
 - **Switch A** (AO3401A + 2N7002-driver) afbryder boostens input helt: en
   boost trækker mA i tomgang og sender Vbat − diodefald videre, selv med
   EN lav — pumpen ville sive.
-- **Switch B** (kun pot/): soil-sensoren trækker ~5 mA konstant. AHT20
+- **Switch B** (kun pot/): soil-sensoren trækker ~5 mA konstant. SHT41
   ligger på samme skinne som Grove-sensoren, fordi de deler I2C (ellers
-  fødes den slukkede sensor gennem pull-ups'ene). I orkiden er AHT20 eneste
+  fødes den slukkede sensor gennem pull-ups'ene). I orkiden er SHT41 eneste
   I2C-enhed og står altid tændt (µA i hvile).
 - **XKC-Y25** kræver 5-24V → fødes fra boostens 12V; den skal kun bruges,
   mens pumpen kører (dræn + verifikation).
@@ -98,7 +98,7 @@ Antagelser: boost 85% effektivitet, sensorer slukket mellem målinger,
 - USB-C ved kanten lader kun — firmware opdateres via Matter OTA, eller
   via MCU-boardets USB-C inde i boksen
 - TP4056 er lineær: ~0,8-1,2W varme under ladning i den lukkede boks
-  (placér modulet væk fra AHT20)
+  (placér modulet væk fra SHT41)
 - HomeKit-opdateringer bliver forsinkede (sleepy device); manuel pumpe-
   kommando kan tage sekunder at nå frem
 - Refill-bip (ADR 008) kræver at enheden er vågen → refill-tilstand

@@ -142,7 +142,7 @@ bool profile_should_pump(uint8_t moisture_pct,
  * african_violet) forbliver 0 uanset VPD.
  *
  * @param profile Aktiv profil.
- * @param vpd_kpa Aktuel VPD fra AHT20 (ignoreres hvis !env_available).
+ * @param vpd_kpa Aktuel VPD fra SHT41 (ignoreres hvis !env_available).
  * @param env_available Fra env_sensor_available().
  * @return Skaleret dose i ml.
  */

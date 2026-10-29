@@ -22,7 +22,7 @@ holder de åbne punkter.
 | Lager | Ring rundt om skålen (~880 ml) |
 | Pumpe | Kamoer NKP-DC-S10B: børstet DC (vendbar via H-bro), 12V 0,3A, ≥70 ml/min (~5,4 min hver vej), slange 3×5mm |
 | Trigger | Interval (7 dage) justeret med VPD |
-| Sensorer | XKC berøringsfri under skålen, 2 mini-floats i ringen, AHT20 |
+| Sensorer | XKC berøringsfri under skålen, 2 mini-floats i ringen, SHT41 |
 | Strøm | 1S2P 18650 (ADR 013) |
 | Ladning | USB-C i toppen (skakt ved 60°) + Qi i fodens gulv (off-center, nøgle i ladebasen) |
 | Lys til rødderne / grow-light | Nej — vokselys kræver konstant strøm (v2 med kabel, hvis ønsket) |

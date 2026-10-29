@@ -12,7 +12,7 @@ id,category,component,specification,qty,unit_price_dkk,supplier,part_number,note
 14,power,USB-C charger,Any 5V USB-C phone charger >=1A,1,0,Existing,,Charges the battery via the TP4056 module (pos 37) through the rim USB-C extension. PD not needed
 16,input,Tactile button,6x6mm with cap,1,3,AliExpress / Conrad,,Manual pump trigger / refill mode
 17,connector,JST-XH connector kit,2/3/4-pin assortment + crimp contacts,1,50,AliExpress,XH-2.54,Sensor cables - crimp AFTER threading through glands
-18,proto,Stripboard,7x9cm,1,20,Conrad,,For v1 soldered prototype
+18,proto,Breadboard + jumper wires,830 tie-points + M-M/M-F jumper set,1,60,AliExpress / Conrad,,Breadboard test of the electrical unknowns before the carrier PCB (no stripboard). See wiring-diagram.md
 19,wire,Silicone wire 22AWG,Red/black/yellow ~2m each color,1,40,AliExpress,,Internal wiring inside ebase
 20,fastener,M3 brass heat-set inserts,M3x5mm pack 50,1,50,AliExpress,,10 per set: 4 lid + 6 pump-mount bosses
 21,fastener,M3 bolts,8/12/16mm stainless assortment,1,50,Local hardware store,,Lid (4x M3x8) + pump mount
@@ -22,7 +22,7 @@ id,category,component,specification,qty,unit_price_dkk,supplier,part_number,note
 24,filament,PETG filament,1kg food-neutral white or natural,2,150,3djake.dk / Prusa Polymers,,Water-contact parts. Solid-volume estimate per set: M ~0.94kg / CUSTOM ~1.73kg (cup+reservoir+ebase+lid)
 25,filament,TPU filament 90A,250g for gaskets,1,120,3djake.dk,,Optional - can substitute pos 22
 26,plumbing,Wick cord cotton/nylon,4mm braided 2m roll,1,20,AliExpress / craft store,,OPTIONAL - for wick bottom-watering on African Violet/Peace Lily/Calathea. See ADR 006
-27,sensor,AHT20 temperature+humidity,I2C breakout module 3.3V addr 0x38,1,25,Adafruit / AliExpress / DFRobot,AHT20,Standard v1 component - VPD-aware dosing + HomeKit room climate. Shares I2C bus with pos 8. See ADR 007
+27,sensor,SHT41 temperature+humidity,"I2C breakout 3.3V addr 0x44 (SHT41-AD1B), built-in heater",1,35,Adafruit / AliExpress,SHT41,"ADR 015 (replaces AHT20): +-1.8 %RH / +-0.2 C, heater for recovery at high humidity, 80 nA idle. Shares I2C bus with pos 8"
 28,indicator,Passive piezo buzzer,12mm disc PWM-driven 3.3V,1,5,AliExpress / Conrad,,Refill indicator + error signals on D2. See ADR 008
 29,substrate,LECA clay pebbles,2-3L bag,1,50,Plantorama / OBI,,2-3cm layer in cup bottom - capillary break against waterlogging. See ADR 009
 30,plumbing,Hose sinker/weight,Stainless or ceramic small weight,1,10,Aquarium shop / AliExpress,,Keeps suction hose end at reservoir bottom
@@ -36,12 +36,12 @@ id,category,component,specification,qty,unit_price_dkk,supplier,part_number,note
 38,power,Boost converter 12V,Pololu U3V40F12 fixed 12V (up to ~3.5A input),1,110,Pololu / Robotshop / The Pi Hut,4016,Powers pump from 1S battery. XL6009 rejected: datasheet min input 3.6-5V. Budget option for pot/ only: MT3608 module (2V min) set to 12V
 39,driver,P-channel MOSFET,AO3401A SOT-23 -30V -4A logic-level,10,1,AliExpress / LCSC,AO3401A,Switch A (battery to boost) + switch B (3V3 to sensor rail). Pack of 10
 40,driver,N-channel MOSFET,2N7002 SOT-23,10,1,AliExpress / LCSC,2N7002,Gate driver for switch A (battery voltage > GPIO 3.3V). Same part on a custom SMD PCB. Pack of 10
-41,proto,SOT-23 to DIP adapter,Breakout PCB pack of 10,1,15,AliExpress,,For pos 39/40 on stripboard (prototype only)
-42,passive,Resistor kit E24 1/4W 1%,"Assortment incl. 2.0k, 4.7k, 10k, 100k, 200k",1,60,AliExpress / Conrad,,10k: switch A pulldown. 100k: P-FET gate pull-ups. 200k x2: battery divider. 4.7k: I2C pull-ups if a breakout lacks them. 5.1k x2: USB-C CC if the TP4056 module lacks them. Prototype only - a custom PCB gets SMD parts from the assembly order
+41,proto,SOT-23 to DIP adapter,Breakout PCB pack of 10,1,15,AliExpress,,For pos 39/40 on the breadboard (prototype only)
+42,passive,Resistor kit E24 1/4W 1%,"Assortment incl. 2.0k, 4.7k, 10k, 100k, 200k",1,60,AliExpress / Conrad,,10k: switch A pulldown. 100k: P-FET gate pull-ups. 200k x2: battery divider. 4.7k: I2C pull-ups if a breakout lacks them. 5.1k x2: USB-C CC if the TP4056 module lacks them. Breadboard only - a custom PCB gets SMD parts from the assembly order
 43,passive,Capacitors,100-220uF >=10V electrolytic + 10uF + 100nF ceramic,1,15,AliExpress / Conrad,,"100uF at boost input (pump inrush), 10uF at the ESP32-H2-Zero 5V pin, 100nF on battery ADC"
 44,power,Qi wireless receiver module,"5V 1A output; coil 40x29x0.3mm, module PCB 33x16x1.1mm",1,70,AliExpress,,Coil lies in a 41x30 pocket (1.2mm floor): orchid bay foot / pot/ ebase lid at -y; module PCB on the electronics shelf. Output -> Schottky (pos 5) -> TP4056 IN+. M/L/CUSTOM only; not usable with load cell platform.
 45,power,Qi charger pad,Apple MagSafe Charger 25W (A2580) - or any Qi charger >=5W,1,0,Existing,,Existing. Orchid charging base pot-orchid/cad/source/charging_base.scad is sized for the MagSafe puck (55.5x4.45mm - VERIFY). MagSafe charges plain Qi receivers without magnetic hold - the conical seat centres the tower instead
 46,power,USB-C dust plug,Silicone anti-dust plug pack of 10,1,20,AliExpress,,Closes the rim socket when not charging (splash protection)
 47,passive,Resistor 2.0k SMD,0603 1% (pack),1,5,Conrad / LCSC,,Replaces R_PROG (R3) on the TP4056 module: 1200/2000 = 0.58 A. VERIFY R3 package (0603/0805) on the received module
-48,connector,Screw terminal block,2-pole + 3-pole 5mm PCB,4,3,AliExpress / Conrad,,"Pump, battery and boost connections on the stripboard - easy to swap during prototyping"
-49,connector,Female pin header,"2.54mm, cut to length",2,5,AliExpress / Conrad,,"Socket the ESP32-H2-Zero and the modules (TP4056, boost, DRV8871) so they can be replaced without desoldering"
+48,connector,Screw terminal block,2-pole + 3-pole 5mm PCB,4,3,AliExpress / Conrad,,"Carrier PCB (later): pump, battery and boost connections. Not needed for the breadboard test"
+49,connector,Female pin header,"2.54mm, cut to length",2,5,AliExpress / Conrad,,Carrier PCB (later): socket the ESP32-H2-Zero and the modules. Not needed for the breadboard test

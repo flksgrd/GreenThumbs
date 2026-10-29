@@ -15,7 +15,7 @@ Krukken kan bygges i to varianter afhængigt af hvilke planter du vil have:
 
 ## VPD-aware dose-modifikator
 
-Med AHT20 (standard v1-komponent) skalerer firmware automatisk `dose_ml` baseret på Vapor Pressure Deficit:
+Med SHT41 (standard v1-komponent, ADR 015) skalerer firmware automatisk `dose_ml` baseret på Vapor Pressure Deficit:
 
 ```
 actual_dose_ml = profile.dose_ml × clamp(VPD / 1.3, 0.5, 2.0)

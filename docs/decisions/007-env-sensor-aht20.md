@@ -1,6 +1,6 @@
 # ADR 007 — AHT20 environmental sensor som standard v1-komponent
 
-**Status:** Accepted
+**Status:** Accepted — sensoren er udskiftet med SHT41 i [ADR 015](015-sht41.md); miljøsensoren og VPD-logikken består
 **Dato:** 2026-05-27
 
 ## Context

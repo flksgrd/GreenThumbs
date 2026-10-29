@@ -1,9 +1,11 @@
 /**
  * @file temp_humidity.h
- * @brief AHT20 temperatur + fugtigheds-sensor driver + VPD calculation.
+ * @brief SHT41 temperatur + fugtigheds-sensor driver + VPD calculation.
  *
- * AHT20 sidder på I2C (GPIO4 SDA / GPIO5 SCL). Sampler hver 60. sek; rum-klima
- * ændres langsomt så høj samplerate er ikke nødvendigt.
+ * SHT41 sidder på I2C (GPIO4 SDA / GPIO5 SCL, adresse 0x44). Sampler hver
+ * 60. sek; rum-klima ændres langsomt så høj samplerate er ikke nødvendigt.
+ * Varmeren (0x39) kan genoprette sensoren efter lang tid ved høj fugt —
+ * max 5% duty cycle, og målinger under opvarmning er ikke gyldige.
  *
  * Hovedformål for projektet:
  *   1. VPD-baseret dose-modifikator i control_task
@@ -11,7 +13,7 @@
  *   3. HomeKit room-climate sensors (extra value)
  *   4. Termisk drift-kompensation for HX711-aflæsninger
  *
- * Se ADR 007 for designvalg.
+ * Se ADR 007 (miljøsensor) og ADR 015 (SHT41 i stedet for AHT20).
  */
 
 #pragma once
@@ -23,8 +25,11 @@
 extern "C" {
 #endif
 
-#define AHT20_I2C_ADDR         0x38      ///< Fast 7-bit adresse
-#define AHT20_MEAS_DELAY_MS    80        ///< Tid efter trigger før read
+#define SHT41_I2C_ADDR         0x44      ///< SHT41-AD1B (7-bit)
+#define SHT41_CMD_MEASURE_HP   0xFD      ///< T + RH, høj præcision (max 8,3 ms)
+#define SHT41_CMD_HEATER_1S    0x39      ///< 200 mW i 1 s + måling (genopretning)
+#define SHT41_CMD_SOFT_RESET   0x94
+#define SHT41_MEAS_DELAY_MS    10        ///< Tid efter trigger før read
 
 #define ENV_SAMPLE_INTERVAL_MS 60000     ///< Sample-frekvens (1 minut)
 #define ENV_VPD_REFERENCE_KPA  1.3f      ///< 22°C / 50% RH = komfortabelt
@@ -43,9 +48,9 @@ typedef struct {
 } env_reading_t;
 
 /**
- * Initialiser I2C-master + AHT20-sensor.
+ * Initialiser I2C-master + SHT41-sensor.
  *
- * Skal kaldes én gang ved boot. Hvis init fejler (fx ingen AHT20 tilstede),
+ * Skal kaldes én gang ved boot. Hvis init fejler (fx ingen SHT41 tilstede),
  * returneres negativ værdi og firmware fortsætter uden environmental sensing
  * (graceful degradation — se ADR 007).
  *
@@ -56,7 +61,7 @@ int env_sensor_init(void);
 /**
  * Trigger måling og læs resultatet.
  *
- * Blokerer i ~80ms under AHT20 conversion. Kald fra sensor_task med passende
+ * Blokerer i ~10ms under SHT41 conversion. Kald fra sensor_task med passende
  * interval (ENV_SAMPLE_INTERVAL_MS).
  *
  * @param[out] out Resultat-struct fyldes ved success. .valid sættes til
@@ -71,9 +76,26 @@ int env_sensor_read(env_reading_t *out);
  * Sat til true hvis env_sensor_init() lykkedes ved boot. Andre tasks bør
  * tjekke dette før de stoler på env-data.
  *
- * @return true hvis AHT20 er aktiv.
+ * @return true hvis SHT41 er aktiv.
  */
 bool env_sensor_available(void);
+
+// ─── SHT4x protokol (pure functions, kan unit-testes native) ────────────────
+
+/**
+ * Sensirion CRC-8: polynomium 0x31, init 0xFF, ingen final XOR.
+ * Datablad-eksempel: CRC(0xBE, 0xEF) = 0x92.
+ */
+uint8_t sht4x_crc8(const uint8_t *data, int len);
+
+/**
+ * Pars 6 bytes fra en måling: [T_msb, T_lsb, T_crc, RH_msb, RH_lsb, RH_crc].
+ *   T  = -45 + 175 · ticks / 65535      [°C]
+ *   RH =  -6 + 125 · ticks / 65535      [%], clampet til 0-100
+ *
+ * @return 0 ved success, -1 ved CRC-fejl (out-parametre urørte).
+ */
+int sht4x_parse(const uint8_t raw[6], float *temp_c, float *humidity_pct);
 
 // ─── VPD calculations (pure functions, kan unit-testes native) ──────────────
 

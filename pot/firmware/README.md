@@ -101,7 +101,7 @@ firmware/
 │   ├── pump.cpp / .h           # Boost-switch + pumpe-dosering (TODO Fase 1)
 │   ├── sensors.cpp / .h        # Soil ADC + water level + float ISR (TODO Fase 1)
 │   ├── weight.cpp / .h         # HX711 driver, optional hardware (TODO Fase 1)
-│   ├── temp_humidity.cpp / .h  # AHT20 I2C + VPD calc — VPD math virker; I2C TODO
+│   ├── temp_humidity.cpp / .h  # SHT41 I2C + VPD calc — SHT4x-CRC/VPD virker; I2C TODO
 │   ├── profiles.cpp / .h       # Plant profile + NVS storage
 │   ├── safety.cpp / .h         # Watchdog + leak detect (TODO Fase 1)
 │   └── matter_iface.cpp / .h   # Matter cluster bindings (TODO Fase 1)

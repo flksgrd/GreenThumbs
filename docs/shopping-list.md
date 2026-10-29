@@ -8,9 +8,9 @@ vejledende BOM-estimater i DKK, uden fragt og told. Detaljer:
 
 | | Orkide | pot/ (Monstera) |
 |---|---:|---:|
-| Bestil | **1456** | **1200** |
-| Kun til stripboard-prototypen | 162 | 42 |
-| **I alt** | **1618** | **1242** |
+| Bestil | **1466** | **1210** |
+| Kun til breadboard-test (før PCB) | 180 | 0 |
+| **I alt** | **1646** | **1210** |
 | Valgfrit (ikke med) | 40 | 220 |
 
 Plus én gang til begge: **HomePod mini ~800 DKK** (afsnit 0).
@@ -18,9 +18,10 @@ Plus én gang til begge: **HomePod mini ~800 DKK** (afsnit 0).
 Haves allerede: 5V USB-C-lader, Apple MagSafe 25W (orkidens ladebase er tegnet til den).
 Forudsat i skuffen: kabelstrips ≤3,6mm (2 til pumpe-vuggen), lim / tynd dobbeltklæbende tape.
 
-**"Kun til stripboard-prototypen"** er de dele, der sidder på printet. På et
-færdigt SMD-PCB loddes de i SMD eller følger med samleordren (fx JLCPCB), så
-sektionen er kun nødvendig, hvis prototypen bygges på stripboard først.
+**"Breadboard-test"** er det, der skal til for at måle de elektriske ubekendte
+før PCB'et (se [wiring-diagram.md](../pot/hardware/breadboard/wiring-diagram.md)).
+Der bygges ingen stripboard: næste trin er et carrier-PCB, hvor switches og
+passive komponenter loddes i SMD eller følger med samleordren (fx JLCPCB).
 Modulerne (boost, lader, H-bro, Qi) kan sidde på headers på et færdigt PCB; MCU'en
 bliver dér et ESP32-H2-MINI-1-H4S-modul (samme chip som Zero-boardet, ADR 014).
 
@@ -33,9 +34,9 @@ at tilføje Matter-enheder; HomePod mini er også Thread border router
 ([Apple](https://support.apple.com/102557)). Tredjeparts border routere
 (fx GL.iNet GL-S20) kan ikke være home hub.
 
-| ✓ | Del | Antal | Stk. | I alt | Butik | Note |
-|---|---|---:|---:|---:|---|---|
-| [ ] | Apple HomePod mini | 1 | 800 | 800 | apple.com/dk / forhandlere | Pris = skøn. En "HomePod mini 2" er rygtet til oktober 2026 — tjek før køb |
+| ✓   | Del                | Antal | Stk. | I alt | Butik                      | Note                                                                       |
+| --- | ------------------ | ----: | ---: | ----: | -------------------------- | -------------------------------------------------------------------------- |
+| [ ] | Apple HomePod mini |     1 | 1299 |  1299 | apple.com/dk / forhandlere | Pris = skøn. En "HomePod mini 2" er rygtet til oktober 2026 — tjek før køb |
 
 ---
 
@@ -56,16 +57,16 @@ bestil først) · akvariebutik (sump-si) · byggemarked (bolte)
 
 ### Moduler og MCU
 
-| ✓   | Del                                               | Antal | Stk. |   I alt | Butik                   | Note                                                 | **Fra Bruger**                                                                                                                                       |
-| --- | ------------------------------------------------- | ----: | ---: | ------: | ----------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [ ] | ESP32-H2-Zero 3-pak (Ulegqin — Waveshare-kopi) | 1 | 150 | 150 | AliExpress / Amazon | ≈ €20; dækker pot/ + reserve. Tjek ESP32-H2FH4S (4 MB) + Waveshare-pinout. Aflod RGB-LED | Fundet, brand Ulegqin? 3 for 20 Euro |
-| [ ] | Pololu U3V40F12 boost 12V (#4016) | 1 | 110 | 110 | Eckstein / Botland / TME / EXP-Tech | Pololus EU-forhandlere; ~$10 hos Pololu | Ikke fundet endnu |
-| [ ] | TP4056 USB-C-modul m. beskyttelse (DW01A+FS8205A) | 5 | 8 | 40 | AliExpress | Dækker pot/ + reserver. CC: se efter to modstande mærket 512/5K1 ved USB-C | Kan ikke finde hvor jeg skal tjekke CC-modstande, giver det mening at opgradere til BQ2606 (4.5-12V, 3A) eller en opgraderet TC4056 med (4-8V, 1.2A) |
-| [ ] | SMD-modstandssæt (skal indeholde 2,0kΩ til R_PROG) | 1 | 5 | 5 | AliExpress / LCSC | Tjek at 2,0k (202/2001) er med og pad-størrelsen på R3 | Fundet, et sæt med 1500 SMD-res med 60 forskellige værdier, klart overkill men så har jeg til fremtidige projekter også |
-| [ ] | Qi-modtager 5V 1A (spole 40×29mm) | 1 | 70 | 70 | AliExpress | Spolen i bay-lommen (nu 41×30); modul-printet på elektronik-hylden | Fundet, 5V 1A, chip er 33x16x1.1mm og spole er 40x29x0.3mm |
-| [ ] | DRV8871 H-bro-breakout, ÉN kanal, 6,5-45V | 1 | 60 | 60 | AliExpress / Adafruit | OBS: "1,5A 2-kanal" er typisk DRV8833/MX1508 (max ~10V) — virker ikke ved 12V | Fundet, 1.5A 2 Channel H-Bridge PWM |
-| [ ] | AHT20-breakout (I2C 0x38) | 1 | 25 | 25 | AliExpress / Adafruit | Evt. SHT41 i stedet — se svar | Fundet, 15.11x10.41mm, Hvad er forskellen på denne og så f.eks. SHT45/SHT41? |
-|     | **Sum**                                           |       |      | **460** |                         |                                                      |                                                                                                                                                      |
+| ✓   | Del                                                | Antal | Stk. |   I alt | Butik                               | Note                                                                                     | **Fra Bruger**                                                                                                                                       |
+| --- | -------------------------------------------------- | ----: | ---: | ------: | ----------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [ ] | ESP32-H2-Zero 3-pak (Ulegqin — Waveshare-kopi)     |     1 |  150 |     150 | AliExpress / Amazon                 | ≈ €20; dækker pot/ + reserve. Tjek ESP32-H2FH4S (4 MB) + Waveshare-pinout. Aflod RGB-LED | Fundet, brand Ulegqin? 3 for 20 Euro                                                                                                                 |
+| [ ] | Pololu U3V40F12 boost 12V (#4016)                  |     1 |  110 |     110 | Eckstein / Botland / TME / EXP-Tech | Pololus EU-forhandlere; ~$10 hos Pololu                                                  | Ikke fundet endnu                                                                                                                                    |
+| [ ] | TP4056 USB-C-modul m. beskyttelse (DW01A+FS8205A)  |     5 |    8 |      40 | AliExpress                          | Dækker pot/ + reserver. CC: se efter to modstande mærket 512/5K1 ved USB-C               | Kan ikke finde hvor jeg skal tjekke CC-modstande, giver det mening at opgradere til BQ2606 (4.5-12V, 3A) eller en opgraderet TC4056 med (4-8V, 1.2A) |
+| [ ] | SMD-modstandssæt (skal indeholde 2,0kΩ til R_PROG) |     1 |    5 |       5 | AliExpress / LCSC                   | Tjek at 2,0k (202/2001) er med og pad-størrelsen på R3                                   | Fundet, et sæt med 1500 SMD-res med 60 forskellige værdier, klart overkill men så har jeg til fremtidige projekter også                              |
+| [ ] | Qi-modtager 5V 1A (spole 40×29mm)                  |     1 |   70 |      70 | AliExpress                          | Spolen i bay-lommen (nu 41×30); modul-printet på elektronik-hylden                       | Fundet, 5V 1A, chip er 33x16x1.1mm og spole er 40x29x0.3mm                                                                                           |
+| [ ] | DRV8871 H-bro-breakout, ÉN kanal, 6,5-45V          |     1 |   60 |      60 | AliExpress / Adafruit               | OBS: "1,5A 2-kanal" er typisk DRV8833/MX1508 (max ~10V) — virker ikke ved 12V            | Fundet, 1.5A 2 Channel H-Bridge PWM                                                                                                                  |
+| [ ] | SHT41-breakout (I2C 0x44, ADR 015) | 1 | 35 | 35 | AliExpress / Adafruit | Afløser AHT20: ±1,8 %RH / ±0,2 °C + varmer. Pris = skøn | Fundet, 15.11x10.41mm, Hvad er forskellen på denne og så f.eks. SHT45/SHT41? |
+|     | **Sum**                                            |       |      | **460** |                                     |                                                                                          |                                                                                                                                                      |
 
 ### Pumpe og sensorer
 
@@ -108,20 +109,19 @@ bestil først) · akvariebutik (sump-si) · byggemarked (bolte)
 | [ ] | PLA 1 kg (prøveprint) | 1 | 120 | 120 | 3djake | Dækker også pot/ |
 | | **Sum** | | | **270** | | |
 
-### Kun til stripboard-prototypen
+### Breadboard-test (kun før PCB)
 
 | ✓ | Del | Antal | Stk. | I alt | Butik | Note |
 |---|---|---:|---:|---:|---|---|
-| [ ] | Stripboard 7×9cm | 1 | 20 | 20 | Conrad |  |
+| [ ] | Breadboard, 830 huller | 1 | 30 | 30 | AliExpress / Conrad | Genbruges til pot/ |
+| [ ] | Jumperkabler han-han + han-hun, sæt | 1 | 30 | 30 | AliExpress |  |
 | [ ] | AO3401A P-MOSFET SOT-23, 10-pak | 1 | 10 | 10 | AliExpress / LCSC | Orkide bruger 1, pot/ 2 |
 | [ ] | 2N7002 N-MOSFET SOT-23, 10-pak | 1 | 10 | 10 | AliExpress / LCSC | Orkide 1, pot/ 1 |
-| [ ] | SOT-23→DIP-adaptere, 10-pak | 1 | 15 | 15 | AliExpress | Dækker også pot/ |
+| [ ] | SOT-23→DIP-adaptere, 10-pak | 1 | 15 | 15 | AliExpress | Så MOSFET'erne kan sidde i breadboardet |
 | [ ] | 1N5817 Schottky, 10-pak | 1 | 10 | 10 | AliExpress / Mouser | Dækker også pot/ |
-| [ ] | Modstandssortiment E24 1/4W 1% | 1 | 60 | 60 | AliExpress / Conrad | 2,0k / 4,7k / 5,1k / 10k / 100k / 200k |
+| [ ] | Modstandssortiment E24 THT 1/4W 1% | 1 | 60 | 60 | AliExpress / Conrad | THT — SMD-sættet passer ikke i et breadboard |
 | [ ] | Kondensatorer: 100-220µF ≥10V, 10µF, 100nF | 1 | 15 | 15 | AliExpress / Conrad | Dækker også pot/ |
-| [ ] | Skrueterminaler 2/3-polet | 4 | 3 | 12 | AliExpress / Conrad |  |
-| [ ] | Female pin headers 2,54mm | 2 | 5 | 10 | AliExpress / Conrad |  |
-| | **Sum** | | | **162** | | |
+| | **Sum** | | | **180** | | |
 
 ### Valgfrit (ikke med i summen)
 
@@ -153,8 +153,8 @@ AliExpress · Berrybase/Eckstein (Grove) · Conrad (glands, kabel) · lokalt
 | [ ] | Pololu U3V40F12 boost 12V (#4016) | 1 | 110 | 110 | The Pi Hut / RobotShop |  |
 | [ ] | TP4056-modul + 2,0kΩ R_PROG | 1 | — | — | — | fra orkide-ordren |
 | [ ] | Qi-modtager 5V ≥600 mA | 1 | 70 | 70 | The Pi Hut / AliExpress | Kun uden load cell — ellers spring over |
-| [ ] | AHT20-breakout | 1 | 25 | 25 | AliExpress / Adafruit |  |
-| | **Sum** | | | **205** | | |
+| [ ] | SHT41-breakout (I2C 0x44) | 1 | 35 | 35 | AliExpress / Adafruit | ADR 015 |
+| | **Sum** | | | **215** | | |
 
 ### Pumpe og sensorer
 
@@ -200,15 +200,12 @@ AliExpress · Berrybase/Eckstein (Grove) · Conrad (glands, kabel) · lokalt
 | [ ] | LECA 2-3 L | 1 | 50 | 50 | Plantorama |  |
 | | **Sum** | | | **350** | | |
 
-### Kun til stripboard-prototypen
+### Breadboard-test (kun før PCB)
 
 | ✓ | Del | Antal | Stk. | I alt | Butik | Note |
 |---|---|---:|---:|---:|---|---|
-| [ ] | Stripboard 7×9cm | 1 | 20 | 20 | Conrad |  |
-| [ ] | MOSFET'er, adaptere, dioder, modstande, kondensatorer | 1 | — | — | — | fra orkide-ordren |
-| [ ] | Skrueterminaler 2/3-polet | 4 | 3 | 12 | AliExpress / Conrad |  |
-| [ ] | Female pin headers 2,54mm | 2 | 5 | 10 | AliExpress / Conrad |  |
-| | **Sum** | | | **42** | | |
+| [ ] | Breadboard, jumpere, MOSFET'er, adaptere, dioder, modstande, kondensatorer | 1 | — | — | — | fra orkide-ordren |
+| | **Sum** | | | **0** | | |
 
 ### Valgfrit (ikke med i summen)
 
