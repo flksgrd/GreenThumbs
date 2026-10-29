@@ -13,7 +13,7 @@ Brugeren afklarede efter v0:
 - Planten skal **blive i sin medfølgende 12cm dyrkningspotte** og stå i en
   skål med høje sider — vi designer et tårn med en skål ovenpå
 - Det er OK at løfte planten op for at fylde vand på
-- Pyntepotten (målt med målebånd 2026-10-26, ±~3mm): Ø210 ved åbningen,
+- Pyntepotten — IKEA SANDKÖRSBÄR 19 cm (målt med målebånd 2026-10-26, ±~3mm): Ø210 ved åbningen,
   160mm ned til en afsats der går 20mm ind, derunder en udhulet bund
   Ø160 × 28mm → 188mm indvendig dybde i alt
 - Trigger: **interval justeret med VPD** (ingen load cell)

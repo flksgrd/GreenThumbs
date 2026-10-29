@@ -8,9 +8,9 @@ vejledende BOM-estimater i DKK, uden fragt og told. Detaljer:
 
 | | Orkide | pot/ (Monstera) |
 |---|---:|---:|
-| Bestil | **1506** | **1250** |
+| Bestil | **1605** | **1250** |
 | Kun til breadboard-test (før PCB) | 180 | 0 |
-| **I alt** | **1686** | **1250** |
+| **I alt** | **1785** | **1250** |
 | Valgfrit (ikke med) | 40 | 220 |
 
 Plus én gang til begge: **HomePod mini ~800 DKK** (afsnit 0).
@@ -44,7 +44,7 @@ at tilføje Matter-enheder; HomePod mini er også Thread border router
 
 **Butikker:** The Pi Hut (ESP32-H2-Zero, Pololu, Qi, DRV8871 — tjek lager) ·
 Nkon (celler) · 3djake (filament) · AliExpress (resten — 2-3 ugers levering,
-bestil først) · akvariebutik (sump-si) · byggemarked (bolte)
+bestil først) · akvariebutik (sump-si) · byggemarked (bolte) · IKEA (pyntepotte)
 
 **Før du bestiller:**
 - [x] NKP-DC-S10B (bekræftet 2026-10-26): børstet DC → kan vendes, 67,5×54,5×41mm,
@@ -109,6 +109,13 @@ bestil først) · akvariebutik (sump-si) · byggemarked (bolte)
 | [ ] | PETG 1 kg, opak | 1 | 150 | 150 | 3djake / Prusa | Tank+låg+bay ~0,6 kg + ladebase ~0,27 kg massiv |
 | [ ] | PLA 1 kg (prøveprint) | 1 | 120 | 120 | 3djake | Dækker også pot/ |
 | | **Sum** | | | **270** | | |
+
+### Krukke
+
+| ✓ | Del | Antal | Stk. | I alt | Butik | Note |
+|---|---|---:|---:|---:|---|---|
+| [ ] | Pyntepotte IKEA SANDKÖRSBÄR 19 cm | 1 | 99 | 99 | IKEA | Den CAD'en er tilpasset: Ø210 åbning, afsats 160mm nede, udhulet bund Ø160×28 |
+| | **Sum** | | | **99** | | |
 
 ### Breadboard-test (kun før PCB)
 

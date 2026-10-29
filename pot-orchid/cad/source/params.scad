@@ -24,7 +24,7 @@ $fn = 96;
 print_tolerance = 0.3;
 
 // ----------------------------------------------------------------------------
-// 1. Pyntepotte — målt med målebånd 2026-10-26 (±~3mm)
+// 1. Pyntepotte: IKEA SANDKÖRSBÄR 19 cm — målt med målebånd 2026-10-26 (±~3mm)
 // ----------------------------------------------------------------------------
 //   Ø210 ┐                 ┌      Øverste del: 160mm ned til en afsats,
 //        │                 │      der går 20mm ind mod midten. Derunder en
